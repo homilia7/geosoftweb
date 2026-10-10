@@ -1,72 +1,20 @@
 import React, { useState } from 'react';
-import { Calculator, Check, Sparkles, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Calculator, Check, Sparkles, Send, CheckCircle2, ShieldCheck, Tag } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { PlatformOption, AddonService } from '../types';
+import { useGeoSoftStore } from '../context/StoreContext';
+import { PlatformOption } from '../types';
 
 export const CostCalculator: React.FC = () => {
-  const platforms: PlatformOption[] = [
-    {
-      id: 'static',
-      title: 'Web Estática / Landing Page',
-      badge: 'Presencia Rápida',
-      description: 'Ideal para marca corporativa, portafolio y máxima velocidad de carga.',
-      basePrice: 199,
-      features: ['Diseño 100% responsivo', 'Optimización SEO básica', 'Despliegue en Cloudflare']
-    },
-    {
-      id: 'dynamic',
-      title: 'Web Dinámica / Catálogo',
-      badge: 'Autoadministrable',
-      description: 'Ideal para blogs, catálogos, inmobiliarias o actualización frecuente.',
-      basePrice: 399,
-      features: ['Panel de administración fácil', 'Formularios avanzados', 'Gestión de contenido']
-    },
-    {
-      id: 'ai',
-      title: 'Web con Agente de IA 24/7',
-      badge: 'Más Popular',
-      description: 'Convierte visitas en clientes con chatbots inteligentes y flujos automáticos.',
-      basePrice: 599,
-      features: ['Chatbot de IA conversacional', 'Captura automática de leads', 'Conexión a WhatsApp / CRM']
-    },
-    {
-      id: 'saas',
-      title: 'Plataforma SaaS & Sistema Web',
-      badge: 'Solución Enterprise',
-      description: 'Software a medida con bases de datos, roles de usuario y pasarelas de pago.',
-      basePrice: 999,
-      features: ['Arquitectura en la nube', 'Pasarelas SinpePay / Stripe', 'Paneles de usuario avanzados']
-    }
-  ];
+  const { pricing } = useGeoSoftStore();
+  const platforms = pricing.platforms;
+  const addons = pricing.addons;
 
-  const addons: AddonService[] = [
-    {
-      id: 'domain',
-      title: 'Dominio Propio (.com / .lat)',
-      description: 'Registro oficial de tu marca en internet por 1 año.',
-      price: 25,
-      period: 'anual'
-    },
-    {
-      id: 'hosting',
-      title: 'Hosting Cloud Premium',
-      description: 'Servidores de alta velocidad con SSL y CDN global.',
-      price: 75,
-      period: 'anual',
-      recommended: true
-    },
-    {
-      id: 'maintenance',
-      title: 'Mantenimiento & Soporte Continuo',
-      description: 'Actualizaciones de seguridad, monitoreo y soporte prioritario.',
-      price: 45,
-      period: 'mensual'
-    }
-  ];
-
-  const [selectedPlatform, setSelectedPlatform] = useState<PlatformOption>(platforms[2]);
+  const [selectedPlatformId, setSelectedPlatformId] = useState<string>('ai');
   const [selectedAddons, setSelectedAddons] = useState<string[]>(['domain', 'hosting']);
   const [isGenerated, setIsGenerated] = useState(false);
+
+  // Find selected platform from dynamic store
+  const selectedPlatform = platforms.find(p => p.id === selectedPlatformId) || platforms[0];
 
   const toggleAddon = (id: string) => {
     setSelectedAddons(prev =>
@@ -75,20 +23,23 @@ export const CostCalculator: React.FC = () => {
   };
 
   const calculateTotal = () => {
-    let oneTime = selectedPlatform.basePrice;
+    const rawOneTime = selectedPlatform.basePrice;
+    const discountMultiplier = pricing.discountActive ? (100 - pricing.discountPercent) / 100 : 1;
+    const oneTime = Math.round(rawOneTime * discountMultiplier);
+
     let annual = 0;
     let monthly = 0;
 
     selectedAddons.forEach(addonId => {
       const addon = addons.find(a => a.id === addonId);
       if (addon) {
-        if (addon.period === 'pago único') oneTime += addon.price;
+        if (addon.period === 'pago único') annual += addon.price;
         else if (addon.period === 'anual') annual += addon.price;
         else if (addon.period === 'mensual') monthly += addon.price;
       }
     });
 
-    return { oneTime, annual, monthly, totalFirstYear: oneTime + annual + monthly * 12 };
+    return { rawOneTime, oneTime, annual, monthly, savings: rawOneTime - oneTime };
   };
 
   const totals = calculateTotal();
@@ -103,7 +54,9 @@ export const CostCalculator: React.FC = () => {
   };
 
   const generateWhatsAppMessage = () => {
-    const text = `¡Hola GeoSoft! Acabo de cotizar mi proyecto en geosoftweb.pages.dev:%0A%0A*Tipo de Web:* ${selectedPlatform.title} ($${selectedPlatform.basePrice})%0A*Servicios adicionales:* ${selectedAddons.map(id => addons.find(a => a.id === id)?.title).join(', ') || 'Ninguno'}%0A*Total Estimado Inicial:* $${totals.oneTime + totals.annual}%0A%0A¿Podemos coordinar para formalizar la propuesta exacta?`;
+    const text = encodeURIComponent(
+      `¡Hola GeoSoft! Acabo de cotizar mi proyecto en geosoftweb.pages.dev:\n\n*Tipo de Web:* ${selectedPlatform.title} ($${totals.oneTime}${pricing.discountActive ? ' con ' + pricing.discountPercent + '% OFF' : ''})\n*Servicios adicionales:* ${selectedAddons.map(id => addons.find(a => a.id === id)?.title).join(', ') || 'Ninguno'}\n*Total Inicial:* $${totals.oneTime + totals.annual}\n\n¿Podemos coordinar para formalizar la propuesta exacta?`
+    );
     return `https://wa.me/50689999999?text=${text}`;
   };
 
@@ -122,6 +75,14 @@ export const CostCalculator: React.FC = () => {
           <p className="text-gray-400 font-light text-sm sm:text-base">
             Configura las características de tu proyecto y obtén un estimado instantáneo sin sorpresas ni tarifas ocultas.
           </p>
+
+          {/* Active Promo Discount Banner */}
+          {pricing.discountActive && (
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#DFF494]/15 border border-[#DFF494]/30 text-xs font-bold text-[#DFF494] shadow-[0_0_20px_rgba(223,244,148,0.2)] animate-pulse">
+              <Tag className="w-4 h-4" />
+              <span>{pricing.discountBanner} ({pricing.discountPercent}% de descuento aplicado)</span>
+            </div>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -137,10 +98,13 @@ export const CostCalculator: React.FC = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 {platforms.map(p => {
                   const isSelected = selectedPlatform.id === p.id;
+                  const discountMultiplier = pricing.discountActive ? (100 - pricing.discountPercent) / 100 : 1;
+                  const discountedPrice = Math.round(p.basePrice * discountMultiplier);
+
                   return (
                     <div
                       key={p.id}
-                      onClick={() => setSelectedPlatform(p)}
+                      onClick={() => setSelectedPlatformId(p.id)}
                       className={`p-5 rounded-2xl border transition-all cursor-pointer relative ${
                         isSelected
                           ? 'bg-[#181a1d] border-[#A9F8B5] shadow-[0_0_25px_rgba(169,248,181,0.15)]'
@@ -153,8 +117,18 @@ export const CostCalculator: React.FC = () => {
                         }`}>
                           {p.badge}
                         </span>
-                        <div className="text-lg font-extrabold font-display text-white">
-                          ${p.basePrice}
+                        
+                        <div className="text-right">
+                          {pricing.discountActive ? (
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-xs text-gray-500 line-through font-mono">${p.basePrice}</span>
+                              <span className="text-lg font-extrabold font-display text-[#DFF494]">${discountedPrice}</span>
+                            </div>
+                          ) : (
+                            <div className="text-lg font-extrabold font-display text-white">
+                              ${p.basePrice}
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -241,7 +215,16 @@ export const CostCalculator: React.FC = () => {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center text-gray-300">
                   <span className="truncate pr-2">{selectedPlatform.title}</span>
-                  <span className="font-mono font-semibold text-white">${selectedPlatform.basePrice}</span>
+                  <div className="text-right">
+                    {pricing.discountActive ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-gray-500 line-through font-mono">${totals.rawOneTime}</span>
+                        <span className="font-mono font-bold text-[#DFF494]">${totals.oneTime}</span>
+                      </div>
+                    ) : (
+                      <span className="font-mono font-semibold text-white">${totals.oneTime}</span>
+                    )}
+                  </div>
                 </div>
 
                 {selectedAddons.map(id => {
@@ -264,6 +247,12 @@ export const CostCalculator: React.FC = () => {
                     ${totals.oneTime}
                   </span>
                 </div>
+                {pricing.discountActive && (
+                  <div className="flex justify-between items-center text-xs text-[#DFF494]">
+                    <span>Ahorro Promocional:</span>
+                    <span className="font-mono font-bold">-${totals.savings} USD</span>
+                  </div>
+                )}
                 {totals.annual > 0 && (
                   <div className="flex justify-between items-center text-xs text-gray-400">
                     <span>Servicios Anuales:</span>

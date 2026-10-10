@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock } from 'lucide-react';
 
 interface NavbarProps {
   onOpenCal: () => void;
+  onOpenBooking: () => void;
+  onOpenAdmin: () => void;
   onScrollToQuote: () => void;
   onScrollToServices: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenCal,
+  onOpenBooking,
+  onOpenAdmin,
   onScrollToQuote,
   onScrollToServices,
 }) => {
@@ -126,13 +130,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Desktop Action CTAs */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2.5">
           <button
-            onClick={onOpenCal}
-            className="flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-gray-200 transition-all cursor-pointer"
+            onClick={onOpenBooking}
+            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-all cursor-pointer"
           >
-            <Calendar className="w-3.5 h-3.5 text-[#DFF494]" />
-            <span>Agendar Demo</span>
+            <Clock className="w-3.5 h-3.5 text-[#DFF494]" />
+            <span>Agendar Cita</span>
           </button>
 
           <button
@@ -140,6 +144,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="btn-primary-gradient cursor-pointer text-xs uppercase tracking-wider"
           >
             Cotizar Ahora
+          </button>
+
+          <button
+            onClick={onOpenAdmin}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer"
+            title="Panel de Administración"
+          >
+            <Lock className="w-3.5 h-3.5" />
           </button>
         </div>
 
@@ -207,19 +219,33 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
           </nav>
 
-          <div className="flex flex-col gap-3 pt-4 border-t border-white/10">
+          <div className="flex flex-col gap-2.5 pt-4 border-t border-white/10">
+            <button
+              onClick={() => { setMobileOpen(false); onOpenBooking(); }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 text-sm font-semibold text-[#A9F8B5]"
+            >
+              <Clock className="w-4 h-4 text-[#DFF494]" />
+              <span>Agendar Cita Directa</span>
+            </button>
             <button
               onClick={() => { setMobileOpen(false); onOpenCal(); }}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/10 border border-white/10 text-sm font-semibold text-white"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300"
             >
-              <Calendar className="w-4 h-4 text-[#DFF494]" />
-              <span>Agendar Reunión (30 Min)</span>
+              <Calendar className="w-3.5 h-3.5 text-[#DFF494]" />
+              <span>Cal.com Videollamada (30 Min)</span>
             </button>
             <button
               onClick={() => { setMobileOpen(false); onScrollToQuote(); }}
-              className="w-full btn-primary-gradient py-3 text-center justify-center text-sm"
+              className="w-full btn-primary-gradient py-3 text-center justify-center text-sm font-bold"
             >
               Cotizar Mi Proyecto
+            </button>
+            <button
+              onClick={() => { setMobileOpen(false); onOpenAdmin(); }}
+              className="w-full flex items-center justify-center gap-1.5 py-2 text-xs text-gray-400 hover:text-white"
+            >
+              <Lock className="w-3 h-3" />
+              <span>Panel de Administración</span>
             </button>
           </div>
         </div>

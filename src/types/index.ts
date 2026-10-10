@@ -22,3 +22,26 @@ export interface QuoteState {
   platform: PlatformType;
   selectedAddons: string[];
 }
+
+export type AppointmentStatus = 'pendiente' | 'confirmada' | 'completada' | 'cancelada';
+
+export interface Appointment {
+  id: string;
+  fullName: string;
+  email: string;
+  whatsapp: string;
+  service: string;
+  date: string;
+  time: string;
+  notes: string;
+  status: AppointmentStatus;
+  createdAt: string;
+}
+
+export interface PricingConfig {
+  platforms: PlatformOption[];
+  addons: AddonService[];
+  discountPercent: number; // e.g. 15 for 15% off
+  discountBanner: string; // e.g. "¡Promoción de Lanzamiento!"
+  discountActive: boolean;
+}

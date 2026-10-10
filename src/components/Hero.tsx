@@ -4,10 +4,11 @@ import { RotatingHeadline } from './RotatingHeadline';
 
 interface HeroProps {
   onOpenCal: () => void;
+  onOpenBooking: () => void;
   onScrollToQuote: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenCal, onScrollToQuote }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollToQuote }) => {
   return (
     <section id="inicio" className="relative pt-36 pb-20 md:pt-44 md:pb-28 overflow-hidden">
       {/* Background radial ambient glows */}
@@ -45,11 +46,11 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onScrollToQuote }) => {
               </button>
 
               <button
-                onClick={onOpenCal}
+                onClick={onOpenBooking}
                 className="flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-white/30 text-sm font-semibold text-white transition-all w-full sm:w-auto cursor-pointer"
               >
                 <Calendar className="w-4 h-4 text-[#DFF494]" />
-                <span>Agendar Llamada (30 Min)</span>
+                <span>Agendar Cita en Vivo</span>
               </button>
             </div>
 

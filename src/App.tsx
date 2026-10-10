@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StoreProvider, useGeoSoftStore } from './context/StoreContext';
 import { SplashIntro } from './components/SplashIntro';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -12,11 +13,16 @@ import { TeamSection } from './components/TeamSection';
 import { CostCalculator } from './components/CostCalculator';
 import { FaqSection } from './components/FaqSection';
 import { CalModal } from './components/CalModal';
+import { BookingModal } from './components/BookingModal';
+import { AdminPanel } from './components/AdminPanel';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { FloatingChat } from './components/FloatingChat';
 import { Footer } from './components/Footer';
 
-export function App() {
+function MainLayout() {
   const [isCalOpen, setIsCalOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const { openAdminModal } = useGeoSoftStore();
 
   const scrollToQuote = () => {
     const el = document.getElementById('cotizador');
@@ -36,6 +42,8 @@ export function App() {
       {/* Floating Capsule Navbar */}
       <Navbar
         onOpenCal={() => setIsCalOpen(true)}
+        onOpenBooking={() => setIsBookingOpen(true)}
+        onOpenAdmin={openAdminModal}
         onScrollToQuote={scrollToQuote}
         onScrollToServices={scrollToServices}
       />
@@ -44,6 +52,7 @@ export function App() {
         {/* Hero Section */}
         <Hero
           onOpenCal={() => setIsCalOpen(true)}
+          onOpenBooking={() => setIsBookingOpen(true)}
           onScrollToQuote={scrollToQuote}
         />
 
@@ -86,7 +95,25 @@ export function App() {
         isOpen={isCalOpen}
         onClose={() => setIsCalOpen(false)}
       />
+
+      {/* Native Appointment Booking Modal */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+      />
+
+      {/* Admin Panel and Login Modal */}
+      <AdminPanel />
+      <AdminLoginModal />
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <StoreProvider>
+      <MainLayout />
+    </StoreProvider>
   );
 }
 
