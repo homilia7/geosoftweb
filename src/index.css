@@ -71,6 +71,126 @@ h1, h2, h3, h4, .font-display {
   -webkit-text-fill-color: transparent;
 }
 
+/* Refero Chromatic Beam Rotating Headline */
+:root {
+  --foreground: #ffffff;
+}
+
+.rotating-headline-container {
+  display: grid;
+  align-items: center;
+  width: 100%;
+}
+
+.rotating-headline-phrase {
+  grid-area: 1 / 1;
+  text-wrap: balance;
+  padding-bottom: 0.08em;
+  text-align: inherit;
+}
+
+.rotating-headline-measure {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.rotating-headline-text {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-image: linear-gradient(var(--foreground), var(--foreground));
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.rotating-headline-outgoing,
+.rotating-headline-incoming {
+  background-image: linear-gradient(
+    var(--sweep-angle),
+    transparent 5.33%,
+    transparent 32.81%,
+    #00aaff 41.22%,
+    #e1e1fe 45.71%,
+    #ffcb5c 50.2%,
+    #ff4400 54.68%,
+    #f384ff 59.17%,
+    var(--foreground) 65.16%,
+    var(--foreground) 95.07%
+  );
+  background-position: 0%;
+  background-size: 400% 100%;
+}
+
+.rotating-headline-outgoing {
+  --sweep-angle: 110deg;
+  animation: 3s linear rotating-headline-hide;
+}
+
+.rotating-headline-incoming {
+  --sweep-angle: -70deg;
+  animation: 3s linear rotating-headline-show;
+}
+
+@keyframes rotating-headline-hide {
+  0% {
+    background-position: 100%;
+  }
+  70%, to {
+    background-position: 0%;
+  }
+}
+
+@keyframes rotating-headline-show {
+  0%, 40% {
+    background-position: 100%;
+  }
+  to {
+    background-position: 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotating-headline-outgoing,
+  .rotating-headline-incoming {
+    background-image: linear-gradient(var(--foreground), var(--foreground));
+    animation: none;
+  }
+  .rotating-headline-incoming {
+    display: none;
+  }
+}
+
+/* Standalone Chromatic Beam Utility */
+.chromatic-beam-text {
+  background-image: linear-gradient(
+    110deg,
+    #ffffff 20%,
+    #00aaff 35%,
+    #e1e1fe 42%,
+    #ffcb5c 50%,
+    #ff4400 58%,
+    #f384ff 66%,
+    #ffffff 80%
+  );
+  background-size: 300% 100%;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: chromaticBeamSweep 6s linear infinite;
+}
+
+@keyframes chromaticBeamSweep {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
 /* Action Button with Sliding Icon Box (Recode Style) */
 .btn-accent-icon {
   display: inline-flex;

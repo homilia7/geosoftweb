@@ -7,6 +7,8 @@ import { SalesHook } from './components/SalesHook';
 import { TechMarquee } from './components/TechMarquee';
 import { ServicesBento } from './components/ServicesBento';
 import { ProcessTimeline } from './components/ProcessTimeline';
+import { ProjectsSection } from './components/ProjectsSection';
+import { TeamSection } from './components/TeamSection';
 import { CostCalculator } from './components/CostCalculator';
 import { FaqSection } from './components/FaqSection';
 import { CalModal } from './components/CalModal';
@@ -59,6 +61,12 @@ export function App() {
 
         {/* Step by Step Timeline */}
         <ProcessTimeline />
+
+        {/* Real Showcase / Case Studies */}
+        <ProjectsSection />
+
+        {/* Our Team Section */}
+        <TeamSection />
 
         {/* Interactive Smart Cost Calculator */}
         <CostCalculator />

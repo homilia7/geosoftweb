@@ -90,22 +90,36 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <a
             href="#como-funciona"
-            className="px-4 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
           >
             Metodología
           </a>
 
           <a
+            href="#proyectos"
+            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+          >
+            Proyectos
+          </a>
+
+          <a
+            href="#equipo"
+            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+          >
+            Equipo
+          </a>
+
+          <a
             href="#cotizador"
             onClick={onScrollToQuote}
-            className="px-4 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
           >
             Cotizador
           </a>
 
           <a
             href="#faq"
-            className="px-4 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            className="px-3.5 py-1.5 rounded-full hover:text-white hover:bg-white/5 transition-colors"
           >
             FAQ
           </a>
@@ -162,6 +176,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
             >
               Cómo Trabajamos
+            </a>
+            <a
+              href="#proyectos"
+              onClick={() => setMobileOpen(false)}
+              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
+            >
+              Nuestros Proyectos
+            </a>
+            <a
+              href="#equipo"
+              onClick={() => setMobileOpen(false)}
+              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
+            >
+              Conoce a Nuestro Equipo
             </a>
             <a
               href="#cotizador"

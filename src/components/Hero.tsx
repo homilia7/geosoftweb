@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Calendar, Sparkles, ShieldCheck, Zap } from 'lucide-react';
+import { RotatingHeadline } from './RotatingHeadline';
 
 interface HeroProps {
   onOpenCal: () => void;
@@ -23,11 +24,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onScrollToQuote }) => {
               <span>Soluciones de IA & Software de Élite</span>
             </div>
 
-            {/* Main Title with Recode / GeoSoft styling */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] font-display text-white">
-              Software, Webs e IA que{' '}
-              <span className="text-gradient-accent">Multiplican</span> tus Ventas.
-            </h1>
+            {/* Main Title with Refero-style chromatic beam rotating headlines */}
+            <RotatingHeadline />
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-gray-300 font-light leading-relaxed max-w-xl mx-auto md:mx-0">
