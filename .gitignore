@@ -1,0 +1,27 @@
+﻿# Credenciales y archivos sensibles (PROTECCIÓN TOTAL)
+CLAVES.txt
+CLAVES.ENV.txt
+*.env
+*.env.*
+*.env.local
+*.env.production
+
+# Dependencias y builds
+node_modules/
+dist/
+build/
+.cache/
+
+# Archivos temporales de análisis
+bundle.js
+bundle.css
+recode_style.css
+scratch/
+
+# Sistema y logs
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

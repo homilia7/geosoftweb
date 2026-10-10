@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Syne", sans-serif;
+  --font-sans: "Inter", sans-serif;
+}
+
+/* Custom Base Rules */
+html {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #040404;
+  color: #f3f4f6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+/* Recode-inspired Card with Glowing Moving Blob */
+.card-accent {
+  position: relative;
+  background: rgba(18, 19, 21, 0.7);
+  border: 1px solid #25272a;
+  border-radius: 24px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.card-accent:hover {
+  border-color: rgba(169, 248, 181, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(169, 248, 181, 0.15);
+}
+
+.blob-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 50%, #C1A35B 100%);
+  opacity: 0.15;
+  filter: blur(36px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card-accent:hover .blob-glow {
+  opacity: 0.35;
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+/* Gradient Texts */
+.text-gradient-accent {
+  background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 60%, #C1A35B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #735c00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Action Button with Sliding Icon Box (Recode Style) */
+.btn-accent-icon {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  height: 56px;
+  padding-left: 28px;
+  padding-right: 68px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.btn-accent-icon:hover {
+  border-color: #A9F8B5;
+  background: rgba(169, 248, 181, 0.08);
+  box-shadow: 0 0 25px rgba(169, 248, 181, 0.25);
+}
+
+.btn-accent-icon .icon-box {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 100%);
+  color: #040404;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+}
+
+.btn-accent-icon:hover .icon-box {
+  transform: translateX(2px) scale(1.05);
+}
+
+/* Pill Primary Button */
+.btn-primary-gradient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 26px;
+  border-radius: 9999px;
+  background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 100%);
+  color: #040404;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(169, 248, 181, 0.25);
+  cursor: pointer;
+}
+
+.btn-primary-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(169, 248, 181, 0.45);
+}
+
+/* Animation for infinite marquee */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
