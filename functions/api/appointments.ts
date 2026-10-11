@@ -2,11 +2,36 @@ interface Env {
   DB: any;
 }
 
-export const onRequestGet = async (context: { env: Env }) => {
+export const onRequestGet = async (context: { request: Request; env: Env }) => {
   try {
     if (!context.env.DB) {
       return new Response(JSON.stringify({ error: 'DB binding not available' }), {
         status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const url = new URL(context.request.url);
+    const checkDate = url.searchParams.get('checkDate');
+    const checkTime = url.searchParams.get('checkTime');
+
+    if (checkDate && checkTime) {
+      const existing = await context.env.DB.prepare(
+        "SELECT id, time FROM appointments WHERE date = ? AND status != 'cancelada'"
+      ).bind(checkDate).all();
+
+      const bookedTimes: string[] = (existing?.results || []).map((r: any) => (r.time || '').trim().toLowerCase());
+      const isTaken = bookedTimes.includes(checkTime.trim().toLowerCase());
+
+      if (isTaken) {
+        const standardSlots = ['09:00 AM', '10:30 AM', '02:00 PM', '04:00 PM', '06:00 PM'];
+        const suggested = standardSlots.find(s => !bookedTimes.includes(s.toLowerCase())) || '03:30 PM';
+        return new Response(JSON.stringify({ available: false, suggestedTime: suggested }), {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      return new Response(JSON.stringify({ available: true }), {
         headers: { 'Content-Type': 'application/json' }
       });
     }

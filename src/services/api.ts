@@ -62,6 +62,17 @@ export const api = {
     }
   },
 
+  async checkAvailability(date: string, time: string): Promise<{ available: boolean; suggestedTime?: string }> {
+    try {
+      const res = await fetch(`/api/appointments?checkDate=${encodeURIComponent(date)}&checkTime=${encodeURIComponent(time)}`);
+      if (!res.ok) return { available: true };
+      const data = await res.json();
+      return data;
+    } catch {
+      return { available: true };
+    }
+  },
+
   async createAppointment(apt: Omit<Appointment, 'id' | 'createdAt' | 'status'> & { id?: string }): Promise<Appointment | null> {
     try {
       const res = await fetch('/api/appointments', {

@@ -539,3 +539,61 @@ h1, h2, h3, h4, .font-display {
   will-change: transform, opacity, filter;
 }
 
+/* ==========================================================================
+   ANIMACIONES DESLIZANTES PARA WIZARD PASO A PASO (BOOKING MODAL)
+   ========================================================================== */
+
+@keyframes stepSlideInForward {
+  0% {
+    opacity: 0;
+    transform: translateX(28px) scale(0.98);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes stepSlideInBackward {
+  0% {
+    opacity: 0;
+    transform: translateX(-28px) scale(0.98);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-step-next {
+  animation: stepSlideInForward 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+.animate-step-prev {
+  animation: stepSlideInBackward 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+/* Rotación y pulso para logo comprobando disponibilidad */
+@keyframes logoCheckSpin {
+  0% {
+    transform: rotate(0deg) scale(0.95);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(0.95);
+  }
+}
+
+.animate-logo-check {
+  animation: logoCheckSpin 1.2s ease-in-out infinite;
+}
+
+
