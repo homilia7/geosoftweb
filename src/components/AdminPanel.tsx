@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, DollarSign, Calendar, Tag, RotateCcw, Trash2, Send, CheckCircle2, Clock, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { X, DollarSign, Calendar, Tag, RotateCcw, Trash2, Send, CheckCircle2, Clock, AlertTriangle, ShieldCheck, BarChart3 } from 'lucide-react';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { AppointmentStatus, PlatformType } from '../types';
+import { AdminAnalyticsTab } from './AdminAnalyticsTab';
 
 export const AdminPanel: React.FC = () => {
   const {
@@ -18,7 +19,7 @@ export const AdminPanel: React.FC = () => {
     deleteAppointment
   } = useGeoSoftStore();
 
-  const [activeTab, setActiveTab] = useState<'precios' | 'citas'>('precios');
+  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas'>('precios');
 
   if (!isAdminModalOpen) return null;
 
@@ -93,6 +94,18 @@ export const AdminPanel: React.FC = () => {
             {appointments.some(a => a.status === 'pendiente') && (
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
             )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('analiticas')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'analiticas'
+                ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>Métricas & Mapa de Calor</span>
           </button>
         </div>
 
@@ -223,7 +236,7 @@ export const AdminPanel: React.FC = () => {
                 <span>Los precios se guardan y actualizan automáticamente en el cotizador en tiempo real para todos los visitantes.</span>
               </div>
             </div>
-          ) : (
+          ) : activeTab === 'citas' ? (
             /* Appointments Tab */
             <div className="space-y-6">
               <div className="flex items-center justify-between">
@@ -320,6 +333,8 @@ export const AdminPanel: React.FC = () => {
                 </div>
               )}
             </div>
+          ) : (
+            <AdminAnalyticsTab />
           )}
         </div>
       </div>

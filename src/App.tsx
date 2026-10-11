@@ -18,8 +18,10 @@ import { AdminPanel } from './components/AdminPanel';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { FloatingChat } from './components/FloatingChat';
 import { Footer } from './components/Footer';
+import { useAnalyticsTracker } from './hooks/useAnalyticsTracker';
 
 function MainLayout() {
+  useAnalyticsTracker();
   const [isCalOpen, setIsCalOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const { openAdminModal } = useGeoSoftStore();

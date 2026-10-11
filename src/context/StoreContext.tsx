@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { PlatformOption, AddonService, Appointment, AppointmentStatus, PricingConfig, PlatformType } from '../types';
+import { api } from '../services/api';
 
 export const DEFAULT_PLATFORMS: PlatformOption[] = [
   {
@@ -149,7 +150,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Sync to localStorage
+  // Initial sync with remote Cloudflare D1 backend on mount
+  useEffect(() => {
+    api.getPricing().then(remotePricing => {
+      if (remotePricing) setPricing(remotePricing);
+    });
+    api.getAppointments().then(remoteApts => {
+      if (remoteApts) setAppointments(remoteApts);
+    });
+  }, []);
+
+  // Sync to localStorage as offline cache
   useEffect(() => {
     try {
       localStorage.setItem('geosoft_pricing', JSON.stringify(pricing));
@@ -167,30 +178,43 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [appointments]);
 
   const updatePlatformPrice = (id: PlatformType, newPrice: number) => {
-    setPricing(prev => ({
-      ...prev,
-      platforms: prev.platforms.map(p => (p.id === id ? { ...p, basePrice: newPrice } : p))
-    }));
+    setPricing(prev => {
+      const next = {
+        ...prev,
+        platforms: prev.platforms.map(p => (p.id === id ? { ...p, basePrice: newPrice } : p))
+      };
+      api.savePricing(next);
+      return next;
+    });
   };
 
   const updateAddonPrice = (id: string, newPrice: number) => {
-    setPricing(prev => ({
-      ...prev,
-      addons: prev.addons.map(a => (a.id === id ? { ...a, price: newPrice } : a))
-    }));
+    setPricing(prev => {
+      const next = {
+        ...prev,
+        addons: prev.addons.map(a => (a.id === id ? { ...a, price: newPrice } : a))
+      };
+      api.savePricing(next);
+      return next;
+    });
   };
 
   const updateDiscount = (percent: number, active: boolean, banner?: string) => {
-    setPricing(prev => ({
-      ...prev,
-      discountPercent: percent,
-      discountActive: active,
-      discountBanner: banner !== undefined ? banner : prev.discountBanner
-    }));
+    setPricing(prev => {
+      const next = {
+        ...prev,
+        discountPercent: percent,
+        discountActive: active,
+        discountBanner: banner !== undefined ? banner : prev.discountBanner
+      };
+      api.savePricing(next);
+      return next;
+    });
   };
 
   const resetPricing = () => {
     setPricing(DEFAULT_PRICING);
+    api.savePricing(DEFAULT_PRICING);
   };
 
   const addAppointment = (data: Omit<Appointment, 'id' | 'createdAt' | 'status'>) => {
@@ -201,6 +225,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       createdAt: new Date().toISOString()
     };
     setAppointments(prev => [newApt, ...prev]);
+    api.createAppointment(newApt);
     return newApt;
   };
 
@@ -208,10 +233,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setAppointments(prev =>
       prev.map(a => (a.id === id ? { ...a, status } : a))
     );
+    api.updateAppointmentStatus(id, status);
   };
 
   const deleteAppointment = (id: string) => {
     setAppointments(prev => prev.filter(a => a.id !== id));
+    api.deleteAppointment(id);
   };
 
   const loginAdmin = (pin: string) => {
