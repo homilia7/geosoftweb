@@ -25,7 +25,7 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
         {/* Bento Grid */}
         <div className="grid md:grid-cols-12 gap-6">
           {/* Bento Card 1: Chatbots & Agentes IA (Span 7) */}
-          <div className="md:col-span-7 card-accent p-8 md:p-10 flex flex-col justify-between">
+          <div className="md:col-span-7 card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
             <div className="blob-glow" />
             
             <div className="space-y-6">
@@ -73,7 +73,7 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
           </div>
 
           {/* Bento Card 2: Sistemas de Reservas & Cobros (Span 5) */}
-          <div className="md:col-span-5 card-accent p-8 md:p-10 flex flex-col justify-between">
+          <div className="md:col-span-5 card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
             <div className="blob-glow" />
 
             <div className="space-y-6">
@@ -117,7 +117,7 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
           </div>
 
           {/* Bento Card 3: Software a Medida & SaaS (Span 6) */}
-          <div className="md:col-span-6 card-accent p-8 md:p-10 flex flex-col justify-between">
+          <div className="md:col-span-6 card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
             <div className="blob-glow" />
 
             <div className="space-y-6">
@@ -150,7 +150,7 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
           </div>
 
           {/* Bento Card 4: SEO & Autoridad Local (Span 6) */}
-          <div className="md:col-span-6 card-accent p-8 md:p-10 flex flex-col justify-between">
+          <div className="md:col-span-6 card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
             <div className="blob-glow" />
 
             <div className="space-y-6">

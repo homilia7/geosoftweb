@@ -14,7 +14,7 @@ const DEFAULT_PHRASES = [
 
 export const RotatingHeadline: React.FC<RotatingHeadlineProps> = ({
   phrases = DEFAULT_PHRASES,
-  className = 'text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] font-display text-white'
+  className = 'text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] font-display text-white'
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState<number | null>(null);

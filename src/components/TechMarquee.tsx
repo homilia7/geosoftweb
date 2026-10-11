@@ -23,10 +23,10 @@ export const TechMarquee: React.FC = () => {
 
       <div className="relative w-full overflow-hidden flex items-center">
         {/* Gradient fades on edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#040404] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#040404] to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-[#040404] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-[#040404] to-transparent z-10 pointer-events-none" />
 
-        <div className="animate-marquee flex items-center gap-10 py-3">
+        <div className="animate-marquee flex items-center gap-6 sm:gap-10 py-3">
           {[...technologies, ...technologies].map((tech, index) => (
             <div
               key={index}

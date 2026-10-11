@@ -30,35 +30,36 @@ export const AdminPanel: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-lg p-4 overflow-y-auto">
-      <div className="relative w-full max-w-5xl bg-[#121316] rounded-3xl shadow-2xl border border-white/20 overflow-hidden my-6 max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-lg p-2 sm:p-4 overflow-y-auto">
+      <div className="relative w-full max-w-5xl bg-[#121316] rounded-3xl shadow-2xl border border-white/20 overflow-hidden my-auto max-h-[94vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#16181b] shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-sm shadow-md">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 bg-[#16181b] shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-xs sm:text-sm shadow-md shrink-0">
               GS
             </div>
             <div>
-              <h2 className="font-display font-bold text-white text-base md:text-lg flex items-center gap-2">
-                Panel de Administración GeoSoft
+              <h2 className="font-display font-bold text-white text-sm sm:text-base md:text-lg flex items-center gap-1.5 sm:gap-2">
+                Panel de Administración
                 <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-2 py-0.5 rounded-full font-mono">
                   En Vivo
                 </span>
               </h2>
-              <p className="text-xs text-gray-400">Control de tarifas, promociones y citas recibidas.</p>
+              <p className="text-[11px] sm:text-xs text-gray-400">Control de tarifas, promociones y citas.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               onClick={logoutAdmin}
-              className="text-xs text-gray-400 hover:text-rose-400 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+              className="text-xs text-gray-400 hover:text-rose-400 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
             >
-              Cerrar Sesión
+              <span className="hidden sm:inline">Cerrar Sesión</span>
+              <span className="sm:hidden">Salir</span>
             </button>
             <button
               onClick={closeAdminModal}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -66,10 +67,10 @@ export const AdminPanel: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 px-6 py-3 border-b border-white/10 bg-[#0d0e10] shrink-0">
+        <div className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border-b border-white/10 bg-[#0d0e10] shrink-0 overflow-x-auto">
           <button
             onClick={() => setActiveTab('precios')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'precios'
                 ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -81,7 +82,7 @@ export const AdminPanel: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('citas')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer relative ${
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap relative ${
               activeTab === 'citas'
                 ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -96,7 +97,7 @@ export const AdminPanel: React.FC = () => {
         </div>
 
         {/* Tab Body */}
-        <div className="p-6 overflow-y-auto flex-grow space-y-8">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-grow space-y-6 sm:space-y-8">
           {activeTab === 'precios' ? (
             <div className="space-y-8">
               {/* Promo Discount Module */}
@@ -281,12 +282,12 @@ export const AdminPanel: React.FC = () => {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex md:flex-col items-end gap-2 shrink-0">
+                      <div className="flex flex-wrap items-center md:flex-col md:items-end justify-between md:justify-start gap-2.5 pt-3 md:pt-0 border-t md:border-0 border-white/10 shrink-0">
                         {/* Status Select */}
                         <select
                           value={apt.status}
                           onChange={e => updateAppointmentStatus(apt.id, e.target.value as AppointmentStatus)}
-                          className="px-3 py-1.5 rounded-lg bg-black border border-white/15 text-xs text-white outline-none"
+                          className="px-3 py-1.5 rounded-lg bg-black border border-white/15 text-xs text-white outline-none cursor-pointer"
                         >
                           <option value="pendiente">Pendiente</option>
                           <option value="confirmada">Confirmada</option>
@@ -294,23 +295,25 @@ export const AdminPanel: React.FC = () => {
                           <option value="cancelada">Cancelada</option>
                         </select>
 
-                        {/* WhatsApp Contact */}
-                        <button
-                          onClick={() => handleWhatsAppContact(apt)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-black text-xs font-bold hover:brightness-110 transition-all cursor-pointer"
-                        >
-                          <Send className="w-3 h-3" />
-                          <span>WhatsApp</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          {/* WhatsApp Contact */}
+                          <button
+                            onClick={() => handleWhatsAppContact(apt)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-black text-xs font-bold hover:brightness-110 transition-all cursor-pointer"
+                          >
+                            <Send className="w-3 h-3" />
+                            <span>WhatsApp</span>
+                          </button>
 
-                        {/* Delete */}
-                        <button
-                          onClick={() => deleteAppointment(apt.id)}
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                          title="Eliminar cita"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                          {/* Delete */}
+                          <button
+                            onClick={() => deleteAppointment(apt.id)}
+                            className="p-1.5 rounded-lg text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                            title="Eliminar cita"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}

@@ -5,7 +5,7 @@ export const SalesHook: React.FC = () => {
   return (
     <section className="py-16 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="card-accent p-8 md:p-12 text-center relative overflow-hidden border-[#A9F8B5]/20">
+        <div className="card-accent p-6 sm:p-8 md:p-12 text-center relative overflow-hidden border-[#A9F8B5]/20">
           <div className="blob-glow" />
           
           <div className="w-12 h-12 rounded-2xl bg-[#A9F8B5]/10 border border-[#A9F8B5]/30 mx-auto flex items-center justify-center text-[#A9F8B5] mb-6">

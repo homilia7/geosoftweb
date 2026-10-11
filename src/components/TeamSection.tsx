@@ -75,7 +75,7 @@ export const TeamSection: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="card-accent p-6 flex flex-col justify-between group hover:border-[#A9F8B5]/40"
+                className="card-accent p-5 sm:p-6 flex flex-col justify-between group hover:border-[#A9F8B5]/40"
               >
                 <div className="blob-glow" />
 

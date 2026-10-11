@@ -20,8 +20,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-4 px-4 pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-5xl bg-[#121316]/85 backdrop-blur-xl border border-white/10 rounded-full px-4 md:px-6 py-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-3 sm:py-4 px-3 sm:px-4 pointer-events-none">
+      <div className="pointer-events-auto w-full max-w-5xl bg-[#121316]/85 backdrop-blur-xl border border-white/10 rounded-full px-3.5 sm:px-4 md:px-6 py-2 sm:py-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between">
         {/* Brand Logo & Title */}
         <a href="#" className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/15 bg-black flex items-center justify-center shadow-md">
@@ -166,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileOpen && (
-        <div className="pointer-events-auto absolute top-20 left-4 right-4 bg-[#121316]/98 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl flex flex-col gap-4 md:hidden">
+        <div className="pointer-events-auto absolute top-16 sm:top-20 left-3 sm:left-4 right-3 sm:right-4 max-h-[82vh] overflow-y-auto bg-[#121316]/98 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 md:hidden">
           <nav className="flex flex-col gap-2 text-base font-medium">
             <a
               href="#inicio"

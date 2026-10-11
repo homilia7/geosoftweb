@@ -5,12 +5,12 @@ export const FloatingChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto">
+    <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto max-w-[calc(100vw-2rem)]">
       {/* Speech Bubble Tooltip when closed */}
       {!isOpen && (
         <div
           onClick={() => setIsOpen(true)}
-          className="card-accent p-3.5 rounded-2xl border-[#A9F8B5]/30 shadow-2xl max-w-[260px] cursor-pointer hover:scale-105 transition-all text-xs font-medium text-white flex items-center gap-2.5 animate-bounce"
+          className="card-accent p-3 sm:p-3.5 rounded-2xl border-[#A9F8B5]/30 shadow-2xl max-w-[240px] sm:max-w-[260px] cursor-pointer hover:scale-105 transition-all text-xs font-medium text-white flex items-center gap-2.5 animate-bounce"
         >
           <span className="text-lg">👋</span>
           <p className="text-gray-200">¿Buscas crear tu web o cotizar una solución con IA?</p>
@@ -19,7 +19,7 @@ export const FloatingChat: React.FC = () => {
 
       {/* Mini Chat Drawer when open */}
       {isOpen && (
-        <div className="w-80 sm:w-96 rounded-3xl bg-[#121316]/95 backdrop-blur-2xl border border-white/15 p-5 shadow-2xl flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-200">
+        <div className="w-[calc(100vw-2rem)] sm:w-80 md:w-96 max-w-[380px] rounded-3xl bg-[#121316]/95 backdrop-blur-2xl border border-white/15 p-4 sm:p-5 shadow-2xl flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between pb-3 border-b border-white/10">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 bg-black">

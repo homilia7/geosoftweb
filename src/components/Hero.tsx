@@ -10,13 +10,13 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollToQuote }) => {
   return (
-    <section id="inicio" className="relative pt-36 pb-20 md:pt-44 md:pb-28 overflow-hidden">
+    <section id="inicio" className="relative pt-28 sm:pt-36 md:pt-44 pb-16 sm:pb-20 md:pb-28 overflow-hidden">
       {/* Background radial ambient glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gradient-to-b from-[#A9F8B5]/15 via-[#DFF494]/10 to-transparent blur-[140px] pointer-events-none -z-10" />
       <div className="absolute top-1/2 right-10 w-[400px] h-[400px] bg-[#C1A35B]/10 blur-[130px] pointer-events-none -z-10" />
 
       <div className="max-w-6xl mx-auto px-4 md:px-8">
-        <div className="grid md:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid md:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Left Column: Headlines & Call to Actions */}
           <div className="md:col-span-7 space-y-6 text-center md:text-left">
             {/* Top Badge */}

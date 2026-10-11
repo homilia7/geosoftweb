@@ -105,7 +105,7 @@ export const CostCalculator: React.FC = () => {
                     <div
                       key={p.id}
                       onClick={() => setSelectedPlatformId(p.id)}
-                      className={`p-5 rounded-2xl border transition-all cursor-pointer relative ${
+                      className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer relative ${
                         isSelected
                           ? 'bg-[#181a1d] border-[#A9F8B5] shadow-[0_0_25px_rgba(169,248,181,0.15)]'
                           : 'bg-[#111215]/80 border-white/10 hover:border-white/25'
@@ -163,20 +163,20 @@ export const CostCalculator: React.FC = () => {
                     <div
                       key={addon.id}
                       onClick={() => toggleAddon(addon.id)}
-                      className={`p-4 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
+                      className={`p-3.5 sm:p-4 rounded-xl border flex items-center justify-between gap-3 transition-all cursor-pointer ${
                         isChecked
                           ? 'bg-[#181a1d] border-[#DFF494] shadow-[0_0_20px_rgba(223,244,148,0.1)]'
                           : 'bg-[#111215]/60 border-white/10 hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
+                        <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0 ${
                           isChecked ? 'bg-[#DFF494] border-[#DFF494] text-black' : 'border-white/30 bg-transparent'
                         }`}>
                           {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-white flex items-center gap-2">
+                          <div className="text-sm font-semibold text-white flex items-center gap-2 flex-wrap">
                             <span>{addon.title}</span>
                             {addon.recommended && (
                               <span className="text-[10px] bg-[#DFF494]/20 text-[#DFF494] px-1.5 py-0.2 rounded-full font-mono">
@@ -188,7 +188,7 @@ export const CostCalculator: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="font-bold text-white text-sm">${addon.price}</div>
                         <div className="text-[10px] text-gray-400">/{addon.period}</div>
                       </div>
@@ -201,7 +201,7 @@ export const CostCalculator: React.FC = () => {
 
           {/* Right Column: Live Summary Card */}
           <div className="lg:col-span-4 sticky top-28">
-            <div className="card-accent p-6 md:p-8 space-y-6 border-[#A9F8B5]/30">
+            <div className="card-accent p-5 sm:p-6 md:p-8 space-y-6 border-[#A9F8B5]/30">
               <div className="blob-glow" />
 
               <div className="flex items-center justify-between pb-4 border-b border-white/10">

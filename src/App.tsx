@@ -35,7 +35,7 @@ function MainLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black">
+    <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative">
       {/* 3D Isometric Cube Animated Splash Intro */}
       <SplashIntro />
 
@@ -48,7 +48,7 @@ function MainLayout() {
         onScrollToServices={scrollToServices}
       />
 
-      <main>
+      <main className="overflow-x-hidden w-full">
         {/* Hero Section */}
         <Hero
           onOpenCal={() => setIsCalOpen(true)}

@@ -53,7 +53,7 @@ export const FaqSection: React.FC = () => {
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                  className="w-full p-4 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <span className="font-display font-semibold text-white text-base md:text-lg">
                     {faq.q}
@@ -66,7 +66,7 @@ export const FaqSection: React.FC = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-6 pt-0 text-sm md:text-base text-gray-300 font-light leading-relaxed border-t border-white/5 pt-4">
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 text-sm md:text-base text-gray-300 font-light leading-relaxed border-t border-white/5 pt-4">
                     {faq.a}
                   </div>
                 )}

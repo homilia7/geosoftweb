@@ -39,13 +39,13 @@ export const ProcessTimeline: React.FC = () => {
         </div>
 
         {/* 3 Step Row / Timeline */}
-        <div className="grid md:grid-cols-3 gap-8 relative">
+        <div className="grid md:grid-cols-3 gap-6 sm:gap-8 relative">
           {steps.map((step, idx) => {
             const Icon = step.icon;
             return (
               <div
                 key={idx}
-                className="card-accent p-8 relative flex flex-col justify-between group hover:border-[#DFF494]/40"
+                className="card-accent p-6 sm:p-8 relative flex flex-col justify-between group hover:border-[#DFF494]/40"
               >
                 <div className="blob-glow" />
                 

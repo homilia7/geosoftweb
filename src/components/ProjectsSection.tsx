@@ -141,7 +141,7 @@ export const ProjectsSection: React.FC = () => {
           {filteredProjects.map(proj => (
             <div
               key={proj.id}
-              className="card-accent p-6 flex flex-col justify-between group"
+              className="card-accent p-5 sm:p-6 flex flex-col justify-between group"
             >
               <div className="blob-glow" />
 
