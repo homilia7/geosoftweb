@@ -281,3 +281,80 @@ h1, h2, h3, h4, .font-display {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Footer Holographic Logo Beam & Blink */
+.footer-logo-glow {
+  position: relative;
+  transition: all 0.5s ease;
+  animation: logoPulseBlink 5s ease-in-out infinite;
+}
+
+.footer-logo-sweep {
+  position: absolute;
+  inset: -100%;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(0, 170, 255, 0.5) 35%,
+    rgba(169, 248, 181, 0.85) 45%,
+    rgba(223, 244, 148, 0.95) 50%,
+    rgba(255, 203, 92, 0.85) 55%,
+    rgba(255, 68, 0, 0.5) 65%,
+    rgba(243, 132, 255, 0.6) 75%,
+    transparent 85%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: logoPrismaticSweep 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes logoPrismaticSweep {
+  0% {
+    transform: translate(-100%, -100%) rotate(25deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.95;
+  }
+  35% {
+    transform: translate(100%, 100%) rotate(25deg);
+    opacity: 0.95;
+  }
+  40%, 100% {
+    transform: translate(120%, 120%) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes logoPulseBlink {
+  0%, 36% {
+    box-shadow: 0 0 0 rgba(169, 248, 181, 0);
+    border-color: rgba(255, 255, 255, 0.15);
+    filter: brightness(1);
+  }
+  38% {
+    box-shadow: 0 0 25px rgba(169, 248, 181, 0.85), 0 0 45px rgba(223, 244, 148, 0.55);
+    border-color: rgba(169, 248, 181, 0.95);
+    filter: brightness(1.35);
+  }
+  42% {
+    box-shadow: 0 0 8px rgba(169, 248, 181, 0.3);
+    border-color: rgba(255, 255, 255, 0.25);
+    filter: brightness(1.05);
+  }
+  46% {
+    box-shadow: 0 0 32px rgba(169, 248, 181, 0.95), 0 0 55px rgba(223, 244, 148, 0.65);
+    border-color: rgba(223, 244, 148, 1);
+    filter: brightness(1.4);
+  }
+  52% {
+    box-shadow: 0 0 10px rgba(169, 248, 181, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    filter: brightness(1);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(169, 248, 181, 0);
+    border-color: rgba(255, 255, 255, 0.15);
+    filter: brightness(1);
+  }
+}

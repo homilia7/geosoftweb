@@ -4,9 +4,15 @@ export const Footer: React.FC = () => {
   return (
     <footer className="py-14 border-t border-white/10 bg-[#040404] text-xs text-gray-400">
       <div className="max-w-6xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/15 bg-black">
-            <img src="/assets/logo-gold.jpeg" alt="GeoSoft" className="w-full h-full object-cover" />
+        <div className="flex items-center gap-3.5 group">
+          <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border border-white/15 bg-black footer-logo-glow flex items-center justify-center shadow-md">
+            <img
+              src="/assets/logo-gold.jpeg"
+              alt="GeoSoft"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            {/* Prismatic Moving Light Ray */}
+            <div className="footer-logo-sweep" />
           </div>
           <div>
             <div className="font-display font-bold text-white text-sm">
