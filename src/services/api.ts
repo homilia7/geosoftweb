@@ -261,6 +261,29 @@ export const api = {
     } catch {
       return false;
     }
+  },
+
+  async getBotConfig(): Promise<{ lengthMode: 'corto' | 'equilibrado' | 'detallado' } | null> {
+    try {
+      const res = await fetch('/api/bot/config');
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  async saveBotConfig(lengthMode: 'corto' | 'equilibrado' | 'detallado'): Promise<boolean> {
+    try {
+      const res = await fetch('/api/bot/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lengthMode })
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
   }
 };
 

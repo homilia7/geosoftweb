@@ -1,4 +1,4 @@
-﻿# Credenciales y archivos sensibles (PROTECCIÓN TOTAL)
+# Credenciales y archivos sensibles (PROTECCIÓN TOTAL)
 CLAVES.txt
 CLAVES.ENV.txt
 *.env
@@ -11,6 +11,7 @@ node_modules/
 dist/
 build/
 .cache/
+.wrangler/
 
 # Archivos temporales de análisis
 bundle.js

@@ -92,3 +92,6 @@ export interface BotAnalyticsData {
   botAppointments: Appointment[];
 }
 
+export type BotLengthMode = 'corto' | 'equilibrado' | 'detallado';
+
+

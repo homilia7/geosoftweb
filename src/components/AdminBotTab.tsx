@@ -14,10 +14,15 @@ import {
   Trash2, 
   PlusCircle, 
   Clock, 
-  AlertCircle 
+  AlertCircle,
+  Sliders,
+  Zap,
+  Target,
+  FileText,
+  Check
 } from 'lucide-react';
 import { api } from '../services/api';
-import { BotAnalyticsData, BotUnansweredQuestion, BotFaqItem } from '../types';
+import { BotAnalyticsData, BotUnansweredQuestion, BotFaqItem, BotLengthMode } from '../types';
 
 export const AdminBotTab: React.FC = () => {
   const [analytics, setAnalytics] = useState<BotAnalyticsData | null>(null);
@@ -25,6 +30,11 @@ export const AdminBotTab: React.FC = () => {
   const [faqs, setFaqs] = useState<BotFaqItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<'kpis' | 'objeciones' | 'aprendizaje' | 'faqs'>('kpis');
+
+  // Configuración de longitud de respuesta
+  const [lengthMode, setLengthMode] = useState<BotLengthMode>('equilibrado');
+  const [isSavingConfig, setIsSavingConfig] = useState(false);
+  const [saveFeedback, setSaveFeedback] = useState(false);
 
   // Answer form state
   const [answeringId, setAnsweringId] = useState<number | null>(null);
@@ -40,15 +50,28 @@ export const AdminBotTab: React.FC = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const [analyticsRes, unansRes, faqsRes] = await Promise.all([
+    const [analyticsRes, unansRes, faqsRes, configRes] = await Promise.all([
       api.getBotAnalytics(),
       api.getBotUnanswered(),
-      api.getBotFaqs(true)
+      api.getBotFaqs(true),
+      api.getBotConfig()
     ]);
     if (analyticsRes) setAnalytics(analyticsRes);
     if (unansRes) setUnanswered(unansRes);
     if (faqsRes) setFaqs(faqsRes);
+    if (configRes && configRes.lengthMode) setLengthMode(configRes.lengthMode);
     setLoading(false);
+  };
+
+  const handleLengthModeChange = async (mode: BotLengthMode) => {
+    setLengthMode(mode);
+    setIsSavingConfig(true);
+    const ok = await api.saveBotConfig(mode);
+    if (ok) {
+      setSaveFeedback(true);
+      setTimeout(() => setSaveFeedback(false), 2500);
+    }
+    setIsSavingConfig(false);
   };
 
   useEffect(() => {
@@ -196,6 +219,132 @@ export const AdminBotTab: React.FC = () => {
       {/* SUB-VIEW 1: KPIS & RENDIMIENTO */}
       {activeSubTab === 'kpis' && (
         <div className="space-y-6">
+          {/* Calibración de Longitud de Respuestas del Bot */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="font-semibold text-white text-sm flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-[#A9F8B5]" />
+                  <span>Calibración de Longitud & Estilo del Bot</span>
+                </h4>
+                <p className="text-xs text-gray-400">
+                  Define la extensión y profundidad de las respuestas que el Bot de IA envía a los clientes.
+                </p>
+              </div>
+
+              {saveFeedback && (
+                <span className="text-xs text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1 font-semibold animate-in fade-in">
+                  <Check className="w-3 h-3 text-emerald-400" />
+                  Guardado en la nube
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {/* Modo Corto */}
+              <div
+                onClick={() => handleLengthModeChange('corto')}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between ${
+                  lengthMode === 'corto'
+                    ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] shadow-[0_0_15px_rgba(169,248,181,0.15)] ring-1 ring-[#A9F8B5]'
+                    : 'bg-black/30 border-white/10 hover:border-white/20 hover:bg-white/5'
+                }`}
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-bold text-xs text-white">
+                      <Zap className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Modo Directo & Corto</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-gray-300">
+                      ~35-65 palabras
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 leading-normal">
+                    1 a 2 oraciones breves y directas al grano. Sin rodeos, respuestas inmediatas.
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
+                  <span className="text-gray-400">Velocidad: Instantánea</span>
+                  {lengthMode === 'corto' && (
+                    <span className="text-[#A9F8B5] font-semibold flex items-center gap-1">
+                      <Check className="w-3 h-3" /> Activo
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Modo Equilibrado (DEFAULT) */}
+              <div
+                onClick={() => handleLengthModeChange('equilibrado')}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between ${
+                  lengthMode === 'equilibrado'
+                    ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] shadow-[0_0_15px_rgba(169,248,181,0.15)] ring-1 ring-[#A9F8B5]'
+                    : 'bg-black/30 border-white/10 hover:border-white/20 hover:bg-white/5'
+                }`}
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-bold text-xs text-white">
+                      <Target className="w-3.5 h-3.5 text-[#A9F8B5]" />
+                      <span>Equilibrado & Persuasivo</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#A9F8B5]/20 text-[#A9F8B5] font-semibold">
+                      ⭐ Por Defecto
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-300 leading-normal">
+                    1 a 2 párrafos concisos con viñetas de valor (~80-140 palabras). Máxima persuasión y tasa de cierre.
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
+                  <span className="text-[#DFF494]">Conversión: Recomendado</span>
+                  {lengthMode === 'equilibrado' && (
+                    <span className="text-[#A9F8B5] font-semibold flex items-center gap-1">
+                      <Check className="w-3 h-3" /> Activo
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Modo Detallado */}
+              <div
+                onClick={() => handleLengthModeChange('detallado')}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between ${
+                  lengthMode === 'detallado'
+                    ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] shadow-[0_0_15px_rgba(169,248,181,0.15)] ring-1 ring-[#A9F8B5]'
+                    : 'bg-black/30 border-white/10 hover:border-white/20 hover:bg-white/5'
+                }`}
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-bold text-xs text-white">
+                      <FileText className="w-3.5 h-3.5 text-blue-300" />
+                      <span>Detallado & Consultivo</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-gray-300">
+                      ~180-280 palabras
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 leading-normal">
+                    Explicación exhaustiva con desglose paso a paso, arquitectura técnica, etapas y propuesta integral.
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
+                  <span className="text-gray-400">Profundidad: Completa</span>
+                  {lengthMode === 'detallado' && (
+                    <span className="text-[#A9F8B5] font-semibold flex items-center gap-1">
+                      <Check className="w-3 h-3" /> Activo
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* KPI Cards Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between">

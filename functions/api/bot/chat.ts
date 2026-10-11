@@ -5,7 +5,7 @@ interface Env {
 
 const DEFAULT_GEMINI_KEY = '';
 
-async function callGemini(systemPrompt: string, history: Array<{ role: string; content: string }>, apiKey: string) {
+async function callGemini(systemPrompt: string, history: Array<{ role: string; content: string }>, apiKey: string, maxTokens: number = 1800) {
   const contents = history.map(msg => ({
     role: msg.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: msg.content }]
@@ -19,7 +19,7 @@ async function callGemini(systemPrompt: string, history: Array<{ role: string; c
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: 0.7,
-      maxOutputTokens: 1000
+      maxOutputTokens: maxTokens
     }
   };
 
@@ -132,10 +132,52 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
       }
     } catch (_) {}
 
+    // Obtener modo de longitud configurado (corto, equilibrado o detallado)
+    let lengthMode = 'equilibrado';
+    try {
+      const cfgRow = await context.env.DB.prepare("SELECT value FROM bot_config WHERE key = 'length_mode'").first();
+      if (cfgRow && cfgRow.value) lengthMode = cfgRow.value;
+    } catch (_) {}
+    if (body.lengthMode && ['corto', 'equilibrado', 'detallado'].includes(body.lengthMode)) {
+      lengthMode = body.lengthMode;
+    }
+
+    let lengthInstruction = '';
+    let maxTokens = 1400;
+
+    if (lengthMode === 'corto') {
+      maxTokens = 800;
+      lengthInstruction = `MODO DE LONGITUD ACTIVO: DIRECTO Y CORTO.
+- Extensión máxima: 1 a 2 oraciones breves y directas al grano (aprox. 35 a 65 palabras).
+- Cero rodeos, responde con la información clave de inmediato.
+- Concluye con una pregunta rápida para continuar en su propia línea.`;
+    } else if (lengthMode === 'detallado') {
+      maxTokens = 2000;
+      lengthInstruction = `MODO DE LONGITUD ACTIVO: DETALLADO Y CONSULTIVO.
+- Extensión: Análisis profundo y estructurado (aprox. 180 a 280 palabras).
+- Explica la solución de forma consultiva, desglosando la arquitectura, ventajas técnicas, garantías y detalles de inversión.
+- Concluye con una propuesta sólida de próximos pasos o sesión de demostración.`;
+    } else {
+      maxTokens = 1400;
+      lengthInstruction = `MODO DE LONGITUD ACTIVO: EQUILIBRADO Y PERSUASIVO (PREDETERMINADO / POR DEFECTO).
+- Extensión: 1 a 2 párrafos concisos o 1 párrafo con 2-3 viñetas de alto valor (aprox. 80 a 140 palabras).
+- Equilibrio ideal entre persuasión comercial, valor técnico y agilidad de lectura.
+- Concluye invitando cordialmente a la videollamada o demostración de 15 minutos sin costo.`;
+    }
+
     // Construir System Prompt con la personalidad y RAG
     const systemPrompt = `Eres el Asistente Virtual y Asesor Senior de Ventas de GeoSoft (geosoft.cr).
 Eres cordial, altamente persuasivo, empático, negociador experto y maestro cerrador de ventas y citas.
 Tu meta principal es brindar valor, resolver dudas con precisión y guiar al usuario a agendar una demostración o videollamada de 15 minutos sin costo con nuestro equipo de ingenieros.
+
+${lengthInstruction}
+
+ESTRUCTURA VISUAL OBLIGATORIA (PROHIBIDO EL TEXTO ACUMULADO):
+- NUNCA generes una pared de texto denso o acumulado.
+- Separa siempre los párrafos con DOBLE SALTO DE LÍNEA (\\n\\n) para generar un diseño visual limpio y respirable.
+- Cuando menciones listas, servicios, precios, beneficios o pasos, utiliza OBLIGATORIAMENTE viñetas limpias con '• ' (o guión '-') en líneas individuales.
+- Utiliza **negrita** para resaltar términos estratégicos, cifras y garantías (ejemplo: **$450 USD**, **100% tu propiedad**, **5 a 10 días**).
+- La pregunta o llamado a la acción final debe ir SIEMPRE en su propia línea independiente al final de la respuesta.
 
 REGLAS DE ACTUACIÓN:
 1. RAG DE PREGUNTAS FRECUENTES (Consulta prioritaria):
@@ -163,7 +205,7 @@ Si el usuario pregunta algo técnico o comercial muy específico que NO esté en
 
 RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
 {
-  "reply": "Texto de respuesta al usuario en tono persuasivo, profesional y cálido (máximo 2 párrafos concisos)",
+  "reply": "Texto de respuesta estructurado según el modo activo (${lengthMode}), con párrafos separados, viñetas si aplica y negritas estratégicas.",
   "intent": "pregunta" | "objecion" | "agendar" | "saludo" | "otro",
   "objection": {
     "detected": true | false,
@@ -186,7 +228,7 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
 }`;
 
     // Invocar Gemini AI
-    const aiResponse = await callGemini(systemPrompt, conversationHistory, apiKey);
+    const aiResponse = await callGemini(systemPrompt, conversationHistory, apiKey, maxTokens);
 
     const reply = aiResponse.reply || '¡Hola! Con mucho gusto te asesoro con tu proyecto web o solución de IA. ¿Qué tienes en mente?';
     const intent = aiResponse.intent || 'pregunta';

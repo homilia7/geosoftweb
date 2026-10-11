@@ -389,3 +389,39 @@ h1, h2, h3, h4, .font-display {
   animation: textLightSweep 4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   display: inline-block;
 }
+
+/* Smooth Chat Animations - Emil Kowalski Style */
+@keyframes softMessageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    filter: blur(3px);
+  }
+  50% {
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-message-soft {
+  animation: softMessageEnter 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes softTextBloom {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-text-bloom {
+  animation: softTextBloom 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
