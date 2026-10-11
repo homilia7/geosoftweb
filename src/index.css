@@ -490,3 +490,52 @@ h1, h2, h3, h4, .font-display {
 .animate-shockwave {
   animation: shockwavePulse 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ==========================================================================
+   TRANSICIÓN SUAVE Y PROFESIONAL DEL CHAT (EMIL KOWALSKI STANDARD)
+   ========================================================================== */
+
+/* 1. Entrada suave de la burbuja del mensaje con elevación y desenfoque */
+@keyframes messageBubbleEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-message-soft {
+  animation: messageBubbleEnter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+/* 2. Revelación suave y escalonada del texto, párrafos y viñetas */
+@keyframes textCascadeReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+  70% {
+    filter: blur(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-text-soft {
+  animation: textCascadeReveal 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+

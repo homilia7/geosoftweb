@@ -187,61 +187,64 @@ export const FloatingChat: React.FC = () => {
 
           {/* Messages Body */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
-            {messages.map((msg, idx) => (
-              <div
-                key={msg.id}
-                className={`flex gap-2.5 animate-message-soft ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                style={{ animationDelay: `${Math.min(idx * 30, 150)}ms` }}
-              >
-                {msg.role === 'assistant' && (
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 shadow-sm">
-                    <Sparkles className="w-3 h-3" />
-                  </div>
-                )}
-
+            {messages.map((msg, idx) => {
+              const isLatest = idx === messages.length - 1;
+              return (
                 <div
-                  className={`max-w-[88%] rounded-2xl p-3.5 leading-relaxed shadow-sm transition-all ${
-                    msg.role === 'user'
-                      ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-medium rounded-tr-sm'
-                      : 'bg-[#181a1f] text-gray-100 border border-white/10 rounded-tl-sm shadow-md'
-                  }`}
+                  key={msg.id}
+                  className={`flex gap-2.5 animate-message-soft ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  style={{ animationDelay: isLatest ? '0ms' : `${Math.min(idx * 40, 120)}ms` }}
                 >
-                  {msg.role === 'assistant' ? (
-                    <StructuredBotMessage text={msg.text} />
-                  ) : (
-                    <p className="whitespace-pre-wrap">{msg.text}</p>
-                  )}
-                  
-                  {msg.appointmentBooked && (
-                    <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-1.5 text-[11px] font-bold text-emerald-300 bg-emerald-500/15 p-2 rounded-xl border border-emerald-500/30">
-                      <CalendarCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>¡Cita registrada con éxito! Te contactaremos.</span>
+                  {msg.role === 'assistant' && (
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 shadow-sm">
+                      <Sparkles className="w-3 h-3" />
                     </div>
                   )}
 
                   <div
-                    className={`text-[9px] mt-1.5 text-right font-mono ${
-                      msg.role === 'user' ? 'text-black/60' : 'text-gray-400'
+                    className={`max-w-[88%] rounded-2xl p-3.5 leading-relaxed shadow-sm transition-all ${
+                      msg.role === 'user'
+                        ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-medium rounded-tr-sm shadow-md'
+                        : 'bg-[#181a1f] text-gray-100 border border-white/10 rounded-tl-sm shadow-lg'
                     }`}
                   >
-                    {msg.time}
-                  </div>
-                </div>
+                    {msg.role === 'assistant' ? (
+                      <StructuredBotMessage text={msg.text} />
+                    ) : (
+                      <p className="whitespace-pre-wrap animate-text-soft">{msg.text}</p>
+                    )}
+                    
+                    {msg.appointmentBooked && (
+                      <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-1.5 text-[11px] font-bold text-emerald-300 bg-emerald-500/15 p-2 rounded-xl border border-emerald-500/30 animate-text-soft">
+                        <CalendarCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span>¡Cita registrada con éxito! Te contactaremos.</span>
+                      </div>
+                    )}
 
-                {msg.role === 'user' && (
-                  <div className="w-6 h-6 rounded-full bg-white/10 text-gray-300 flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-white/10">
-                    <User className="w-3 h-3" />
+                    <div
+                      className={`text-[9px] mt-1.5 text-right font-mono ${
+                        msg.role === 'user' ? 'text-black/60' : 'text-gray-400'
+                      }`}
+                    >
+                      {msg.time}
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {msg.role === 'user' && (
+                    <div className="w-6 h-6 rounded-full bg-white/10 text-gray-300 flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-white/10">
+                      <User className="w-3 h-3" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
             {isTyping && (
-              <div className="flex gap-2.5 items-center">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0">
+              <div className="flex gap-2.5 items-center animate-message-soft">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0 shadow-sm">
                   <Sparkles className="w-3 h-3 animate-spin" />
                 </div>
-                <div className="bg-white/10 border border-white/10 rounded-2xl px-3 py-2 text-gray-300 text-[11px] flex items-center gap-1.5">
+                <div className="bg-white/10 border border-white/10 rounded-2xl px-3.5 py-2 text-gray-300 text-[11px] flex items-center gap-1.5 shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce" />
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce [animation-delay:0.2s]" />
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce [animation-delay:0.4s]" />
