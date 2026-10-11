@@ -26,7 +26,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
             </div>
 
             {/* Main Title with Refero-style chromatic beam rotating headlines */}
-            <RotatingHeadline />
+            <RotatingHeadline className="text-2xl sm:text-3xl md:text-[34px] lg:text-[40px] font-bold tracking-tight leading-[1.2] font-display text-white max-w-xl mx-auto md:mx-0" />
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-gray-300 font-light leading-relaxed max-w-xl mx-auto md:mx-0">
