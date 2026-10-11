@@ -37,8 +37,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
     });
 
     confetti({
-      particleCount: 90,
-      spread: 70,
+      particleCount: 80,
+      spread: 60,
       origin: { y: 0.6 }
     });
 
@@ -62,39 +62,43 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-[#121316] rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto max-h-[92vh] flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-white/10 bg-[#16181b] shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5] shrink-0">
-              <Calendar className="w-5 h-5" />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-2 sm:p-4 select-none">
+      <div className="relative w-full max-w-lg bg-[#121316] rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col animate-in fade-in zoom-in-95 duration-200">
+        
+        {/* Header Compacto */}
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/10 bg-[#16181b] shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5] shrink-0">
+              <Calendar className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-white text-base md:text-lg">
+              <h3 className="font-display font-bold text-white text-sm sm:text-base leading-tight">
                 Agendar Cita Estratégica
               </h3>
-              <p className="text-xs text-gray-400">Coordinación directa con los ingenieros de GeoSoft.</p>
+              <p className="text-[10px] sm:text-[11px] text-gray-400">Coordinación directa con los ingenieros de GeoSoft</p>
             </div>
           </div>
 
           <button
             onClick={resetAndClose}
-            className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer shrink-0"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer shrink-0"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-4 sm:p-6 md:p-8 overflow-y-auto flex-grow">
+        {/* Content Body Compacto (Sin Scroll) */}
+        <div
+          className="p-3.5 sm:p-4 md:p-5 flex-grow overflow-y-auto"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="grid md:grid-cols-2 gap-5">
-                {/* Full Name */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-[#A9F8B5]" />
+            <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
+              {/* Row 1: Nombre & Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                <div>
+                  <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                    <User className="w-3 h-3 text-[#A9F8B5]" />
                     Nombre Completo *
                   </label>
                   <input
@@ -103,14 +107,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                     placeholder="Ej. Carlos Rodríguez"
                     value={fullName}
                     onChange={e => setFullName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-sm outline-none transition-colors"
+                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-xs outline-none transition-colors"
                   />
                 </div>
 
-                {/* Email */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[#A9F8B5]" />
+                <div>
+                  <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                    <Mail className="w-3 h-3 text-[#A9F8B5]" />
                     Correo Electrónico *
                   </label>
                   <input
@@ -119,16 +122,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                     placeholder="carlos@empresa.com"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-sm outline-none transition-colors"
+                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-xs outline-none transition-colors"
                   />
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-5">
-                {/* WhatsApp */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[#A9F8B5]" />
+              {/* Row 2: WhatsApp & Servicio */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                <div>
+                  <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                    <Phone className="w-3 h-3 text-[#A9F8B5]" />
                     Teléfono WhatsApp *
                   </label>
                   <input
@@ -137,24 +140,23 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                     placeholder="+506 8888-8888"
                     value={whatsapp}
                     onChange={e => setWhatsapp(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-sm outline-none transition-colors"
+                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-xs outline-none transition-colors"
                   />
                 </div>
 
-                {/* Service of Interest */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-[#DFF494]" />
+                <div>
+                  <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                    <Sparkles className="w-3 h-3 text-[#DFF494]" />
                     Servicio de Interés
                   </label>
                   <select
                     value={service}
                     onChange={e => setService(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#DFF494] text-white text-sm outline-none transition-colors"
+                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#DFF494] text-white text-xs outline-none transition-colors"
                   >
                     <option value="Web con Agente de IA 24/7">Web con Agente de IA 24/7</option>
                     <option value="Sistema de Reservas & Cobros">Sistema de Reservas & Cobros</option>
-                    <option value="Plataforma SaaS & Software a Medida">Plataforma SaaS & Software a Medida</option>
+                    <option value="Plataforma SaaS & Software a Medida">Plataforma SaaS a Medida</option>
                     <option value="Web Estática / Landing Page">Web Estática / Landing Page</option>
                     <option value="Web Dinámica / Catálogo">Web Dinámica / Catálogo</option>
                     <option value="Auditoría SEO & Posicionamiento">Auditoría SEO & Posicionamiento</option>
@@ -162,11 +164,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-5">
-                {/* Date Picker */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[#A9F8B5]" />
+              {/* Row 3: Fecha & Hora */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                <div>
+                  <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                    <Calendar className="w-3 h-3 text-[#A9F8B5]" />
                     Fecha Preferida *
                   </label>
                   <input
@@ -174,20 +176,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                     required
                     value={date}
                     onChange={e => setDate(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-sm outline-none transition-colors"
+                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-xs outline-none transition-colors"
                   />
                 </div>
 
-                {/* Time Picker */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-[#DFF494]" />
+                <div>
+                  <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                    <Clock className="w-3 h-3 text-[#DFF494]" />
                     Hora Preferida
                   </label>
                   <select
                     value={time}
                     onChange={e => setTime(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#DFF494] text-white text-sm outline-none transition-colors"
+                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#DFF494] text-white text-xs outline-none transition-colors"
                   >
                     <option value="09:00 AM">09:00 AM</option>
                     <option value="10:00 AM">10:00 AM</option>
@@ -199,64 +200,64 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                 </div>
               </div>
 
-              {/* Notes */}
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                  <MessageSquare className="w-3.5 h-3.5 text-gray-400" />
+              {/* Row 4: Notas Breves */}
+              <div>
+                <label className="text-[11px] font-medium text-gray-300 flex items-center gap-1 mb-1">
+                  <MessageSquare className="w-3 h-3 text-gray-400" />
                   Cuéntanos brevemente sobre tu proyecto (opcional)
                 </label>
                 <textarea
-                  rows={3}
-                  placeholder="¿Cuál es el objetivo principal o problema que deseas resolver?"
+                  rows={2}
+                  placeholder="¿Cuál es el objetivo o problema que deseas resolver?"
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-sm outline-none transition-colors resize-none"
+                  className="w-full px-3 py-1.5 rounded-xl bg-[#090a0c] border border-white/10 focus:border-[#A9F8B5] text-white text-xs outline-none transition-colors resize-none"
                 />
               </div>
 
+              {/* Botón de Enviar */}
               <button
                 type="submit"
-                className="w-full btn-primary-gradient py-4 text-sm font-bold uppercase tracking-wider cursor-pointer"
+                className="w-full btn-primary-gradient py-2.5 sm:py-3 text-xs font-bold uppercase tracking-wider cursor-pointer shadow-lg mt-1"
               >
                 Confirmar y Agendar Cita
               </button>
             </form>
           ) : (
-            <div className="text-center py-6 space-y-6">
-              <div className="w-16 h-16 rounded-full bg-[#A9F8B5]/20 border border-[#A9F8B5]/40 flex items-center justify-center text-[#A9F8B5] mx-auto animate-bounce">
-                <CheckCircle2 className="w-8 h-8" />
+            <div className="text-center py-4 space-y-4">
+              <div className="w-12 h-12 rounded-full bg-[#A9F8B5]/20 border border-[#A9F8B5]/40 flex items-center justify-center text-[#A9F8B5] mx-auto animate-bounce">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
 
-              <div className="space-y-2">
-                <h4 className="text-2xl font-bold font-display text-white">
+              <div className="space-y-1">
+                <h4 className="text-lg sm:text-xl font-bold font-display text-white">
                   ¡Cita Agendada Exitosamente!
                 </h4>
-                <p className="text-sm text-gray-300 max-w-md mx-auto">
+                <p className="text-xs text-gray-300 max-w-sm mx-auto">
                   Gracias, <strong className="text-white">{fullName}</strong>. Hemos registrado tu cita para el <strong className="text-[#A9F8B5]">{date} a las {time}</strong>.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 max-w-md mx-auto text-left text-xs space-y-2">
-                <div className="text-gray-400">Detalles de la reunión:</div>
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 max-w-sm mx-auto text-left text-xs space-y-1">
                 <div className="text-white"><strong>Servicio:</strong> {service}</div>
                 <div className="text-white"><strong>WhatsApp:</strong> {whatsapp}</div>
                 <div className="text-white"><strong>Correo:</strong> {email}</div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <div className="flex gap-2.5 justify-center pt-1">
                 <a
                   href={getWhatsAppConfirmationUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#25D366] text-black font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-[#25D366] text-black font-bold text-xs uppercase tracking-wider hover:brightness-110 shadow-lg"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3.5 h-3.5" />
                   <span>Notificar por WhatsApp</span>
                 </a>
 
                 <button
                   onClick={resetAndClose}
-                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/15 text-white font-semibold text-xs uppercase tracking-wider transition-colors"
+                  className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-white font-semibold text-xs uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   Cerrar
                 </button>
