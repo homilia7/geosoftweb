@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
+import { Reveal } from './Reveal';
 
 export const FaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -30,7 +31,7 @@ export const FaqSection: React.FC = () => {
   return (
     <section id="faq" className="py-24 px-4 md:px-8 border-t border-white/5 bg-[#050607]">
       <div className="max-w-4xl mx-auto space-y-12">
-        <div className="text-center space-y-4">
+        <Reveal effect="up" className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.2em] text-[#DFF494]">
             <HelpCircle className="w-3.5 h-3.5 text-[#DFF494]" />
             Respuestas Claras
@@ -41,36 +42,37 @@ export const FaqSection: React.FC = () => {
           <p className="text-gray-400 font-light text-sm sm:text-base">
             Todo lo que necesitas saber antes de iniciar tu proyecto con GeoSoft.
           </p>
-        </div>
+        </Reveal>
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <div
-                key={idx}
-                className="card-accent overflow-hidden transition-all duration-300"
-              >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-4 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+              <Reveal key={idx} effect="up" delay={idx * 60}>
+                <div
+                  className="card-accent overflow-hidden transition-all duration-300"
                 >
-                  <span className="font-display font-semibold text-white text-base md:text-lg">
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-[#A9F8B5] transition-transform duration-300 shrink-0 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : idx)}
+                    className="w-full p-4 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                  >
+                    <span className="font-display font-semibold text-white text-base md:text-lg">
+                      {faq.q}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-[#A9F8B5] transition-transform duration-300 shrink-0 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
 
-                {isOpen && (
-                  <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 text-sm md:text-base text-gray-300 font-light leading-relaxed border-t border-white/5 pt-4">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+                  {isOpen && (
+                    <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 text-sm md:text-base text-gray-300 font-light leading-relaxed border-t border-white/5 pt-4">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              </Reveal>
             );
           })}
         </div>

@@ -3,6 +3,7 @@ import { Calculator, Check, Sparkles, Send, CheckCircle2, ShieldCheck, Tag } fro
 import confetti from 'canvas-confetti';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { PlatformOption } from '../types';
+import { Reveal } from './Reveal';
 
 export const CostCalculator: React.FC = () => {
   const { pricing } = useGeoSoftStore();
@@ -64,7 +65,7 @@ export const CostCalculator: React.FC = () => {
     <section id="cotizador" className="py-24 px-4 md:px-8 relative">
       <div className="max-w-6xl mx-auto space-y-16">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
+        <Reveal effect="up" className="text-center max-w-2xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.2em] text-[#A9F8B5]">
             <Calculator className="w-3.5 h-3.5 text-[#A9F8B5]" />
             Transparencia Total
@@ -83,11 +84,11 @@ export const CostCalculator: React.FC = () => {
               <span>{pricing.discountBanner} ({pricing.discountPercent}% de descuento aplicado)</span>
             </div>
           )}
-        </div>
+        </Reveal>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Selectors */}
-          <div className="lg:col-span-8 space-y-10">
+          <Reveal effect="left" delay={50} className="lg:col-span-8 space-y-10">
             {/* Step 1: Platform Type */}
             <div className="space-y-4">
               <h3 className="text-lg font-bold font-display text-white flex items-center gap-2">
@@ -197,10 +198,10 @@ export const CostCalculator: React.FC = () => {
                 })}
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Right Column: Live Summary Card */}
-          <div className="lg:col-span-4 sticky top-28">
+          <Reveal effect="right" delay={150} className="lg:col-span-4 sticky top-28">
             <div className="card-accent p-5 sm:p-6 md:p-8 space-y-6 border-[#A9F8B5]/30">
               <div className="blob-glow" />
 
@@ -306,7 +307,7 @@ export const CostCalculator: React.FC = () => {
                 <span>Presupuesto sin compromiso • Contrato & Garantía</span>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

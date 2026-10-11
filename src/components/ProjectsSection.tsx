@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ExternalLink, Sparkles, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Reveal } from './Reveal';
 
 interface Project {
   id: string;
@@ -99,7 +100,7 @@ export const ProjectsSection: React.FC = () => {
     <section id="proyectos" className="py-24 px-4 md:px-8 border-t border-white/5 relative">
       <div className="max-w-6xl mx-auto space-y-16">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <Reveal effect="up" className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-4 max-w-xl">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.2em] text-[#A9F8B5]">
               <Sparkles className="w-3.5 h-3.5 text-[#DFF494]" />
@@ -134,82 +135,86 @@ export const ProjectsSection: React.FC = () => {
               </button>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map(proj => (
-            <div
+          {filteredProjects.map((proj, idx) => (
+            <Reveal
               key={proj.id}
-              className="card-accent p-5 sm:p-6 flex flex-col justify-between group"
+              effect="up"
+              delay={idx * 100}
+              className="flex"
             >
-              <div className="blob-glow" />
+              <div className="w-full card-accent p-5 sm:p-6 flex flex-col justify-between group">
+                <div className="blob-glow" />
 
-              <div className="space-y-5">
-                {/* Visual Banner Preview */}
-                <div className={`w-full h-40 rounded-2xl bg-gradient-to-tr ${proj.gradient} border border-white/10 p-5 flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500`}>
-                  <div className="flex items-center justify-between z-10">
-                    <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[#A9F8B5] border border-white/10 font-bold">
-                      {proj.badge}
-                    </span>
-                    {proj.demoUrl && (
-                      <span className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-white group-hover:bg-[#A9F8B5] group-hover:text-black transition-colors">
-                        <ExternalLink className="w-4 h-4" />
+                <div className="space-y-5">
+                  {/* Visual Banner Preview */}
+                  <div className={`w-full h-40 rounded-2xl bg-gradient-to-tr ${proj.gradient} border border-white/10 p-5 flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500`}>
+                    <div className="flex items-center justify-between z-10">
+                      <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[#A9F8B5] border border-white/10 font-bold">
+                        {proj.badge}
                       </span>
-                    )}
+                      {proj.demoUrl && (
+                        <span className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-white group-hover:bg-[#A9F8B5] group-hover:text-black transition-colors">
+                          <ExternalLink className="w-4 h-4" />
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="z-10">
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{proj.category}</div>
+                      <div className="text-xl font-bold font-display text-white">{proj.title}</div>
+                    </div>
                   </div>
 
-                  <div className="z-10">
-                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{proj.category}</div>
-                    <div className="text-xl font-bold font-display text-white">{proj.title}</div>
+                  {/* Description & Impact Metric */}
+                  <div className="space-y-3">
+                    <p className="text-xs sm:text-sm text-gray-300 font-light leading-relaxed">
+                      {proj.description}
+                    </p>
+
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                      <span className="text-xs text-gray-400">Impacto Medible:</span>
+                      <span className="text-xs font-bold font-mono text-[#DFF494]" dangerouslySetInnerHTML={{ __html: proj.metrics }} />
+                    </div>
+                  </div>
+
+                  {/* Tech Tags */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {proj.technologies.map((t, i) => (
+                      <span
+                        key={i}
+                        className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                {/* Description & Impact Metric */}
-                <div className="space-y-3">
-                  <p className="text-xs sm:text-sm text-gray-300 font-light leading-relaxed">
-                    {proj.description}
-                  </p>
-
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                    <span className="text-xs text-gray-400">Impacto Medible:</span>
-                    <span className="text-xs font-bold font-mono text-[#DFF494]" dangerouslySetInnerHTML={{ __html: proj.metrics }} />
-                  </div>
-                </div>
-
-                {/* Tech Tags */}
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {proj.technologies.map((t, i) => (
-                    <span
-                      key={i}
-                      className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                {/* Action Link */}
+                <div className="pt-6 mt-4 border-t border-white/10">
+                  {proj.demoUrl ? (
+                    <a
+                      href={proj.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#A9F8B5] hover:text-[#DFF494] transition-colors"
                     >
-                      {t}
+                      <span>Ver Proyecto en Vivo</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 text-xs text-gray-500 font-mono">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#DFF494]" />
+                      <span>Despliegue Privado Enterprise</span>
                     </span>
-                  ))}
+                  )}
                 </div>
               </div>
-
-              {/* Action Link */}
-              <div className="pt-6 mt-4 border-t border-white/10">
-                {proj.demoUrl ? (
-                  <a
-                    href={proj.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#A9F8B5] hover:text-[#DFF494] transition-colors"
-                  >
-                    <span>Ver Proyecto en Vivo</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-gray-500 font-mono">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#DFF494]" />
-                    <span>Despliegue Privado Enterprise</span>
-                  </span>
-                )}
-              </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

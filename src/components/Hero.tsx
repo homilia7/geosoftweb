@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, Calendar, Sparkles, ShieldCheck, Zap } from 'lucide-react';
 import { RotatingHeadline } from './RotatingHeadline';
+import { Reveal } from './Reveal';
 
 interface HeroProps {
   onOpenCal: () => void;
@@ -68,7 +69,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
           </div>
 
           {/* Right Column: 3D Holographic Cube Showcase */}
-          <div className="md:col-span-5 flex justify-center">
+          <Reveal effect="scale" delay={120} className="md:col-span-5 flex justify-center">
             <div className="relative group w-full max-w-[420px]">
               {/* Outer decorative ambient blur */}
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#A9F8B5]/30 to-[#C1A35B]/30 blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
@@ -106,7 +107,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
