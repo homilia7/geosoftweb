@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { X, DollarSign, Calendar, Tag, RotateCcw, Trash2, Send, CheckCircle2, Clock, AlertTriangle, ShieldCheck, BarChart3 } from 'lucide-react';
+import { X, DollarSign, Calendar, Tag, RotateCcw, Trash2, Send, CheckCircle2, Clock, AlertTriangle, ShieldCheck, BarChart3, Bot } from 'lucide-react';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { AppointmentStatus, PlatformType } from '../types';
 import { AdminAnalyticsTab } from './AdminAnalyticsTab';
+import { AdminBotTab } from './AdminBotTab';
 
 export const AdminPanel: React.FC = () => {
   const {
@@ -19,7 +20,7 @@ export const AdminPanel: React.FC = () => {
     deleteAppointment
   } = useGeoSoftStore();
 
-  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas'>('precios');
+  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas' | 'bot'>('precios');
 
   if (!isAdminModalOpen) return null;
 
@@ -106,6 +107,19 @@ export const AdminPanel: React.FC = () => {
           >
             <BarChart3 className="w-3.5 h-3.5" />
             <span>Métricas & Mapa de Calor</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('bot')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap relative ${
+              activeTab === 'bot'
+                ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Bot className="w-3.5 h-3.5" />
+            <span>Bot de IA & Ventas</span>
+            <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-pulse" />
           </button>
         </div>
 
@@ -277,6 +291,12 @@ export const AdminPanel: React.FC = () => {
                           }`}>
                             {apt.status}
                           </span>
+                          {apt.source === 'bot' && (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-gradient-to-r from-[#A9F8B5]/20 to-[#DFF494]/20 text-[#A9F8B5] border border-[#A9F8B5]/40 flex items-center gap-1 font-bold">
+                              <Bot className="w-2.5 h-2.5" />
+                              Cerrada por Bot de IA
+                            </span>
+                          )}
                           <span className="text-xs text-gray-400">• {new Date(apt.createdAt).toLocaleDateString()}</span>
                         </div>
 
@@ -333,8 +353,10 @@ export const AdminPanel: React.FC = () => {
                 </div>
               )}
             </div>
-          ) : (
+          ) : activeTab === 'analiticas' ? (
             <AdminAnalyticsTab />
+          ) : (
+            <AdminBotTab />
           )}
         </div>
       </div>

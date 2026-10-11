@@ -42,10 +42,11 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     const id = body.id || `apt-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const createdAt = body.createdAt || new Date().toISOString();
     const status = body.status || 'pendiente';
+    const source = body.source || 'web';
 
     await context.env.DB.prepare(
-      `INSERT INTO appointments (id, fullName, email, whatsapp, service, date, time, notes, status, createdAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO appointments (id, fullName, email, whatsapp, service, date, time, notes, status, source, createdAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(
       id,
       body.fullName || '',
@@ -56,6 +57,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
       body.time || '',
       body.notes || '',
       status,
+      source,
       createdAt
     ).run();
 

@@ -1,32 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { Reveal } from './Reveal';
+import { api } from '../services/api';
+
+const DEFAULT_FAQS = [
+  {
+    q: '¿Cuánto tiempo tarda el desarrollo de una web o sistema?',
+    a: 'Una página web corporativa o landing page de alto impacto se entrega habitualmente entre 5 y 10 días hábiles. Proyectos más complejos con agentes de IA, pasarelas de pago o plataformas SaaS completas toman entre 2 y 4 semanas según el alcance.'
+  },
+  {
+    q: '¿Cómo funciona la integración de Chatbots de IA con WhatsApp?',
+    a: 'Conectamos agentes de lenguaje natural directamente a la API oficial de WhatsApp Cloud. El agente atiende a tus prospectos en segundos, responde según la información de tu empresa, recopila datos y transfiere al asesor humano cuando el cliente está listo para comprar.'
+  },
+  {
+    q: '¿Qué pasarelas de pago se pueden integrar para reservas y compras?',
+    a: 'Integramos pasarelas locales e internacionales como SinpePay (Sinpe Móvil para Costa Rica), Stripe, PayPal y tarjetas de crédito con estándares de cifrado bancario seguro.'
+  },
+  {
+    q: '¿El código del proyecto es 100% de mi propiedad?',
+    a: 'Sí. A diferencia de plataformas cerradas de suscripción como Wix o Shopify donde alquilas el software, en GeoSoft el código fuente, la base de datos y la arquitectura quedan bajo tu total propiedad y control.'
+  },
+  {
+    q: '¿Ofrecen garantía y soporte después de publicar la web?',
+    a: 'Totalmente. Incluimos garantía de funcionamiento sin errores, monitoreo de caídas 24/7 y planes de mantenimiento mensual continuo para asegurar que tu plataforma esté siempre actualizada y protegida.'
+  }
+];
 
 export const FaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [faqs, setFaqs] = useState<{ q: string; a: string }[]>(DEFAULT_FAQS);
 
-  const faqs = [
-    {
-      q: '¿Cuánto tiempo tarda el desarrollo de una web o sistema?',
-      a: 'Una página web corporativa o landing page de alto impacto se entrega habitualmente entre 5 y 10 días hábiles. Proyectos más complejos con agentes de IA, pasarelas de pago o plataformas SaaS completas toman entre 2 y 4 semanas según el alcance.'
-    },
-    {
-      q: '¿Cómo funciona la integración de Chatbots de IA con WhatsApp?',
-      a: 'Conectamos agentes de lenguaje natural directamente a la API oficial de WhatsApp Cloud. El agente atiende a tus prospectos en segundos, responde según la información de tu empresa, recopila datos y transfiere al asesor humano cuando el cliente está listo para comprar.'
-    },
-    {
-      q: '¿Qué pasarelas de pago se pueden integrar para reservas y compras?',
-      a: 'Integramos pasarelas locales e internacionales como SinpePay (Sinpe Móvil para Costa Rica), Stripe, PayPal y tarjetas de crédito con estándares de cifrado bancario seguro.'
-    },
-    {
-      q: '¿El código del proyecto es 100% de mi propiedad?',
-      a: 'Sí. A diferencia de plataformas cerradas de suscripción como Wix o Shopify donde alquilas el software, en GeoSoft el código fuente, la base de datos y la arquitectura quedan bajo tu total propiedad y control.'
-    },
-    {
-      q: '¿Ofrecen garantía y soporte después de publicar la web?',
-      a: 'Totalmente. Incluimos garantía de funcionamiento sin errores, monitoreo de caídas 24/7 y planes de mantenimiento mensual continuo para asegurar que tu plataforma esté siempre actualizada y protegida.'
-    }
-  ];
+  useEffect(() => {
+    api.getBotFaqs().then(items => {
+      if (items && items.length > 0) {
+        setFaqs(items.map(f => ({ q: f.question, a: f.answer })));
+      }
+    }).catch(() => {});
+  }, []);
 
   return (
     <section id="faq" className="py-24 px-4 md:px-8 border-t border-white/5 bg-[#050607]">

@@ -35,6 +35,7 @@ export interface Appointment {
   time: string;
   notes: string;
   status: AppointmentStatus;
+  source?: 'web' | 'bot';
   createdAt: string;
 }
 
@@ -45,3 +46,49 @@ export interface PricingConfig {
   discountBanner: string; // e.g. "¡Promoción de Lanzamiento!"
   discountActive: boolean;
 }
+
+export interface BotObjectionLog {
+  id: number;
+  conversation_id: string;
+  objection_type: string;
+  objection_text: string;
+  solution_provided: string;
+  status: string;
+  created_at: string;
+}
+
+export interface BotUnansweredQuestion {
+  id: number;
+  conversation_id: string;
+  question: string;
+  bot_alternative_response: string;
+  admin_answer?: string;
+  status: 'pendiente' | 'respondida';
+  created_at: string;
+  answered_at?: string;
+}
+
+export interface BotFaqItem {
+  id: number;
+  question: string;
+  answer: string;
+  category: string;
+  is_published: number;
+  times_used: number;
+  created_at: string;
+}
+
+export interface BotAnalyticsData {
+  totalConversations: number;
+  totalQuestions: number;
+  totalAnswers: number;
+  totalObjections: number;
+  resolvedObjections: number;
+  appointmentsClosed: number;
+  pendingUnanswered: number;
+  totalFaqs: number;
+  objectionsByType: Array<{ objection_type: string; count: number }>;
+  recentObjections: BotObjectionLog[];
+  botAppointments: Appointment[];
+}
+

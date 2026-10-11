@@ -146,5 +146,121 @@ export const api = {
     } catch {
       return null;
     }
+  },
+
+  // Bot AI endpoints
+  async sendBotMessage(params: {
+    conversationId: string;
+    visitorId?: string;
+    message: string;
+    userName?: string;
+    userContact?: string;
+  }): Promise<{
+    success: boolean;
+    reply: string;
+    intent?: string;
+    objection?: any;
+    isUnanswered?: boolean;
+    appointmentBooked?: boolean;
+    conversationId?: string;
+  }> {
+    try {
+      const res = await fetch('/api/bot/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+      if (!res.ok) {
+        return {
+          success: false,
+          reply: 'Lo siento, no pude procesar tu mensaje. ¡Nuestro equipo humano te atiende por WhatsApp!'
+        };
+      }
+      return await res.json();
+    } catch {
+      return {
+        success: false,
+        reply: 'Problema de conexión temporal. Escríbenos directamente a WhatsApp.'
+      };
+    }
+  },
+
+  async getBotAnalytics(): Promise<import('../types').BotAnalyticsData | null> {
+    try {
+      const res = await fetch('/api/bot/analytics');
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  async getBotUnanswered(): Promise<import('../types').BotUnansweredQuestion[]> {
+    try {
+      const res = await fetch('/api/bot/unanswered');
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  async answerBotQuestion(id: number, adminAnswer: string, category: string = 'General'): Promise<boolean> {
+    try {
+      const res = await fetch('/api/bot/unanswered', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, adminAnswer, category })
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async deleteBotUnanswered(id: number): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/bot/unanswered?id=${id}`, {
+        method: 'DELETE'
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async getBotFaqs(all: boolean = false): Promise<import('../types').BotFaqItem[]> {
+    try {
+      const res = await fetch(`/api/bot/faqs${all ? '?all=1' : ''}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  async saveBotFaq(faq: Partial<import('../types').BotFaqItem>): Promise<boolean> {
+    try {
+      const res = await fetch('/api/bot/faqs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(faq)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async deleteBotFaq(id: number): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/bot/faqs?id=${id}`, {
+        method: 'DELETE'
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
   }
 };
+
