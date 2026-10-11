@@ -358,3 +358,34 @@ h1, h2, h3, h4, .font-display {
     filter: brightness(1);
   }
 }
+
+/* Bosuni CR-inspired Text Light Sweep on Consultancy & Engineering */
+@keyframes textLightSweep {
+  0% {
+    background-position: 250% 0;
+  }
+  45%, 100% {
+    background-position: -150% 0;
+  }
+}
+
+.animate-copyright-sweep {
+  background: linear-gradient(
+    90deg,
+    #94a3b8,
+    #94a3b8 25%,
+    #d97706 38%,
+    #059669 46%,
+    #2563eb 54%,
+    #9333ea 62%,
+    #ec4899 70%,
+    #94a3b8 80%,
+    #94a3b8
+  );
+  background-size: 320% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textLightSweep 4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  display: inline-block;
+}

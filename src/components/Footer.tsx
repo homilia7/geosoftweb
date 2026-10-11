@@ -18,7 +18,9 @@ export const Footer: React.FC = () => {
             <div className="font-display font-bold text-white text-sm">
               GEO<span className="text-gradient-accent">SOFT</span>
             </div>
-            <div className="text-[11px] text-gray-500">Consultancy & Engineering</div>
+            <div className="text-[11px] font-semibold tracking-wider animate-copyright-sweep">
+              Consultancy & Engineering
+            </div>
           </div>
         </div>
 
