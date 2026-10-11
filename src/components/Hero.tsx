@@ -11,7 +11,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollToQuote }) => {
   return (
-    <section id="inicio" className="relative pt-28 sm:pt-36 md:pt-44 pb-16 sm:pb-20 md:pb-28 overflow-hidden">
+    <section id="inicio" className="relative pt-16 sm:pt-20 md:pt-20 lg:pt-24 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
       {/* Background radial ambient glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gradient-to-b from-[#A9F8B5]/15 via-[#DFF494]/10 to-transparent blur-[140px] pointer-events-none -z-10" />
       <div className="absolute top-1/2 right-10 w-[400px] h-[400px] bg-[#C1A35B]/10 blur-[130px] pointer-events-none -z-10" />
@@ -19,7 +19,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <div className="grid md:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Left Column: Headlines & Call to Actions */}
-          <div className="md:col-span-7 space-y-6 text-center md:text-left">
+          <div className="md:col-span-7 space-y-5 text-center md:text-left">
             {/* Top Badge */}
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5]">
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] shadow-[0_0_10px_#A9F8B5] animate-ping" />
@@ -35,7 +35,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
             </p>
 
             {/* CTAs Button Row (Recode pill style) */}
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-2 sm:pt-3">
               <button
                 onClick={onScrollToQuote}
                 className="btn-accent-icon w-full sm:w-auto cursor-pointer"
@@ -56,7 +56,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
             </div>
 
             {/* Trust Indicators */}
-            <div className="pt-6 flex flex-wrap items-center justify-center md:justify-start gap-6 text-xs text-gray-400">
+            <div className="pt-4 sm:pt-5 flex flex-wrap items-center justify-center md:justify-start gap-6 text-xs text-gray-400">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#A9F8B5]" />
                 <span>Garantía de Entrega y Código Limpio</span>
