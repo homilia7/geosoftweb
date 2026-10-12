@@ -17,18 +17,23 @@ export const Hero: React.FC<HeroProps> = ({
   onScrollToQuote,
   introFinished = false,
 }) => {
-  const [mounted, setMounted] = React.useState(false);
+  const [animReady, setAnimReady] = React.useState(false);
 
   React.useEffect(() => {
     if (introFinished) {
-      setMounted(true);
-    } else {
-      const timer = setTimeout(() => setMounted(true), 3500);
+      // Se activa SOLO después de que el logo del centro y los textos del splash desaparecen por completo
+      const timer = setTimeout(() => setAnimReady(true), 120);
       return () => clearTimeout(timer);
     }
   }, [introFinished]);
 
-  const isReady = introFinished || mounted;
+  // Fallback de seguridad amplio (8s) solo en caso de recarga directa sin splash
+  React.useEffect(() => {
+    const safety = setTimeout(() => {
+      setAnimReady(true);
+    }, 8000);
+    return () => clearTimeout(safety);
+  }, []);
 
   return (
     <section id="inicio" className="relative pt-16 sm:pt-20 md:pt-20 lg:pt-24 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
@@ -42,7 +47,7 @@ export const Hero: React.FC<HeroProps> = ({
           <div className="md:col-span-7 space-y-5 text-center md:text-left">
             {/* Top Badge: aparece de forma suave y fluida en la pantalla de izquierda hacia derecha */}
             <div className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5] transition-all ${
-              isReady ? 'animate-hero-badge-left' : 'opacity-0 pointer-events-none'
+              animReady ? 'animate-hero-badge-left' : 'opacity-0 pointer-events-none'
             }`}>
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] shadow-[0_0_10px_#A9F8B5] animate-ping" />
               <span>Soluciones de IA & Software de Élite</span>
@@ -92,7 +97,7 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Right Column: Cuadro con logo e IA Conectada (aparece desde arriba hacia abajo suavemente y queda flotando) */}
           <div className={`md:col-span-5 flex justify-center transition-all ${
-            isReady ? 'animate-hero-card-down' : 'opacity-0 pointer-events-none'
+            animReady ? 'animate-hero-card-down' : 'opacity-0 pointer-events-none'
           }`}>
             <div className="relative group w-full max-w-[420px] animate-hero-floating">
               {/* Outer decorative ambient blur */}

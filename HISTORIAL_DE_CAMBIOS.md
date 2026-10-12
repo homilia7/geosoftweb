@@ -15,7 +15,8 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-12 — Coreografía de Entrada en Sección Hero
-- **Badge 'Soluciones de IA & Software de Élite':** Entrada suave y fluida de izquierda a derecha (nimate-hero-badge-left de 950ms con fade y desenfoque progresivo) sincronizada con la carga de la página.
-- **Cuadro Showcase 3D con Logo y 'IA Conectada':** Entrada suave desde arriba hacia abajo (nimate-hero-card-down de 1000ms) y queda flotando de forma continua y armónica mediante levitación gravitacional (nimate-hero-floating cíclica infinita de 5.2s).
-- **Coreografía del Navbar preservada:** Pausa estática tenue y encendido lineal ultra suave de 8.5s sin saltos finales.
+### 2026-10-12 — Sincronización Estricta del Hero tras Desaparición del Splash
+- **Bloqueo durante Splash Intro:** El badge 'Soluciones de IA & Software de Élite' y el cuadro showcase permanecen totalmente ocultos e inactivos (nimReady = false) mientras el logo central y los textos de bienvenida del splash estén en pantalla.
+- **Disparo exclusivo post-splash:** Únicamente cuando el splash screen con el logo central y los textos concluye y se desmonta por completo (introFinished === true), se desencadenan las animaciones del Hero:
+  1. El badge entra suave y fluidamente de izquierda a derecha (nimate-hero-badge-left).
+  2. El cuadro con el logo e 'IA Conectada' entra suavemente de arriba hacia abajo (nimate-hero-card-down) y queda en levitación flotante permanente (nimate-hero-floating).
