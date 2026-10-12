@@ -130,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({
               <SpotlightCard
                 spotlightColor="rgba(169, 248, 181, 0.22)"
                 size={400}
-                className="rounded-3xl bg-[#121316]/90 border border-white/15 p-6 shadow-2xl backdrop-blur-xl"
+                className="rounded-3xl bg-[#121316]/90 border border-white/15 p-4 sm:p-6 shadow-2xl backdrop-blur-xl"
               >
                 <div className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 bg-black/60 shadow-inner flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                   <img
@@ -141,24 +141,24 @@ export const Hero: React.FC<HeroProps> = ({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                   
                   {/* Floating badge inside image */}
-                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between p-3 rounded-xl bg-black/60 backdrop-blur-md border border-white/10">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#A9F8B5] animate-pulse" />
-                      <span className="text-xs font-semibold text-white">IA Conectada</span>
+                  <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-black/70 backdrop-blur-md border border-white/10">
+                    <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#A9F8B5] animate-pulse shrink-0" />
+                      <span className="text-[11px] sm:text-xs font-semibold text-white whitespace-nowrap">IA Conectada</span>
                     </div>
-                    <span className="text-[11px] font-mono text-[#DFF494]">geosoftweb.pages.dev</span>
+                    <span className="text-[10px] sm:text-[11px] font-mono text-[#DFF494] truncate max-w-[140px] sm:max-w-none">geosoftweb.pages.dev</span>
                   </div>
                 </div>
 
                 {/* Quick stats badge footer */}
-                <div className="mt-5 grid grid-cols-2 gap-3 text-center">
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                    <div className="text-xl font-bold font-display text-white">24/7</div>
-                    <div className="text-[11px] text-gray-400 uppercase tracking-wider mt-0.5">Atención Activa</div>
+                <div className="mt-4 sm:mt-5 grid grid-cols-2 gap-2.5 sm:gap-3 text-center">
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div className="text-lg sm:text-xl font-bold font-display text-white">24/7</div>
+                    <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider mt-0.5">Atención Activa</div>
                   </div>
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                    <div className="text-xl font-bold font-display text-white">&lt;5 min</div>
-                    <div className="text-[11px] text-gray-400 uppercase tracking-wider mt-0.5">Respuesta a Leads</div>
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div className="text-lg sm:text-xl font-bold font-display text-white">&lt;5 min</div>
+                    <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider mt-0.5">Respuesta a Leads</div>
                   </div>
                 </div>
               </SpotlightCard>

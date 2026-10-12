@@ -275,22 +275,20 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
           </p>
 
           {/* Selector de Modo: Interactivo vs Video MP4 */}
-          <div className="pt-2 flex items-center justify-center gap-2">
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 max-w-sm sm:max-w-none mx-auto">
             <button
               onClick={() => {
                 soundEffects.playClick();
                 setMode('interactive');
               }}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 mode === 'interactive'
-                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/25 scale-105'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/25 scale-102 sm:scale-105'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
               }`}
             >
-              <span className="flex items-center gap-1.5">
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                Modo Interactivo en Vivo
-              </span>
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Modo Interactivo en Vivo</span>
             </button>
             <button
               onClick={() => {
@@ -298,26 +296,24 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                 setMode('video');
                 setIsPlaying(false);
               }}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 mode === 'video'
-                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/25 scale-105'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/25 scale-102 sm:scale-105'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
               }`}
             >
-              <span className="flex items-center gap-1.5">
-                <Film className="w-3.5 h-3.5" />
-                Modo Video MP4 Full HD (Reel)
-              </span>
+              <Film className="w-3.5 h-3.5" />
+              <span>Modo Video MP4 Full HD (Reel)</span>
             </button>
           </div>
         </Reveal>
 
         {/* Reproductor / Showcase Principal */}
         <Reveal effect="up" delay={100} className="w-full">
-          <div className="relative rounded-2xl border border-white/15 bg-gradient-to-b from-[#0e131d]/90 to-[#07090f]/95 p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-2xl overflow-hidden">
+          <div className="relative rounded-2xl border border-white/15 bg-gradient-to-b from-[#0e131d]/90 to-[#07090f]/95 p-3.5 sm:p-6 md:p-8 shadow-2xl backdrop-blur-2xl overflow-hidden">
             {/* Barra de Progreso Segmentada tipo Stories */}
             {mode === 'interactive' && (
-              <div className="grid grid-cols-9 gap-1.5 mb-8">
+              <div className="grid grid-cols-9 gap-1 sm:gap-1.5 mb-5 sm:mb-8">
                 {solutions.map((s, idx) => {
                   let fillPercent = 0;
                   if (idx < currentIndex) fillPercent = 100;
@@ -373,37 +369,37 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                       >
                         {currentSlide.badge}
                       </span>
-                      <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display">
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white font-display">
                         {currentSlide.title}
                       </h3>
                     </div>
                   </div>
 
-                  <p className="text-gray-300 font-light text-sm sm:text-base leading-relaxed">
+                  <p className="text-gray-300 font-light text-xs sm:text-sm md:text-base leading-relaxed">
                     {currentSlide.description}
                   </p>
 
-                  <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm text-gray-200">
-                    <span className="text-[#A9F8B5] font-semibold block text-xs uppercase tracking-wider mb-1">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm text-gray-200">
+                    <span className="text-[#A9F8B5] font-semibold block text-[11px] sm:text-xs uppercase tracking-wider mb-1">
                       ⚡ Ventaja Estratégica:
                     </span>
                     {currentSlide.highlight}
                   </div>
 
                   {/* Métricas destacadas */}
-                  <div className="grid grid-cols-3 gap-2.5 pt-1">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 pt-1">
                     {currentSlide.metrics.map((m, i) => (
                       <div
                         key={i}
-                        className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-center"
+                        className="p-2 sm:p-2.5 rounded-lg bg-white/5 border border-white/10 text-center"
                       >
                         <div
-                          className="font-bold text-sm sm:text-base font-mono"
+                          className="font-bold text-xs sm:text-sm md:text-base font-mono"
                           style={{ color: currentSlide.accentColor }}
                         >
                           {m.value}
                         </div>
-                        <div className="text-[10px] text-gray-400 font-medium leading-tight mt-0.5">
+                        <div className="text-[9px] sm:text-[10px] text-gray-400 font-medium leading-tight mt-0.5">
                           {m.label}
                         </div>
                       </div>
@@ -411,13 +407,13 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                   </div>
 
                   {/* Acciones Rápidas */}
-                  <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                     <button
                       onClick={() => {
                         soundEffects.playClick();
                         onScrollToQuote();
                       }}
-                      className="px-5 py-2.5 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#DFF494] transition-all cursor-pointer flex items-center gap-2 group shadow-lg shadow-[#A9F8B5]/20"
+                      className="px-5 py-2.5 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#DFF494] transition-all cursor-pointer flex items-center justify-center gap-2 group shadow-lg shadow-[#A9F8B5]/20"
                     >
                       <span>Cotizar Solución</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -428,7 +424,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                           soundEffects.playClick();
                           onOpenBooking();
                         }}
-                        className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold text-xs transition-colors cursor-pointer"
+                        className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center text-center"
                       >
                         Agendar Demo en Vivo
                       </button>
@@ -453,13 +449,13 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                           <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                           <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                          <span className="ml-3 text-xs text-gray-400 font-mono truncate max-w-[220px]">
+                          <span className="ml-2 sm:ml-3 text-[11px] sm:text-xs text-gray-400 font-mono truncate max-w-[130px] sm:max-w-[220px]">
                             geosoft.cr/solutions/{currentSlide.id}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span
-                            className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold"
+                            className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-mono font-bold"
                             style={{
                               backgroundColor: `${currentSlide.accentColor}22`,
                               color: currentSlide.accentColor
@@ -482,13 +478,13 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
                         {/* Badge interactivo flotante sobre la imagen */}
-                        <div className="absolute bottom-3 left-3 bg-[#0a0f18]/85 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs text-white">
+                        <div className="absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 bg-[#0a0f18]/90 backdrop-blur-md border border-white/15 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-white max-w-[calc(100%-1.25rem)]">
                           <span
-                            className="w-2 h-2 rounded-full animate-ping"
+                            className="w-2 h-2 rounded-full animate-ping shrink-0"
                             style={{ backgroundColor: currentSlide.accentColor }}
                           />
-                          <span className="font-semibold">{currentSlide.title}</span>
-                          <span className="text-[10px] text-gray-400 border-l border-white/15 pl-2 font-mono">
+                          <span className="font-semibold truncate">{currentSlide.title}</span>
+                          <span className="text-[10px] text-gray-400 border-l border-white/15 pl-2 font-mono hidden sm:inline">
                             Producción GeoSoft
                           </span>
                         </div>
@@ -500,8 +496,8 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
             )}
 
             {/* Barra Inferior de Control de Reproducción */}
-            <div className="pt-6 mt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs text-gray-400">
-              <div className="flex items-center gap-3">
+            <div className="pt-4 sm:pt-6 mt-4 sm:mt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 text-xs text-gray-400">
+              <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                 {mode === 'interactive' && (
                   <button
                     onClick={togglePlay}
@@ -518,19 +514,19 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
                 >
                   <RotateCcw className="w-4 h-4" />
                 </button>
-                <span className="font-mono text-gray-400 text-xs">
+                <span className="font-mono text-gray-400 text-xs truncate max-w-[200px] sm:max-w-none">
                   {currentIndex + 1} de {solutions.length}:{' '}
                   <span className="text-white font-semibold">{currentSlide.title}</span>
                 </span>
               </div>
 
               {/* Píldoras de Navegación Rápida */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full w-full sm:w-auto no-scrollbar">
                 {solutions.map((s, idx) => (
                   <button
                     key={s.id}
                     onClick={() => goToSlide(idx)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                       currentIndex === idx && mode === 'interactive'
                         ? 'bg-white/20 text-white font-bold'
                         : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'

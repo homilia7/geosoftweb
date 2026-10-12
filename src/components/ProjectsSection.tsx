@@ -115,7 +115,7 @@ export const ProjectsSection: React.FC = () => {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {[
               { id: 'todos', label: 'Todos' },
               { id: 'ia', label: 'IA & Agentes' },
@@ -125,7 +125,7 @@ export const ProjectsSection: React.FC = () => {
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id as any)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer ${
                   activeFilter === filter.id
                     ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-[0_0_15px_rgba(169,248,181,0.3)]'
                     : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-white/5'

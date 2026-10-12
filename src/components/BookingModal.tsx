@@ -183,7 +183,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
     >
       <div
         onClick={e => e.stopPropagation()}
-        className={`relative w-full max-w-lg bg-[#111317] rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col h-[510px] max-h-[92vh] ${
+        className={`relative w-full max-w-lg bg-[#111317] rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col min-h-[460px] max-h-[90dvh] ${
           isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
         }`}
       >
@@ -197,7 +197,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
         </div>
 
         {/* Header con Navegación Atrás / Cerrar */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-[#15171b] shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/10 bg-[#15171b] shrink-0">
           <div className="flex items-center gap-2">
             {step > 1 && !submitted && (
               <button
@@ -225,7 +225,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
         </div>
 
         {/* Content Body Animado */}
-        <div className="p-5 flex-1 flex flex-col justify-center relative overflow-hidden">
+        <div className="p-4 sm:p-5 flex-1 flex flex-col justify-center relative overflow-y-auto">
           
           {/* ================= PANTALLA DE CONFIRMACIÓN ================= */}
           {submitted ? (

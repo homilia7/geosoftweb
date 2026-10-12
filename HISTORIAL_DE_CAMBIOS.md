@@ -15,6 +15,37 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-12 — Optimización 100% Responsive para Teléfonos Móviles y Dispositivos Táctiles
+- **Viewport y Meta Etiquetas (`index.html`):**
+  - Configurado `viewport-fit=cover` y `maximum-scale=5.0` para cobertura nativa edge-to-edge en pantallas con Dynamic Island, notch y barras de navegación en iOS Safari y Chrome Android.
+- **Distribución de Elementos Flotantes Anti-Colisión (`App.tsx` y `FloatingChat.tsx`):**
+  - **Botón Cubo 3D:** En móviles pasa a formato compacto *"💎 Cubo 3D"* (`text-[11px] px-3 py-1.5`) posicionado en `bottom-4 left-3` con capa de prioridad segura (`z-30`).
+  - **Botón Asesor IA:** Tamaño táctil ergonómico de 48px (`w-12 h-12`) en `bottom-4 right-3` con ocultamiento automático del tooltip horizontal en móviles para evitar superposiciones con el botón del cubo 3D.
+  - **Drawer de Chat en Móvil:** Altura dinámica con `80dvh` (Dynamic Viewport Height) para adaptación inmediata al teclado virtual sin desbordar la pantalla.
+- **Navegación Móvil y Menú Hamburguesa (`Navbar.tsx`):**
+  - Botón hamburguesa con área táctil ampliada de 38px (`min-w-[36px] min-h-[36px]`) para pulsación cómoda.
+  - Bloqueo de scroll en el fondo (`overflow: hidden`) mientras el menú móvil está abierto.
+  - Telón de fondo oscurecido (`backdrop-blur-sm bg-black/70`) para cierre instantáneo al tocar fuera del menú.
+- **Showcase Interactivo y Reel de Video (`InteractiveVideoShowcase.tsx`):**
+  - Selector de modo (Interactivo vs Video MP4) con disposición flexible vertical/horizontal adaptativa en móviles.
+  - Barra de progreso tipo Stories con separación compacta (`gap-1`).
+  - Tipografía fluida (`text-xl sm:text-2xl md:text-3xl`) en los títulos de solución y métricas compactas legibles.
+  - Marco tipo software con URL truncada dinámicamente y botones a ancho completo en móviles.
+- **Visor 3D Interactivo (`HolographicCubeViewer.tsx`):**
+  - HUD superior adaptable con título truncado y badge compacto *"Smart Quad"*.
+  - Guía táctil específica para smartphones: *"👆 Toca y gira 360° • Pellizca para zoom"*.
+  - Botones inferiores en rejilla táctil fluida de 2 columnas que no ocultan el canvas 3D.
+- **Modales de Cita y Proyectos (`BookingModal.tsx`, `ProjectsSection.tsx`):**
+  - Modal de reservas con `min-h-[460px] max-h-[90dvh]` y scroll interno para pantallas pequeñas y teclados abiertos.
+  - Filtros de proyectos con espaciado elástico y botones de fácil toque.
+- **Estilos Base y Táctiles (`index.css`):**
+  - Eliminado el destello gris de selección táctil con `-webkit-tap-highlight-color: transparent`.
+  - Asegurada la contención de ancho con `overflow-x: hidden`, `width: 100%` y `max-width: 100vw`.
+- **Verificación y Despliegue:**
+  - Build local con Vite (`0 errores`).
+  - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Smoke test confirmado con HTTP 200 en producción.
+
 ### 2026-10-12 — Visor 3D Interactivo del Cubo Holográfico Esmeralda (Demo en Vivo)
 - **Componente Visor 3D (`HolographicCubeViewer.tsx`):**
   - **Recreación Exacta del Cubo del Video (`Grabación cubo 2026 cubo.mp4`):**

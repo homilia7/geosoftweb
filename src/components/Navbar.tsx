@@ -47,6 +47,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
         dropdownContainerRef.current &&
@@ -413,7 +424,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Hamburger Button (Par 1 Derecha) */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`md:hidden p-1.5 rounded-full border transition-all ${getEntranceClass('right', 1)} ${getNavAuxClass()} ${
+          aria-label={mobileOpen ? 'Cerrar Menú' : 'Abrir Menú de Navegación'}
+          className={`md:hidden min-w-[36px] min-h-[36px] p-2 rounded-full border transition-all flex items-center justify-center cursor-pointer active:scale-95 ${getEntranceClass('right', 1)} ${getNavAuxClass()} ${
             animPhase === 'yellow_letters'
               ? 'border-yellow-400 text-yellow-300 bg-yellow-400/20'
               : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
@@ -423,9 +435,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu con Fondo Táctil de Cierre Rápido */}
       {mobileOpen && (
-        <div className="pointer-events-auto absolute top-12 sm:top-14 left-3 sm:left-4 right-3 sm:right-4 max-h-[82vh] overflow-y-auto bg-[#121316]/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 md:hidden animate-mobile-drawer">
+        <>
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm -z-10 md:hidden pointer-events-auto"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="pointer-events-auto absolute top-12 sm:top-14 left-3 sm:left-4 right-3 sm:right-4 max-h-[82dvh] overflow-y-auto bg-[#121316]/98 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 pb-8 shadow-2xl flex flex-col gap-4 md:hidden animate-mobile-drawer">
           {/* Section 1: Navigation Links */}
           <nav className="flex flex-col gap-1.5 text-base font-medium">
             {mobileNavItems.map((item, idx) => (
@@ -491,6 +508,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </div>
         </div>
+        </>
       )}
     </header>
   );

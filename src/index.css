@@ -8,6 +8,9 @@
 /* Custom Base Rules */
 html {
   color-scheme: dark;
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -15,6 +18,9 @@ body {
   background-color: #040404;
   color: #f3f4f6;
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, h4, .font-display {
@@ -209,6 +215,7 @@ h1, h2, h3, h4, .font-display {
   cursor: pointer;
   overflow: hidden;
   max-width: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .no-scrollbar::-webkit-scrollbar {

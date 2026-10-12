@@ -419,19 +419,19 @@ export const HolographicCubeViewer: React.FC<HolographicCubeViewerProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl">
       {/* HUD Tecnológico Superior */}
-      <div className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between z-20 pointer-events-auto bg-gradient-to-b from-black/80 to-transparent">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5]">
-            <Box className="w-5 h-5" />
+      <div className="absolute top-0 left-0 right-0 p-3 sm:p-6 flex items-center justify-between z-20 pointer-events-auto bg-gradient-to-b from-black/85 via-black/50 to-transparent">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5] shrink-0">
+            <Box className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-sm sm:text-base">{activeModelName}</span>
-              <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-2 py-0.5 rounded-full font-mono font-bold">
-                Smart Quad Mesh
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-bold text-white text-xs sm:text-base truncate max-w-[130px] sm:max-w-xs">{activeModelName}</span>
+              <span className="text-[9px] sm:text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 sm:px-2 py-0.5 rounded-full font-mono font-bold whitespace-nowrap">
+                Smart Quad
               </span>
             </div>
-            <div className="text-xs text-gray-400 font-mono">
+            <div className="text-[10px] sm:text-xs text-gray-400 font-mono truncate">
               Vértices: <span className="text-[#A9F8B5] font-semibold">{vertexCount}</span> • FPS: {fpsCounter}
             </div>
           </div>
@@ -442,37 +442,37 @@ export const HolographicCubeViewer: React.FC<HolographicCubeViewerProps> = ({
             soundEffects.playClick();
             onClose();
           }}
-          className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer shrink-0"
           title="Cerrar visor 3D"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
 
       {/* Contenedor WebGL Canvas */}
-      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+      <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing touch-none" />
 
       {/* Guía de Interacción en el Centro Inferior */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 pointer-events-none text-center">
-        <span className="text-xs text-gray-400/80 bg-black/60 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
-          🖱️ Arrastra para girar 360° • Rueda para zoom • Explora el interior
+      <div className="absolute bottom-28 sm:bottom-24 left-1/2 -translate-x-1/2 pointer-events-none text-center w-[92vw] max-w-sm">
+        <span className="text-[10px] sm:text-xs text-gray-300 bg-black/75 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+          👆 Toca y gira 360° • Pellizca para zoom • Explora el interior
         </span>
       </div>
 
       {/* Barra de Controles Interactivos Inferior */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-3 z-20 pointer-events-auto max-w-[90vw]">
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-2 sm:gap-3 z-20 pointer-events-auto w-[94vw] max-w-xl">
         {/* Botón Fly-Through */}
         <button
           onClick={triggerFlyThrough}
           disabled={isFlyThroughRunning}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+          className={`flex-1 sm:flex-initial min-w-[130px] sm:min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
             isFlyThroughRunning
               ? 'bg-[#A9F8B5]/30 text-gray-400 border border-[#A9F8B5]/20'
-              : 'bg-[#A9F8B5] text-black hover:bg-[#DFF494] shadow-lg shadow-[#A9F8B5]/25'
+              : 'bg-[#A9F8B5] text-black hover:bg-[#DFF494] shadow-lg shadow-[#A9F8B5]/25 active:scale-95'
           }`}
         >
-          <Play className="w-4 h-4 fill-current" />
-          <span>{isFlyThroughRunning ? 'Vuelo en Curso...' : 'Vuelo de Cámara (Fly-Through)'}</span>
+          <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current shrink-0" />
+          <span>{isFlyThroughRunning ? 'Volando...' : 'Fly-Through'}</span>
         </button>
 
         {/* Botón Morphing a Marco Rombo */}
@@ -481,10 +481,10 @@ export const HolographicCubeViewer: React.FC<HolographicCubeViewerProps> = ({
             soundEffects.playClick();
             setIsMorphed((prev) => !prev);
           }}
-          className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all flex items-center gap-2 cursor-pointer"
+          className="flex-1 sm:flex-initial min-w-[130px] sm:min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold bg-white/10 hover:bg-white/20 active:scale-95 text-white border border-white/15 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
         >
-          <RotateCcw className="w-4 h-4" />
-          <span>{isMorphed ? 'Cerrar Cubo Sólido' : 'Abrir a Marco Rombo'}</span>
+          <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+          <span>{isMorphed ? 'Cerrar Cubo' : 'Marco Rombo'}</span>
         </button>
 
         {/* Toggle Rejilla Wireframe */}
@@ -493,20 +493,20 @@ export const HolographicCubeViewer: React.FC<HolographicCubeViewerProps> = ({
             soundEffects.playClick();
             setShowWireframe((prev) => !prev);
           }}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-2 cursor-pointer ${
+          className={`flex-1 sm:flex-initial min-w-[130px] sm:min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer active:scale-95 ${
             showWireframe
               ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
               : 'bg-white/5 text-gray-400 border-white/10 hover:text-white'
           }`}
         >
-          <Layers className="w-4 h-4" />
+          <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           <span>Rejilla Holográfica</span>
         </button>
 
         {/* Carga de Archivo GLB personalizado */}
-        <label className="px-4 py-2.5 rounded-xl text-xs font-bold bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/40 transition-all flex items-center gap-2 cursor-pointer">
-          <Upload className="w-4 h-4" />
-          <span>Cargar mi .GLB</span>
+        <label className="flex-1 sm:flex-initial min-w-[130px] sm:min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold bg-purple-500/20 hover:bg-purple-500/30 active:scale-95 text-purple-200 border border-purple-500/40 transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer">
+          <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+          <span>Cargar .GLB</span>
           <input
             type="file"
             accept=".glb,.gltf"

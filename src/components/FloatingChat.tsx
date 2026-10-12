@@ -148,12 +148,12 @@ export const FloatingChat: React.FC = () => {
   ];
 
   return (
-    <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto max-w-[calc(100vw-2rem)]">
-      {/* Speech Bubble Tooltip when closed */}
+    <div className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2.5 sm:gap-3 pointer-events-auto max-w-[calc(100vw-1.5rem)]">
+      {/* Speech Bubble Tooltip when closed (Desktop/Tablet only para evitar colisión en móviles) */}
       {!isOpen && (
         <div
           onClick={() => setIsOpen(true)}
-          className="card-accent p-3 sm:p-3.5 rounded-2xl border-[#A9F8B5]/40 shadow-2xl max-w-[250px] sm:max-w-[270px] cursor-pointer hover:scale-105 transition-all text-xs font-medium text-white flex items-center gap-2.5 animate-bounce select-none"
+          className="hidden sm:flex card-accent p-3 sm:p-3.5 rounded-2xl border-[#A9F8B5]/40 shadow-2xl max-w-[250px] sm:max-w-[270px] cursor-pointer hover:scale-105 transition-all text-xs font-medium text-white items-center gap-2.5 animate-bounce select-none"
         >
           <div className="leading-tight">
             <p className="text-gray-100 font-semibold">¿Dudas o cotización rápida?</p>
@@ -164,7 +164,7 @@ export const FloatingChat: React.FC = () => {
 
       {/* Mini Chat Drawer when open */}
       {isOpen && (
-        <div className="w-[calc(100vw-2rem)] sm:w-96 md:w-[410px] max-w-[420px] h-[550px] max-h-[85vh] rounded-3xl bg-[#121316]/98 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="w-[calc(100vw-1.5rem)] sm:w-96 md:w-[410px] max-w-[420px] h-[520px] max-h-[80dvh] rounded-2xl sm:rounded-3xl bg-[#121316]/98 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#17191d] shrink-0">
             <div className="flex items-center gap-2.5">
@@ -340,10 +340,11 @@ export const FloatingChat: React.FC = () => {
       {/* Floating Circle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black shadow-[0_0_30px_rgba(169,248,181,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-transform cursor-pointer border border-white/20 relative"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black shadow-[0_0_25px_rgba(169,248,181,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer border border-white/20 relative shrink-0"
+        aria-label="Abrir Asesor de IA"
       >
-        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-black animate-pulse" />
-        <MessageSquare className="w-6 h-6 stroke-[2.2]" />
+        <span className="absolute -top-1 -right-1 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-400 ring-2 ring-black animate-pulse" />
+        <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
       </button>
     </div>
   );
