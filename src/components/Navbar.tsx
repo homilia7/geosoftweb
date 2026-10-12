@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock } from 'lucide-react';
+import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock, Layers, Search } from 'lucide-react';
 
 interface NavbarProps {
   onOpenCal: () => void;
@@ -27,6 +27,42 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Conoce a Nuestro Equipo', href: '#equipo' },
     { label: 'Cotizador Inteligente', href: '#cotizador', onClick: onScrollToQuote },
     { label: 'Preguntas Frecuentes', href: '#faq' },
+  ];
+
+  const desktopServices = [
+    {
+      title: 'Chatbots & Agentes IA',
+      desc: 'Captura y califica clientes en automático.',
+      badge: '24/7',
+      icon: Sparkles,
+      iconColor: 'text-[#A9F8B5]',
+      iconBorder: 'border-[#A9F8B5]/30',
+      iconBg: 'bg-[#A9F8B5]/10',
+    },
+    {
+      title: 'Webs & Sistemas de Reservas',
+      desc: 'Cobros con SinpePay, Stripe y agendas en vivo.',
+      icon: ArrowUpRight,
+      iconColor: 'text-[#DFF494]',
+      iconBorder: 'border-[#DFF494]/30',
+      iconBg: 'bg-[#DFF494]/10',
+    },
+    {
+      title: 'Plataformas SaaS a Medida',
+      desc: 'Software en la nube de alta disponibilidad.',
+      icon: Layers,
+      iconColor: 'text-[#C1A35B]',
+      iconBorder: 'border-[#C1A35B]/30',
+      iconBg: 'bg-[#C1A35B]/10',
+    },
+    {
+      title: 'Posicionamiento SEO Local',
+      desc: 'Aparece de primero en Google en tu región.',
+      icon: Search,
+      iconColor: 'text-[#A9F8B5]',
+      iconBorder: 'border-[#A9F8B5]/30',
+      iconBg: 'bg-[#A9F8B5]/10',
+    },
   ];
 
   return (
@@ -60,44 +96,41 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onMouseEnter={() => setDropdownOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             >
               <span>Servicios</span>
-              <ChevronDown className="w-3 h-3 text-gray-400" />
+              <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-300 ${dropdownOpen ? 'rotate-180 text-white' : ''}`} />
             </button>
 
             {dropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-72 bg-[#141518]/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-3 shadow-2xl flex flex-col gap-1.5">
-                <a
-                  href="#servicios"
-                  onClick={() => { setDropdownOpen(false); onScrollToServices(); }}
-                  className="p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-3"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-[#A9F8B5]/10 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5] shrink-0">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-white text-xs flex items-center gap-1.5">
-                      Chatbots & Agentes IA
-                      <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 py-0.2 rounded-full font-mono">24/7</span>
-                    </div>
-                    <div className="text-[11px] text-gray-400 mt-0.5">Captura y califica clientes en automático.</div>
-                  </div>
-                </a>
-
-                <a
-                  href="#servicios"
-                  onClick={() => { setDropdownOpen(false); onScrollToServices(); }}
-                  className="p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-3"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-[#DFF494]/10 border border-[#DFF494]/30 flex items-center justify-center text-[#DFF494] shrink-0">
-                    <ArrowUpRight className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-white text-xs">Webs & Sistemas de Reservas</div>
-                    <div className="text-[11px] text-gray-400 mt-0.5">Cobros con SinpePay, Stripe y agendas en vivo.</div>
-                  </div>
-                </a>
+              <div className="absolute top-full left-0 mt-2 w-80 bg-[#141518]/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-2.5 shadow-2xl flex flex-col gap-1.5 animate-dropdown-menu">
+                {desktopServices.map((svc, sIdx) => {
+                  const Icon = svc.icon;
+                  return (
+                    <a
+                      key={svc.title}
+                      href="#servicios"
+                      style={{ animationDelay: `${sIdx * 60 + 50}ms` }}
+                      onClick={() => { setDropdownOpen(false); onScrollToServices(); }}
+                      className="animate-mobile-item p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-3"
+                    >
+                      <div className={`w-8 h-8 rounded-lg ${svc.iconBg} border ${svc.iconBorder} flex items-center justify-center ${svc.iconColor} shrink-0`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-white text-xs flex items-center gap-1.5">
+                          <span>{svc.title}</span>
+                          {svc.badge && (
+                            <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 py-0.2 rounded-full font-mono">
+                              {svc.badge}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-gray-400 mt-0.5 truncate">{svc.desc}</div>
+                      </div>
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>
