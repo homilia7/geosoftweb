@@ -28,6 +28,37 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dropdownContainerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const handleDropdownEnter = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
+    }
+    setDropdownOpen(true);
+  };
+
+  const handleDropdownLeave = () => {
+    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setDropdownOpen(false);
+    }, 280); // 280ms de tiempo de gracia para navegación cómoda
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownContainerRef.current &&
+        !dropdownContainerRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const [pairStage, setPairStage] = useState(0); // 0: oculto, 1: Par 1, 2: Par 2, 3: Par 3, 4: Par 4, 5: Par 5
   const [animPhase, setAnimPhase] = useState<NavAnimPhase>('entrance');
   const [isMuted, setIsMuted] = useState(() => soundEffects.isMuted());
@@ -211,13 +242,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Par 3 Izquierda: Botón Servicios (de izquierda a derecha) */}
           <div
+            ref={dropdownContainerRef}
             style={getNavSweepStyle(2)}
             className={`relative ${getEntranceClass('left', 3)} ${getNavItemClass(2, 'link')}`}
-            onMouseLeave={() => setDropdownOpen(false)}
+            onMouseEnter={handleDropdownEnter}
+            onMouseLeave={handleDropdownLeave}
           >
             <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              onMouseEnter={() => setDropdownOpen(true)}
+              onClick={() => {
+                if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+                setDropdownOpen((prev) => !prev);
+              }}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             >
               <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
@@ -229,34 +264,45 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {dropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-80 bg-[#141518]/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-2.5 shadow-2xl flex flex-col gap-1.5 animate-dropdown-menu">
-                {desktopServices.map((svc, sIdx) => {
-                  const Icon = svc.icon;
-                  return (
-                    <a
-                      key={svc.title}
-                      href="#servicios"
-                      style={{ animationDelay: `${sIdx * 60 + 50}ms` }}
-                      onClick={() => { setDropdownOpen(false); onScrollToServices(); }}
-                      className="animate-mobile-item p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-3"
-                    >
-                      <div className={`w-8 h-8 rounded-lg ${svc.iconBg} border ${svc.iconBorder} flex items-center justify-center ${svc.iconColor} shrink-0`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-white text-xs flex items-center gap-1.5">
-                          <span>{svc.title}</span>
-                          {svc.badge && (
-                            <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 py-0.2 rounded-full font-mono">
-                              {svc.badge}
-                            </span>
-                          )}
+              <div
+                className="absolute top-full left-0 pt-2 w-80 z-50 animate-dropdown-menu"
+                onMouseEnter={handleDropdownEnter}
+                onMouseLeave={handleDropdownLeave}
+              >
+                {/* Puente seguro invisible para evitar que el ratón pierda el contacto al bajar */}
+                <div className="absolute -top-2 left-0 right-0 h-4 pointer-events-auto" />
+                <div className="bg-[#141518]/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-2.5 shadow-2xl flex flex-col gap-1.5">
+                  {desktopServices.map((svc, sIdx) => {
+                    const Icon = svc.icon;
+                    return (
+                      <a
+                        key={svc.title}
+                        href="#servicios"
+                        style={{ animationDelay: `${sIdx * 60 + 50}ms` }}
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          onScrollToServices();
+                        }}
+                        className="animate-mobile-item p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-3"
+                      >
+                        <div className={`w-8 h-8 rounded-lg ${svc.iconBg} border ${svc.iconBorder} flex items-center justify-center ${svc.iconColor} shrink-0`}>
+                          <Icon className="w-4 h-4" />
                         </div>
-                        <div className="text-[11px] text-gray-400 mt-0.5 truncate">{svc.desc}</div>
-                      </div>
-                    </a>
-                  );
-                })}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-white text-xs flex items-center gap-1.5">
+                            <span>{svc.title}</span>
+                            {svc.badge && (
+                              <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 py-0.2 rounded-full font-mono">
+                                {svc.badge}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-0.5 truncate">{svc.desc}</div>
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>

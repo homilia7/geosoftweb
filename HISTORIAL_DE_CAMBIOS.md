@@ -15,13 +15,15 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-12 — Clic Profesional Mecánico Háptico & Cobertura Universal de Interacción
-- **Diseño Acústico de Clic de Alta Fidelidad (`soundEffects.ts`):**
-  - **Capa 1 (Snap Mecánico):** Micro-transiente de contacto de 7ms con filtro paso-banda a 3200Hz (Q=3.2), simulando el tacto exacto de un interruptor físico de hardware premium (estilo Apple trackpad Force Touch / teclado de aluminio).
-  - **Capa 2 (Thump de Cuerpo):** Pulso armónico cálido y resonante (250Hz -> 60Hz, 48ms, ganancia `0.22`), aportando solidez, peso y satisfacción táctil de confirmación.
-  - **Cobertura Universal de Interacción:** Detección automática en botones, enlaces, selectores, pestañas, modales, checkboxes, acordeones y cualquier elemento que tenga estilo `cursor: pointer`.
-- **Eliminación del Punto Verde del Cursor (`CustomCursor.tsx` & `App.tsx`):**
-  - Puntero del sistema limpio y nítido, manteniendo exclusivamente la cortina de humo vaporoso (`SmokeCursorTrail.tsx`).
+### 2026-10-12 — Menú de Servicios Ultra-Estable & Sonido de Clic Bonito en Alta Fidelidad (click.wav)
+- **Menú Desplegable de Servicios (`Navbar.tsx`):**
+  - **Eliminación del Cierre Prematuro:** Se eliminó el espacio muerto (`mt-2`) que provocaba la pérdida de foco del mouse al descender, reemplazándolo por posicionamiento continuo (`pt-2`) y un **puente seguro invisible de 16px** que mantiene la superficie interactiva ininterrumpida.
+  - **Retardo de Gracia (Hover Grace Buffer):** Temporizador de 280ms (`dropdownTimeoutRef`) al salir del elemento, permitiendo movimientos diagonales o rápidos sin cierres accidentales.
+  - **Apertura Persistente por Clic & Click-Outside:** Al hacer clic sobre "Servicios", el menú permanece abierto de forma sólida hasta que el usuario elija una opción o haga clic fuera del menú.
+- **Sonido de Clic Bonito y Profesional (`click.wav` & `soundEffects.ts`):**
+  - **Buffer Precargado de Alta Fidelidad (`click.wav`):** Síntesis PCM de 55ms a 44.1kHz con forma de onda senoidal armónica (620Hz -> 160Hz con ataque terso de 2ms y caída sedosa), volumen calibrado a `0.35`.
+  - **Cero Estática o Ruido Áspero:** Se erradicó cualquier ráfaga de ruido blanco sintético; el sonido es un *UI Pop* limpio, dulce, táctil y de alta gama.
+  - **Fallback Armónico Puro:** Si el buffer no ha cargado, un oscilador senoidal dual reproduce exactamente la misma curva armónica.
 
 ### 2026-10-12 — Sustitución Definitiva por Música Moderna Chillout & Cortina de Humo para Cursor
 - **Música Moderna y Bonita de Alta Calidad (`ambient-music.mp3`):**

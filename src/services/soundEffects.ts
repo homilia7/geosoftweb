@@ -17,6 +17,10 @@ class SoundEffectsService {
   private targetVolume: number = 0.22; // Volumen suave, moderno y elegante
   private fadeInterval: number | null = null;
 
+  // Sonido de clic profesional precargado en buffer de alta definición
+  private clickAudioBuffer: AudioBuffer | null = null;
+  private isBufferLoading: boolean = false;
+
   constructor() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('geosoft_sound_muted');
@@ -24,6 +28,21 @@ class SoundEffectsService {
         this.muted = saved === 'true';
       }
     }
+  }
+
+  private loadClickBuffer(ctx: AudioContext) {
+    if (this.clickAudioBuffer || this.isBufferLoading || typeof window === 'undefined') return;
+    this.isBufferLoading = true;
+    fetch('/assets/audio/click.wav')
+      .then((res) => res.arrayBuffer())
+      .then((data) => ctx.decodeAudioData(data))
+      .then((decoded) => {
+        this.clickAudioBuffer = decoded;
+      })
+      .catch(() => {})
+      .finally(() => {
+        this.isBufferLoading = false;
+      });
   }
 
   private getAudioElement(): HTMLAudioElement | null {
@@ -45,6 +64,7 @@ class SoundEffectsService {
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
+        this.loadClickBuffer(this.ctx);
       }
     }
     if (this.ctx && this.ctx.state === 'suspended' && this.hasInteracted) {
@@ -328,51 +348,44 @@ class SoundEffectsService {
 
   private triggerClickTone(ctx: AudioContext) {
     try {
-      const now = ctx.currentTime;
-
-      // --- CAPA 1: SNAP MECÁNICO DE PRECISIÓN (Micro-transiente de contacto) ---
-      // Simula el tacto de un switch de aluminio / trackpad háptico (Force Touch)
-      const sampleRate = ctx.sampleRate;
-      const bufferLen = Math.floor(sampleRate * 0.007); // 7ms
-      const buffer = ctx.createBuffer(1, bufferLen, sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferLen; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferLen * 0.22));
+      // 1. Si el buffer de audio de alta fidelidad está listo, reproducirlo al instante
+      if (this.clickAudioBuffer) {
+        const source = ctx.createBufferSource();
+        source.buffer = this.clickAudioBuffer;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.35, ctx.currentTime);
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        source.start(ctx.currentTime);
+        return;
       }
 
-      const noise = ctx.createBufferSource();
-      noise.buffer = buffer;
+      // 2. Fallback acústico musical limpio y cálido (UI Pop armónico sin estática ni ruido)
+      const now = ctx.currentTime;
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-      const bandpass = ctx.createBiquadFilter();
-      bandpass.type = 'bandpass';
-      bandpass.frequency.setValueAtTime(3200, now);
-      bandpass.Q.setValueAtTime(3.2, now);
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(620, now);
+      osc1.frequency.exponentialRampToValueAtTime(160, now + 0.045);
 
-      const noiseGain = ctx.createGain();
-      noiseGain.gain.setValueAtTime(0.18, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.007);
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1240, now);
+      osc2.frequency.exponentialRampToValueAtTime(320, now + 0.025);
 
-      noise.connect(bandpass);
-      bandpass.connect(noiseGain);
-      noiseGain.connect(ctx.destination);
-      noise.start(now);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.26, now + 0.002);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
 
-      // --- CAPA 2: CUERPO HÁPTICO RESONANTE (Confirmación física con solidez y cuerpo) ---
-      const osc = ctx.createOscillator();
-      const oscGain = ctx.createGain();
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(250, now);
-      osc.frequency.exponentialRampToValueAtTime(60, now + 0.042);
-
-      oscGain.gain.setValueAtTime(0.22, now);
-      oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.048);
-
-      osc.connect(oscGain);
-      oscGain.connect(ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.05);
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.055);
+      osc2.stop(now + 0.055);
     } catch {}
   }
 }
