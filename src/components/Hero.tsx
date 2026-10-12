@@ -9,6 +9,7 @@ interface HeroProps {
   onOpenBooking: () => void;
   onScrollToQuote: () => void;
   introFinished?: boolean;
+  onLeftContentAppeared?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -16,21 +17,43 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenBooking,
   onScrollToQuote,
   introFinished = false,
+  onLeftContentAppeared,
 }) => {
-  const [animReady, setAnimReady] = React.useState(false);
+  const [rightReady, setRightReady] = React.useState(false);
+  const [leftReady, setLeftReady] = React.useState(false);
+  const onLeftContentAppearedRef = React.useRef(onLeftContentAppeared);
+
+  React.useEffect(() => {
+    onLeftContentAppearedRef.current = onLeftContentAppeared;
+  }, [onLeftContentAppeared]);
 
   React.useEffect(() => {
     if (introFinished) {
-      // Se activa SOLO después de que el logo del centro y los textos del splash desaparecen por completo
-      const timer = setTimeout(() => setAnimReady(true), 120);
-      return () => clearTimeout(timer);
+      // 1. Primero aparece el contenedor derecho (cuadro 3D de arriba hacia abajo, 1000ms)
+      const tRight = setTimeout(() => setRightReady(true), 100);
+
+      // 2. El contenedor izquierdo completo aparece DESPUÉS de que aparece el contenedor derecho (~1000ms)
+      const tLeft = setTimeout(() => setLeftReady(true), 1120);
+
+      // 3. Después de que aparece el contenedor izquierdo (~1050ms), inicia la animación del menú de arriba
+      const tNav = setTimeout(() => {
+        onLeftContentAppearedRef.current?.();
+      }, 2180);
+
+      return () => {
+        clearTimeout(tRight);
+        clearTimeout(tLeft);
+        clearTimeout(tNav);
+      };
     }
   }, [introFinished]);
 
   // Fallback de seguridad amplio (8s) solo en caso de recarga directa sin splash
   React.useEffect(() => {
     const safety = setTimeout(() => {
-      setAnimReady(true);
+      setRightReady(true);
+      setLeftReady(true);
+      onLeftContentAppearedRef.current?.();
     }, 8000);
     return () => clearTimeout(safety);
   }, []);
@@ -43,9 +66,9 @@ export const Hero: React.FC<HeroProps> = ({
 
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <div className="grid md:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center">
-          {/* Left Column: Headlines & Call to Actions (todo el bloque entra suave y fluido de izquierda a derecha tras el splash) */}
+          {/* Left Column: Headlines & Call to Actions (aparece después del contenedor derecho) */}
           <div className={`md:col-span-7 space-y-5 text-center md:text-left transition-all ${
-            animReady ? 'animate-hero-content-left' : 'opacity-0 pointer-events-none'
+            leftReady ? 'animate-hero-content-left' : 'opacity-0 pointer-events-none'
           }`}>
             {/* Top Badge */}
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5]">
@@ -95,9 +118,9 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           </div>
 
-          {/* Right Column: Cuadro con logo e IA Conectada (aparece desde arriba hacia abajo suavemente y queda flotando) */}
+          {/* Right Column: Cuadro con logo e IA Conectada (aparece primero desde arriba hacia abajo suavemente y queda flotando) */}
           <div className={`md:col-span-5 flex justify-center transition-all ${
-            animReady ? 'animate-hero-card-down' : 'opacity-0 pointer-events-none'
+            rightReady ? 'animate-hero-card-down' : 'opacity-0 pointer-events-none'
           }`}>
             <div className="relative group w-full max-w-[420px] animate-hero-floating">
               {/* Outer decorative ambient blur */}

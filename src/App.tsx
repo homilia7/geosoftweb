@@ -27,6 +27,7 @@ function MainLayout() {
   const [isCalOpen, setIsCalOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [introFinished, setIntroFinished] = useState(false);
+  const [navAnimStarted, setNavAnimStarted] = useState(false);
   const { openAdminModal } = useGeoSoftStore();
 
   const scrollToQuote = () => {
@@ -44,9 +45,9 @@ function MainLayout() {
       {/* 3D Isometric Cube Animated Splash Intro */}
       <SplashIntro onFinish={() => setIntroFinished(true)} />
 
-      {/* Floating Capsule Navbar */}
+      {/* Floating Capsule Navbar (inicia su animación estrictamente después de que el contenedor izquierdo aparece) */}
       <Navbar
-        introFinished={introFinished}
+        introFinished={navAnimStarted}
         onOpenCal={() => setIsCalOpen(true)}
         onOpenBooking={() => setIsBookingOpen(true)}
         onOpenAdmin={openAdminModal}
@@ -58,6 +59,7 @@ function MainLayout() {
         {/* Hero Section */}
         <Hero
           introFinished={introFinished}
+          onLeftContentAppeared={() => setNavAnimStarted(true)}
           onOpenCal={() => setIsCalOpen(true)}
           onOpenBooking={() => setIsBookingOpen(true)}
           onScrollToQuote={scrollToQuote}
