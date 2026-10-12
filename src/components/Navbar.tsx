@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock, Layers, Search } from 'lucide-react';
 
 interface NavbarProps {
@@ -7,6 +7,7 @@ interface NavbarProps {
   onOpenAdmin: () => void;
   onScrollToQuote: () => void;
   onScrollToServices: () => void;
+  introFinished?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -15,9 +16,49 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAdmin,
   onScrollToQuote,
   onScrollToServices,
+  introFinished,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [sweepActive, setSweepActive] = useState(false);
+
+  useEffect(() => {
+    if (introFinished) {
+      const timer = setTimeout(() => {
+        setHasStarted(true);
+      }, 120);
+      return () => clearTimeout(timer);
+    }
+  }, [introFinished]);
+
+  // Fallback de seguridad en caso de recarga directa sin splash
+  useEffect(() => {
+    const safety = setTimeout(() => {
+      setHasStarted(true);
+    }, 4500);
+    return () => clearTimeout(safety);
+  }, []);
+
+  // Barrido cromático: arranca 1.5s después de iniciar (cuando el Par 5 ya se asentó)
+  useEffect(() => {
+    if (!hasStarted) return;
+
+    const sweepTimer = setTimeout(() => {
+      setSweepActive(true);
+    }, 1500);
+
+    // Repetir el barrido cromático suavemente cada 9.5s
+    const repeatInterval = setInterval(() => {
+      setSweepActive(false);
+      setTimeout(() => setSweepActive(true), 50);
+    }, 9500);
+
+    return () => {
+      clearTimeout(sweepTimer);
+      clearInterval(repeatInterval);
+    };
+  }, [hasStarted]);
 
   const mobileNavItems = [
     { label: 'Inicio', href: '#inicio' },
@@ -68,8 +109,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2 sm:py-2.5 px-3 sm:px-4 pointer-events-none">
       <div className="pointer-events-auto w-full max-w-5xl bg-[#121316]/30 backdrop-blur-2xl border border-white/10 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center justify-between">
-        {/* Brand Logo & Title */}
-        <a href="#" className="flex items-center gap-2 sm:gap-2.5 group">
+        {/* Brand Logo & Title (Par 1 Izquierda) */}
+        <a
+          href="#"
+          style={{ animationDelay: '100ms' }}
+          className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${
+            hasStarted ? 'animate-nav-pair-left' : 'opacity-0'
+          }`}
+        >
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-white/15 bg-black flex items-center justify-center shadow-sm">
             <img
               src="/assets/logo-gold.jpeg"
@@ -77,28 +124,51 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           </div>
-          <span className="font-display font-bold text-sm sm:text-base tracking-wider text-white">
+          <span
+            style={sweepActive ? { animationDelay: '100ms' } : undefined}
+            className={`font-display font-bold text-sm sm:text-base tracking-wider text-white ${
+              sweepActive ? 'nav-chromatic-sweep-white' : ''
+            }`}
+          >
             GEO<span className="text-gradient-accent">SOFT</span>
           </span>
         </a>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 text-[13px] font-medium text-gray-300">
+          {/* Par 2 Izquierda: Inicio */}
           <a
             href="#inicio"
-            className="px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            style={{ animationDelay: '300ms' }}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${
+              hasStarted ? 'animate-nav-pair-left' : 'opacity-0'
+            }`}
           >
-            Inicio
+            <span
+              style={sweepActive ? { animationDelay: '280ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+            >
+              Inicio
+            </span>
           </a>
 
-          {/* Solutions Dropdown */}
-          <div className="relative" onMouseLeave={() => setDropdownOpen(false)}>
+          {/* Par 3 Izquierda: Servicios Dropdown */}
+          <div
+            style={{ animationDelay: '500ms' }}
+            className={`relative ${hasStarted ? 'animate-nav-pair-left' : 'opacity-0'}`}
+            onMouseLeave={() => setDropdownOpen(false)}
+          >
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onMouseEnter={() => setDropdownOpen(true)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             >
-              <span>Servicios</span>
+              <span
+                style={sweepActive ? { animationDelay: '460ms' } : undefined}
+                className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              >
+                Servicios
+              </span>
               <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-300 ${dropdownOpen ? 'rotate-180 text-white' : ''}`} />
             </button>
 
@@ -135,63 +205,130 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
+          {/* Par 4 Izquierda: Metodología */}
           <a
             href="#como-funciona"
-            className="px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            style={{ animationDelay: '700ms' }}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${
+              hasStarted ? 'animate-nav-pair-left' : 'opacity-0'
+            }`}
           >
-            Metodología
+            <span
+              style={sweepActive ? { animationDelay: '640ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+            >
+              Metodología
+            </span>
           </a>
 
+          {/* Par 5 Izquierda: Proyectos */}
           <a
             href="#proyectos"
-            className="px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            style={{ animationDelay: '900ms' }}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${
+              hasStarted ? 'animate-nav-pair-left' : 'opacity-0'
+            }`}
           >
-            Proyectos
+            <span
+              style={sweepActive ? { animationDelay: '820ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+            >
+              Proyectos
+            </span>
           </a>
 
+          {/* Par 5 Derecha: Equipo */}
           <a
             href="#equipo"
-            className="px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            style={{ animationDelay: '900ms' }}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${
+              hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+            }`}
           >
-            Equipo
+            <span
+              style={sweepActive ? { animationDelay: '1000ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+            >
+              Equipo
+            </span>
           </a>
 
+          {/* Par 4 Derecha: Cotizador */}
           <a
             href="#cotizador"
             onClick={onScrollToQuote}
-            className="px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            style={{ animationDelay: '700ms' }}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${
+              hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+            }`}
           >
-            Cotizador
+            <span
+              style={sweepActive ? { animationDelay: '1180ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+            >
+              Cotizador
+            </span>
           </a>
 
+          {/* Par 3 Derecha: FAQ */}
           <a
             href="#faq"
-            className="px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors"
+            style={{ animationDelay: '500ms' }}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${
+              hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+            }`}
           >
-            FAQ
+            <span
+              style={sweepActive ? { animationDelay: '1360ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+            >
+              FAQ
+            </span>
           </a>
         </nav>
 
         {/* Desktop Action CTAs */}
         <div className="hidden md:flex items-center gap-2">
+          {/* Par 2 Derecha: Agendar Cita */}
           <button
             onClick={onOpenBooking}
-            className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-all cursor-pointer whitespace-nowrap"
+            style={{ animationDelay: '300ms' }}
+            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-all cursor-pointer whitespace-nowrap ${
+              hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+            }`}
           >
             <Clock className="w-3 h-3 text-[#DFF494]" />
-            <span>Agendar Cita</span>
+            <span
+              style={sweepActive ? { animationDelay: '1540ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep-emerald' : ''}
+            >
+              Agendar Cita
+            </span>
           </button>
 
+          {/* Par 1 Derecha: Cotizar Ahora */}
           <button
             onClick={onScrollToQuote}
-            className="px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap"
+            style={{ animationDelay: '100ms' }}
+            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap ${
+              hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+            }`}
           >
-            Cotizar Ahora
+            <span
+              style={sweepActive ? { animationDelay: '1720ms' } : undefined}
+              className={sweepActive ? 'nav-chromatic-sweep-dark' : ''}
+            >
+              Cotizar Ahora
+            </span>
           </button>
 
+          {/* Candado Admin */}
           <button
             onClick={onOpenAdmin}
-            className="p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer"
+            style={{ animationDelay: '100ms' }}
+            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${
+              hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+            }`}
             title="Panel de Administración"
           >
             <Lock className="w-3 h-3" />
@@ -201,7 +338,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Hamburger Button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-1.5 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white"
+          style={{ animationDelay: '100ms' }}
+          className={`md:hidden p-1.5 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white transition-all ${
+            hasStarted ? 'animate-nav-pair-right' : 'opacity-0'
+          }`}
         >
           {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
         </button>

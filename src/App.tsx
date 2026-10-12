@@ -26,6 +26,7 @@ function MainLayout() {
   useAnalyticsTracker();
   const [isCalOpen, setIsCalOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [introFinished, setIntroFinished] = useState(false);
   const { openAdminModal } = useGeoSoftStore();
 
   const scrollToQuote = () => {
@@ -41,10 +42,11 @@ function MainLayout() {
   return (
     <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative">
       {/* 3D Isometric Cube Animated Splash Intro */}
-      <SplashIntro />
+      <SplashIntro onFinish={() => setIntroFinished(true)} />
 
       {/* Floating Capsule Navbar */}
       <Navbar
+        introFinished={introFinished}
         onOpenCal={() => setIsCalOpen(true)}
         onOpenBooking={() => setIsBookingOpen(true)}
         onOpenAdmin={openAdminModal}

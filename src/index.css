@@ -688,3 +688,165 @@ h1, h2, h3, h4, .font-display {
   transform-origin: top left;
   will-change: transform, opacity, filter;
 }
+
+/* ==========================================================================
+   APARICIÓN COREOGRAFIADA DEL NAVBAR (PARES SIMÉTRICOS) Y BARRIDO CROMÁTICO
+   ========================================================================== */
+
+/* 1. Entrada desde la izquierda (Logo, Inicio, Servicios, Metodología, Proyectos) */
+@keyframes navPairInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px) scale(0.96);
+    filter: blur(8px);
+  }
+  60% {
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-nav-pair-left {
+  animation: navPairInLeft 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+/* 2. Entrada desde la derecha (Cotizar Ahora, Agendar Cita, FAQ, Cotizador, Equipo) */
+@keyframes navPairInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(24px) scale(0.96);
+    filter: blur(8px);
+  }
+  60% {
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-nav-pair-right {
+  animation: navPairInRight 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+/* 3. Desplazamiento de la luz cromática adentro del texto */
+@keyframes textChromaticSweepPass {
+  0% {
+    background-position: 220% 0;
+    color: transparent;
+  }
+  98% {
+    background-position: -120% 0;
+    color: transparent;
+  }
+  100% {
+    background-position: -120% 0;
+    color: inherit;
+  }
+}
+
+/* Clase base para el barrido cromático en enlaces gris claro */
+.nav-chromatic-sweep {
+  background-image: linear-gradient(
+    90deg,
+    #d1d5db 0%,
+    #d1d5db 30%,
+    #A9F8B5 39%,
+    #DFF494 46%,
+    #38bdf8 53%,
+    #c084fc 60%,
+    #ec4899 67%,
+    #C1A35B 74%,
+    #d1d5db 83%,
+    #d1d5db 100%
+  );
+  background-size: 300% 100%;
+  background-position: 220% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  animation: textChromaticSweepPass 480ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: background-position;
+}
+
+/* Variante para el texto blanco del Logo */
+.nav-chromatic-sweep-white {
+  background-image: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 30%,
+    #A9F8B5 39%,
+    #DFF494 46%,
+    #38bdf8 53%,
+    #c084fc 60%,
+    #ec4899 67%,
+    #C1A35B 74%,
+    #ffffff 83%,
+    #ffffff 100%
+  );
+  background-size: 300% 100%;
+  background-position: 220% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  animation: textChromaticSweepPass 480ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: background-position;
+}
+
+/* Variante para el botón Agendar Cita (verde esmeralda) */
+.nav-chromatic-sweep-emerald {
+  background-image: linear-gradient(
+    90deg,
+    #A9F8B5 0%,
+    #A9F8B5 30%,
+    #ffffff 39%,
+    #DFF494 46%,
+    #38bdf8 53%,
+    #c084fc 60%,
+    #ec4899 67%,
+    #C1A35B 74%,
+    #A9F8B5 83%,
+    #A9F8B5 100%
+  );
+  background-size: 300% 100%;
+  background-position: 220% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  animation: textChromaticSweepPass 480ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: background-position;
+}
+
+/* Variante para el botón Cotizar Ahora (texto oscuro sobre fondo verde lima) */
+.nav-chromatic-sweep-dark {
+  background-image: linear-gradient(
+    90deg,
+    #000000 0%,
+    #000000 30%,
+    #ffffff 42%,
+    #38bdf8 52%,
+    #ffffff 62%,
+    #000000 78%,
+    #000000 100%
+  );
+  background-size: 300% 100%;
+  background-position: 220% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  animation: textChromaticSweepPass 480ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: background-position;
+}
+
