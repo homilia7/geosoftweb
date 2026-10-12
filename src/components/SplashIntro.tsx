@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { UltraCube3D } from './UltraCube3D';
+import { soundEffects } from '../services/soundEffects';
 
 interface SplashIntroProps {
   onFinish?: () => void;
@@ -13,6 +14,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
   const [shockwaveKey, setShockwaveKey] = useState(0);
 
   const handleDismiss = () => {
+    soundEffects.playIntroSound();
     setStage('entering');
     setTimeout(() => {
       setVisible(false);

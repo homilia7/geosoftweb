@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StoreProvider, useGeoSoftStore } from './context/StoreContext';
 import { SplashIntro } from './components/SplashIntro';
 import { Navbar } from './components/Navbar';
+import { CustomCursor } from './components/CustomCursor';
+import { soundEffects } from './services/soundEffects';
 import { Hero } from './components/Hero';
 import { StatsSection } from './components/StatsSection';
 import { SalesHook } from './components/SalesHook';
@@ -30,6 +32,10 @@ function MainLayout() {
   const [navAnimStarted, setNavAnimStarted] = useState(false);
   const { openAdminModal } = useGeoSoftStore();
 
+  React.useEffect(() => {
+    soundEffects.init();
+  }, []);
+
   const scrollToQuote = () => {
     const el = document.getElementById('cotizador');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -42,6 +48,9 @@ function MainLayout() {
 
   return (
     <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative">
+      {/* High-End Fluid Custom Cursor Follower */}
+      <CustomCursor />
+
       {/* 3D Isometric Cube Animated Splash Intro */}
       <SplashIntro onFinish={() => setIntroFinished(true)} />
 
