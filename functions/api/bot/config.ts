@@ -19,12 +19,12 @@ export const onRequestGet = async (context: { env: Env }) => {
 
     let lengthMode = 'equilibrado';
     let welcomeMessage = DEFAULT_WELCOME_MESSAGE;
-    let selectedModel = 'gemini-2.0-flash';
+    let selectedModel = 'gemini-3.5-flash';
 
     (results || []).forEach((row: any) => {
       if (row.key === 'length_mode') lengthMode = row.value || 'equilibrado';
       if (row.key === 'welcome_message') welcomeMessage = row.value || DEFAULT_WELCOME_MESSAGE;
-      if (row.key === 'selected_model') selectedModel = row.value || 'gemini-2.0-flash';
+      if (row.key === 'selected_model') selectedModel = row.value || 'gemini-3.5-flash';
     });
 
     return new Response(JSON.stringify({

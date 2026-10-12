@@ -34,7 +34,7 @@ export const AdminBotTab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'kpis' | 'modelos' | 'configuracion' | 'objeciones' | 'aprendizaje' | 'faqs'>('kpis');
 
   // Configuración de modelo de Google AI Studio
-  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.0-flash');
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-3.5-flash');
   const [isSavingModel, setIsSavingModel] = useState(false);
   const [modelSavedFeedback, setModelSavedFeedback] = useState<string | null>(null);
 

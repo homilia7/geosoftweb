@@ -31,115 +31,115 @@ interface AdminAiModelsSubTabProps {
 
 export const googleModelsCatalog: GoogleModelCatalogItem[] = [
   {
-    id: 'gemini-2.0-flash',
-    name: 'Gemini 2.0 Flash',
-    version: 'v2.0 Flash (Next-Gen)',
+    id: 'gemini-3.5-flash',
+    name: 'Gemini 3.5 Flash',
+    version: 'v3.5 Flash (Generación Actual)',
     badge: '⭐ Modelo Principal Recomendado',
     badgeColor: 'text-[#A9F8B5] bg-[#A9F8B5]/15 border-[#A9F8B5]/30',
     rpdLimit: 1500,
     rpmLimit: 15,
     tpmLimit: '1,000,000 TPM',
     pricing: '$0.00 en Free Tier ($0.10 / $0.40 por 1M en Pago)',
-    latencyText: 'Ultra Baja (< 350ms)',
+    latencyText: 'Ultra Baja (< 280ms)',
     contextWindow: '1,048,576 tokens (1M)',
-    description: 'El modelo insignia de Google para agentes conversacionales en tiempo real. Velocidad relámpago, razonamiento multimodal y formato Markdown estructurado con párrafos limpios y viñetas.',
+    description: 'El modelo insignia y más avanzado de Google para agentes conversacionales en tiempo real. Velocidad récord, comprensión contextual superior y redacción limpia con Markdown estructurado.',
     strengths: [
-      'Latencia mínima de respuesta (<350ms) que engancha al prospecto sin demoras.',
-      'Estructura visual obligatoria con saltos dobles de línea y viñetas de alto impacto.',
-      'Generación JSON estricta y fiable para registrar intenciones y citas en la base de datos.',
-      'Cuota gratuita muy generosa de 1,500 solicitudes diarias en Google AI Studio.'
+      'Latencia de respuesta ultra veloz (<280ms) para una interacción fluida y natural.',
+      'Excelente redacción estructurada con saltos dobles de línea y viñetas ejecutivas.',
+      'Alta confiabilidad en llamadas de herramientas JSON y extracción de intenciones.',
+      'Generoso cupo gratuito de 1,500 peticiones al día en Google AI Studio.'
     ],
     bestFor: [
-      'Servicio al cliente (Atención instantánea 24/7 sin tiempos de espera)',
-      'Dar mejores respuestas (Formato limpio, viñetas, negritas, cero textos acumulados)',
-      'Generar agendamientos (Flujo consultivo en 3 pasos que cierra citas cordialmente)'
+      'Servicio al cliente (Atención instantánea 24/7 con empatía y cordialidad)',
+      'Dar mejores respuestas (Formato limpio, viñetas, negritas estratégicas, cero saturación)',
+      'Generar agendamientos (Flujo consultivo en 3 pasos que concreta la cita y WhatsApp sin presionar)'
     ],
     recommended: true
   },
   {
-    id: 'gemini-1.5-pro',
-    name: 'Gemini 1.5 Pro',
-    version: 'v1.5 Pro (Deep Reasoning)',
+    id: 'gemini-3.1-pro-preview',
+    name: 'Gemini 3.1 Pro',
+    version: 'v3.1 Pro Preview (Deep Reasoning)',
     badge: '🧠 Máxima Inteligencia & Psicología',
     badgeColor: 'text-purple-300 bg-purple-500/15 border-purple-500/30',
     rpdLimit: 50,
     rpmLimit: 2,
     tpmLimit: '32,000 TPM',
     pricing: '$0.00 en Free Tier ($1.25 / $5.00 por 1M en Pago)',
-    latencyText: 'Media (~1.2s - 1.8s)',
+    latencyText: 'Media (~1.1s - 1.6s)',
     contextWindow: '2,097,152 tokens (2M)',
-    description: 'El modelo de mayor capacidad cognitiva y razonamiento profundo de Google. Especializado en análisis psicológico de necesidades, argumentación persuasiva ante objeciones complejas y formulación de propuestas de alto valor.',
+    description: 'El modelo de razonamiento profundo y capacidad analítica superior de Google. Especializado en psicología de ventas, análisis de dolor de negocio, manejo de objeciones duras y armado de propuestas complejas.',
     strengths: [
-      'Ventana de contexto colosal de 2 Millones de tokens para memoria conversacional ilimitada.',
-      'Detección de intenciones ocultas, frustraciones y necesidades implícitas del cliente.',
-      'Persuasión consultiva de alto nivel para rebatir objeciones de precio ("muy caro") o competencia.',
-      'Cálculo y redacción de propuestas comerciales estratégicas con desglose de Retorno de Inversión (ROI).'
+      'Capacidad de razonamiento compleja para captar necesidades implícitas y sutilezas del prospecto.',
+      'Ventana colosal de contexto de 2 Millones de tokens para conversaciones extensas.',
+      'Persuasión consultiva de élite para rebatir objeciones de costo, tiempo o incertidumbre.',
+      'Estructuración minuciosa de propuestas de valor, garantías comerciales y cálculo de ROI.'
     ],
     bestFor: [
       'Comprender al cliente (Detección profunda del dolor real de negocio y lectura entre líneas)',
-      'Solucionar objeciones (Persuasión consultiva lógica ante dudas de precio, tiempo o desconfianza)',
-      'Presentar ofertas (Estructura propuestas de alto valor con garantías y cálculo de ROI)'
+      'Solucionar objeciones (Persuasión consultiva ante dudas de precio, tiempo o desconfianza)',
+      'Presentar ofertas (Propuestas comerciales de alto valor, garantías y cálculo de ROI)'
     ]
   },
   {
-    id: 'gemini-1.5-flash',
-    name: 'Gemini 1.5 Flash',
-    version: 'v1.5 Flash (Balanced)',
-    badge: '🎯 Preciso, Ágil & Estable',
-    badgeColor: 'text-sky-300 bg-sky-500/15 border-sky-500/30',
-    rpdLimit: 1500,
-    rpmLimit: 15,
-    tpmLimit: '1,000,000 TPM',
-    pricing: '$0.00 en Free Tier ($0.075 / $0.30 por 1M en Pago)',
-    latencyText: 'Baja (~450ms)',
-    contextWindow: '1,048,576 tokens (1M)',
-    description: 'Modelo equilibrado optimizado para alta eficiencia operativa, síntesis de datos y calificación metódica de prospectos sin sobrecargar recursos ni agotar la cuota.',
-    strengths: [
-      'Seguimiento metódico y disciplinado de los protocolos de diagnóstico comercial.',
-      'Extracción analítica precisa de presupuesto, rol de decisión y urgencia del proyecto.',
-      'Altísima estabilidad con 1,500 peticiones diarias en el plan gratuito de Google.',
-      'Ideal para absorber picos intensos de tráfico comercial y anuncios publicitarios (Ads).'
-    ],
-    bestFor: [
-      'Calificar leads (Diagnostica presupuesto, rol de decisión y urgencia en minutos)',
-      'Servicio al cliente (Atención estable y económica para alto volumen)'
-    ]
-  },
-  {
-    id: 'gemini-2.0-flash-lite',
-    name: 'Gemini 2.0 Flash-Lite',
-    version: 'v2.0 Flash-Lite (High RPM)',
-    badge: '⚡ Cuota Extendida (30 RPM)',
+    id: 'gemini-3.5-flash-lite',
+    name: 'Gemini 3.5 Flash-Lite',
+    version: 'v3.5 Flash-Lite (High RPM & Low Latency)',
+    badge: '⚡ Cuota Extendida & Latencia Extrema',
     badgeColor: 'text-amber-300 bg-amber-500/15 border-amber-500/30',
     rpdLimit: 1500,
     rpmLimit: 30,
     tpmLimit: '1,000,000 TPM',
     pricing: '$0.00 en Free Tier ($0.075 / $0.30 por 1M en Pago)',
-    latencyText: 'Ultra Baja (< 250ms)',
+    latencyText: 'Latencia Extrema (< 180ms)',
     contextWindow: '1,048,576 tokens (1M)',
-    description: 'Versión ultraligera diseñada específicamente para maximizar la frecuencia de llamadas concurrentes. Ofrece el doble de solicitudes por minuto (30 RPM) con respuestas prácticamente instantáneas.',
+    description: 'Versión ultraligera de alta frecuencia optimizada para absorber ráfagas masivas de tráfico simultáneo. Duplica la velocidad por minuto (30 RPM) con respuestas prácticamente instantáneas.',
     strengths: [
-      '30 solicitudes por minuto (el doble que otros modelos estándar en Google AI Studio).',
-      'Velocidad de respuesta imperceptible para el usuario (<250ms).',
-      'Excelente resistencia a la saturación en chats simultáneos o campañas virales.',
-      'Cero costo de infraestructura dentro del cupo gratuito diario.'
+      'Límite acelerado de 30 solicitudes por minuto (el doble que los modelos estándar).',
+      'Velocidad de respuesta ultrarrápida (<180ms) sin bloqueos.',
+      'Resistencia total a cuellos de botella en momentos de tráfico masivo.',
+      'Consumo eficiente de tokens y estabilidad operativa ininterrumpida.'
     ],
     bestFor: [
-      'Servicio al cliente (Concurrencia masiva con cero latencia y 30 RPM)',
-      'Calificar leads (Respuestas rápidas para capturar la atención de usuarios impacientes)'
+      'Servicio al cliente (Atención concurrente masiva sin demoras con 30 RPM)',
+      'Dar mejores respuestas (Intercambios rápidos y dinámicos para chats interactivos)'
+    ]
+  },
+  {
+    id: 'gemini-3-flash-preview',
+    name: 'Gemini 3 Flash Preview',
+    version: 'v3.0 Flash Preview (Diagnóstico & Calificación)',
+    badge: '🎯 Preciso, Ágil & Diagnóstico',
+    badgeColor: 'text-sky-300 bg-sky-500/15 border-sky-500/30',
+    rpdLimit: 1500,
+    rpmLimit: 15,
+    tpmLimit: '1,000,000 TPM',
+    pricing: '$0.00 en Free Tier ($0.08 / $0.32 por 1M en Pago)',
+    latencyText: 'Baja (~320ms)',
+    contextWindow: '1,048,576 tokens (1M)',
+    description: 'Modelo enfocado en diagnóstico ágil, evaluación estructurada y extracción analítica de requerimientos comerciales para clasificar prospectos en tiempo récord.',
+    strengths: [
+      'Seguimiento metódico y disciplinado de los protocolos de diagnóstico comercial.',
+      'Extracción precisa de presupuesto estimado, rol de decisión y urgencia.',
+      'Equilibrio óptimo entre agilidad y rigor en la calificación de prospectos.',
+      'Excelente desempeño con 1,500 solicitudes al día en el plan gratuito.'
+    ],
+    bestFor: [
+      'Calificar leads (Diagnostica presupuesto, rol de decisión y urgencia en minutos)',
+      'Comprender al cliente (Mapeo ágil de requerimientos técnicos y funcionales)'
     ]
   }
 ];
 
 export const OBJECTIVE_FILTERS = [
   { id: 'all', label: 'Todos los Modelos', icon: Layers },
-  { id: 'servicio', label: '🎧 Servicio al Cliente', model: 'gemini-2.0-flash', reason: 'Ultra baja latencia (<350ms), disponibilidad 24/7 y tono cordial y empático.' },
-  { id: 'calificar', label: '🎯 Calificar Leads', model: 'gemini-1.5-flash', reason: 'Extracción metódica de presupuesto, rol y necesidad sin gastar recursos excesivos.' },
-  { id: 'comprender', label: '🧠 Comprender al Cliente', model: 'gemini-1.5-pro', reason: 'Ventana de 2M de tokens, análisis psicológico profundo y lectura entre líneas del dolor del negocio.' },
-  { id: 'respuestas', label: '✍️ Dar Mejores Respuestas', model: 'gemini-2.0-flash', reason: 'Formato visual en viñetas limpias, negritas estratégicas y cero texto acumulado.' },
-  { id: 'objeciones', label: '🛡️ Solucionar Objeciones', model: 'gemini-1.5-pro', reason: 'El más persuasivo y analítico para derribar objeciones complejas de precio, desconfianza o tiempo.' },
-  { id: 'ofertas', label: '💼 Presentar Ofertas', model: 'gemini-1.5-pro', reason: 'Estructuración de propuestas de alto valor con garantías de GeoSoft y cálculo de ROI.' },
-  { id: 'agendamientos', label: '📅 Generar Agendamientos', model: 'gemini-2.0-flash', reason: 'Flujo consultivo en 3 pasos que concreta la cita y WhatsApp sin presionar al cliente.' }
+  { id: 'servicio', label: '🎧 Servicio al Cliente', model: 'gemini-3.5-flash', reason: 'Ultra baja latencia (<280ms), disponibilidad 24/7 y tono cordial y empático.' },
+  { id: 'calificar', label: '🎯 Calificar Leads', model: 'gemini-3-flash-preview', reason: 'Diagnóstico metódico de presupuesto, rol y necesidad en segundos.' },
+  { id: 'comprender', label: '🧠 Comprender al Cliente', model: 'gemini-3.1-pro-preview', reason: 'Ventana de 2M de tokens, análisis psicológico profundo y lectura entre líneas del dolor del negocio.' },
+  { id: 'respuestas', label: '✍️ Dar Mejores Respuestas', model: 'gemini-3.5-flash', reason: 'Formato visual en viñetas limpias, negritas estratégicas y cero texto acumulado.' },
+  { id: 'objeciones', label: '🛡️ Solucionar Objeciones', model: 'gemini-3.1-pro-preview', reason: 'El más persuasivo y analítico para derribar objeciones complejas de precio, desconfianza o tiempo.' },
+  { id: 'ofertas', label: '💼 Presentar Ofertas', model: 'gemini-3.1-pro-preview', reason: 'Estructuración de propuestas de alto valor con garantías de GeoSoft y cálculo de ROI.' },
+  { id: 'agendamientos', label: '📅 Generar Agendamientos', model: 'gemini-3.5-flash', reason: 'Flujo consultivo en 3 pasos que concreta la cita y WhatsApp sin presionar al cliente.' }
 ];
 
 export const AdminAiModelsSubTab: React.FC<AdminAiModelsSubTabProps> = ({

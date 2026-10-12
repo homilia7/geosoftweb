@@ -10,7 +10,7 @@ async function callGemini(
   history: Array<{ role: string; content: string }>, 
   apiKey: string, 
   maxTokens: number = 1800,
-  preferredModel: string = 'gemini-2.0-flash'
+  preferredModel: string = 'gemini-3.5-flash'
 ) {
   const contents = history.map(msg => ({
     role: msg.role === 'assistant' ? 'model' : 'user',
@@ -35,9 +35,8 @@ async function callGemini(
     'gemini-flash-lite-latest',
     'gemini-3.5-flash-lite',
     'gemini-3-flash-preview',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-pro'
+    'gemini-3.1-pro-preview',
+    'gemma-4-26b-a4b-it'
   ];
   const models = Array.from(new Set(allCandidates.filter(Boolean)));
   let lastError = null;
@@ -269,7 +268,7 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
 }`;
 
     // Obtener modelo preferido de bot_config
-    let preferredModel = 'gemini-2.0-flash';
+    let preferredModel = 'gemini-3.5-flash';
     try {
       const modelRow = await context.env.DB.prepare("SELECT value FROM bot_config WHERE key = 'selected_model'").first();
       if (modelRow && modelRow.value) preferredModel = modelRow.value;

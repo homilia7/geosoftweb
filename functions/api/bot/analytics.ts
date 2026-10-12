@@ -67,7 +67,7 @@ export const onRequestGet = async (context: { env: Env }) => {
     `).first();
 
     // 9. Métricas de Consumo de Google AI Studio y Control de Límites
-    let selectedModel = 'gemini-2.0-flash';
+    let selectedModel = 'gemini-3.5-flash';
     try {
       const cfgRow = await context.env.DB.prepare("SELECT value FROM bot_config WHERE key = 'selected_model'").first();
       if (cfgRow && cfgRow.value) selectedModel = cfgRow.value;
