@@ -19,6 +19,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const mobileNavItems = [
+    { label: 'Inicio', href: '#inicio' },
+    { label: 'Servicios & Soluciones', href: '#servicios', onClick: onScrollToServices },
+    { label: 'Cómo Trabajamos', href: '#como-funciona' },
+    { label: 'Nuestros Proyectos', href: '#proyectos' },
+    { label: 'Conoce a Nuestro Equipo', href: '#equipo' },
+    { label: 'Cotizador Inteligente', href: '#cotizador', onClick: onScrollToQuote },
+    { label: 'Preguntas Frecuentes', href: '#faq' },
+  ];
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2 sm:py-2.5 px-3 sm:px-4 pointer-events-none">
       <div className="pointer-events-auto w-full max-w-5xl bg-[#121316]/30 backdrop-blur-2xl border border-white/10 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center justify-between">
@@ -166,83 +176,58 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileOpen && (
-        <div className="pointer-events-auto absolute top-12 sm:top-14 left-3 sm:left-4 right-3 sm:right-4 max-h-[82vh] overflow-y-auto bg-[#121316]/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 md:hidden">
-          <nav className="flex flex-col gap-2 text-base font-medium">
-            <a
-              href="#inicio"
-              onClick={() => setMobileOpen(false)}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Inicio
-            </a>
-            <a
-              href="#servicios"
-              onClick={() => { setMobileOpen(false); onScrollToServices(); }}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Servicios & Soluciones
-            </a>
-            <a
-              href="#como-funciona"
-              onClick={() => setMobileOpen(false)}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Cómo Trabajamos
-            </a>
-            <a
-              href="#proyectos"
-              onClick={() => setMobileOpen(false)}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Nuestros Proyectos
-            </a>
-            <a
-              href="#equipo"
-              onClick={() => setMobileOpen(false)}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Conoce a Nuestro Equipo
-            </a>
-            <a
-              href="#cotizador"
-              onClick={() => { setMobileOpen(false); onScrollToQuote(); }}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Cotizador Inteligente
-            </a>
-            <a
-              href="#faq"
-              onClick={() => setMobileOpen(false)}
-              className="py-2.5 px-4 rounded-xl hover:bg-white/5 text-gray-200"
-            >
-              Preguntas Frecuentes
-            </a>
+        <div className="pointer-events-auto absolute top-12 sm:top-14 left-3 sm:left-4 right-3 sm:right-4 max-h-[82vh] overflow-y-auto bg-[#121316]/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-4 md:hidden animate-mobile-drawer">
+          {/* Section 1: Navigation Links */}
+          <nav className="flex flex-col gap-1.5 text-base font-medium">
+            {mobileNavItems.map((item, idx) => (
+              <a
+                key={item.label}
+                href={item.href}
+                style={{ animationDelay: `${idx * 45 + 60}ms` }}
+                onClick={() => {
+                  setMobileOpen(false);
+                  if (item.onClick) item.onClick();
+                }}
+                className="animate-mobile-item flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-white/5 active:bg-white/10 text-gray-200 hover:text-white transition-colors group"
+              >
+                <span>{item.label}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-[#A9F8B5] transition-colors" />
+              </a>
+            ))}
           </nav>
 
-          <div className="flex flex-col gap-2.5 pt-4 border-t border-white/10">
+          {/* Section 2: Action CTAs */}
+          <div
+            style={{ animationDelay: `${mobileNavItems.length * 45 + 90}ms` }}
+            className="animate-mobile-item flex flex-col gap-2.5 pt-4 border-t border-white/10"
+          >
             <button
+              style={{ animationDelay: `${(mobileNavItems.length + 1) * 45 + 90}ms` }}
               onClick={() => { setMobileOpen(false); onOpenBooking(); }}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 text-sm font-semibold text-[#A9F8B5]"
+              className="animate-mobile-item w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 text-sm font-semibold text-[#A9F8B5] active:scale-[0.98] transition-transform"
             >
               <Clock className="w-4 h-4 text-[#DFF494]" />
               <span>Agendar Cita Directa</span>
             </button>
             <button
+              style={{ animationDelay: `${(mobileNavItems.length + 2) * 45 + 90}ms` }}
               onClick={() => { setMobileOpen(false); onOpenCal(); }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300"
+              className="animate-mobile-item w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 active:scale-[0.98] transition-transform"
             >
               <Calendar className="w-3.5 h-3.5 text-[#DFF494]" />
               <span>Cal.com Videollamada (30 Min)</span>
             </button>
             <button
+              style={{ animationDelay: `${(mobileNavItems.length + 3) * 45 + 90}ms` }}
               onClick={() => { setMobileOpen(false); onScrollToQuote(); }}
-              className="w-full btn-primary-gradient py-3 text-center justify-center text-sm font-bold"
+              className="animate-mobile-item w-full btn-primary-gradient py-3 text-center justify-center text-sm font-bold active:scale-[0.98] transition-transform"
             >
               Cotizar Mi Proyecto
             </button>
             <button
+              style={{ animationDelay: `${(mobileNavItems.length + 4) * 45 + 90}ms` }}
               onClick={() => { setMobileOpen(false); onOpenAdmin(); }}
-              className="w-full flex items-center justify-center gap-1.5 py-2 text-xs text-gray-400 hover:text-white"
+              className="animate-mobile-item w-full flex items-center justify-center gap-1.5 py-2 text-xs text-gray-400 hover:text-white"
             >
               <Lock className="w-3 h-3" />
               <span>Panel de Administración</span>
