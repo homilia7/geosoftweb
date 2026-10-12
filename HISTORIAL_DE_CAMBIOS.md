@@ -15,11 +15,9 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-11 — Coreografía Teatral del Navbar y Erradicación de Parpadeos
-- **Entrada en parejas simétricas:** 5 pares ordenados (Logo/Cotizar, Inicio/Agendar, Servicios/FAQ, Metodología/Cotizador, Proyectos/Equipo).
-- **Luz amarilla en letras:** Iluminación de 700ms dentro del texto de los botones.
-- **Apagado simultáneo:** Animación suave de 350ms a estado atenuado tenue (opacidad 0.18).
-- **Haz cromático de lado a lado:** Barrido botón por botón (80ms de intervalo / 180ms de duración) que culmina con cada botón apagado.
-- **Pausa de 1 segundo exacto en silencio visual:** Concluido el recorrido del haz (3700ms), todos los botones permanecen 1000ms exactos (hasta 4700ms) congelados y apagados en estado estático, sin ningún destello prematuro ni salto.
-- **Despertar ultra lento forzado vía @keyframes (4.8 segundos):** Animación obligatoria a la GPU 
-avSlowWakeUp (4800ms con curva cubic-bezier(0.16, 1, 0.3, 1)) que arranca desde 0.18 y eleva suave, fluida y lentísimamente el resplandor hasta sus colores definitivos.
+### 2026-10-12 — Coreografía Teatral del Navbar: Flash Amarillo, Sweep Eléctrico y Despertar de 6s
+- **Luz amarilla tipo flash instantáneo (220ms):** Destello fulgurante dentro del texto de los botones que se enciende y se apaga de golpe.
+- **Haz cromático ultra rápido botón por botón:** Intervalo acelerado a 45ms entre botones y 110ms de duración por elemento; toda la onda cruza la barra en ~500ms.
+- **Erradicación total de fases intermedias y destellos:** Se eliminaron los estados superfluos (ll_dimmed, one_second_pause) que provocaban re-renders y parpadeos molestos en React. El barrido transiciona de forma limpia y directa al estado final.
+- **Pausa estática de 1 segundo nativa en CSS:** Delay de 1000ms sin mutaciones en el DOM, manteniendo los botones congelados y apagados en reposo total.
+- **Reencendido ultra lento y sedoso (6.0 segundos):** Curva continua cubic-bezier(0.16, 1, 0.3, 1) de 6 segundos que arranca pausada y eleva suavemente la luminosidad hasta su plenitud original sin saltos.

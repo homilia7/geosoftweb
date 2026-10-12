@@ -13,9 +13,7 @@ interface NavbarProps {
 type NavAnimPhase =
   | 'entrance'
   | 'yellow_letters'
-  | 'all_dimmed'
   | 'color_sweep'
-  | 'one_second_pause'
   | 'slow_wake_up'
   | 'normal';
 
@@ -42,25 +40,20 @@ export const Navbar: React.FC<NavbarProps> = ({
     const t4 = setTimeout(() => setPairStage(4), 880);  // Par 4: Metodología & Cotizador
     const t5 = setTimeout(() => setPairStage(5), 1140); // Par 5: Proyectos & Equipo
 
-    // 1. Al asentarse los botones (~1750ms), la luz amarilla se enciende adentro de las letras
+    // 1. Al asentarse los botones (~1650ms), Flash amarillo rápido como un relámpago (220ms)
     const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 1750);
 
-    // 2. A los 2450ms, los botones como que se apagan todos de una vez
-    const tDimmed = setTimeout(() => setAnimPhase('all_dimmed'), 2450);
+    // 2. A los 2050ms, arranca la animación de luz rápida de botón en botón (45ms entre botones, 110ms duración)
+    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 2050);
 
-    // 3. A los 2800ms, pasa la luz rápida y fluida por cada uno de ellos (80ms entre botones)
-    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 2800);
+    // 3. El último botón se apaga a los: 2050ms + (9 * 45ms) + 110ms = 2565ms.
+    //    A los 2580ms pasamos DIRECTAMENTE a 'slow_wake_up':
+    //    En CSS tiene un delay nativo de 1000ms apagados (de 2580ms a 3580ms), y luego
+    //    despierta muy, muy lentamente durante 6000ms (hasta los 9580ms).
+    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 2580);
 
-    // 4. El último botón termina de apagarse a los: 2800ms + (9 * 80ms) + 180ms = 3700ms.
-    //    A los 3700ms entran en la pausa de 1 segundo exacto apagados:
-    const tPause = setTimeout(() => setAnimPhase('one_second_pause'), 3700);
-
-    // 5. Exactamente 1 segundo después de apagarse el último (3700ms + 1000ms = 4700ms),
-    //    empiezan a encender MUY LENTA Y SUAVEMENTE (4.8 segundos vía @keyframes):
-    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 4700);
-
-    // 6. A los 9700ms (tras despertar completamente sin saltos), queda en estado normal definitivo
-    const tNormal = setTimeout(() => setAnimPhase('normal'), 9700);
+    // 4. A los 9800ms (tras despertar completamente sin saltos), queda en estado normal interactivo definitivo:
+    const tNormal = setTimeout(() => setAnimPhase('normal'), 9800);
 
     return () => {
       clearTimeout(t1);
@@ -69,9 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       clearTimeout(t4);
       clearTimeout(t5);
       clearTimeout(tYellow);
-      clearTimeout(tDimmed);
       clearTimeout(tSweep);
-      clearTimeout(tPause);
       clearTimeout(tSlowWake);
       clearTimeout(tNormal);
     };
@@ -98,17 +89,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     itemIndex: number,
     type: 'logo' | 'link' | 'booking' | 'primary'
   ) => {
-    if (animPhase === 'all_dimmed') {
-      return 'nav-phase-dimmed';
-    }
     if (animPhase === 'color_sweep') {
       if (type === 'logo') return 'nav-sweep-logo';
       if (type === 'booking') return 'nav-sweep-booking';
       if (type === 'primary') return 'nav-sweep-primary';
       return 'nav-sweep-link';
-    }
-    if (animPhase === 'one_second_pause') {
-      return 'nav-phase-dimmed-static';
     }
     if (animPhase === 'slow_wake_up') {
       return 'nav-phase-slow-wake';
@@ -118,17 +103,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const getNavSweepStyle = (itemIndex: number): React.CSSProperties | undefined => {
     if (animPhase === 'color_sweep') {
-      return { animationDelay: `${itemIndex * 80}ms` };
+      return { animationDelay: `${itemIndex * 45}ms` };
     }
     return undefined;
   };
 
   const getNavAuxClass = () => {
-    if (animPhase === 'all_dimmed') {
-      return 'nav-phase-dimmed';
-    }
-    if (animPhase === 'color_sweep' || animPhase === 'one_second_pause') {
-      return 'nav-phase-dimmed-static';
+    if (animPhase === 'color_sweep') {
+      return 'nav-elem-dimmed-static';
     }
     if (animPhase === 'slow_wake_up') {
       return 'nav-phase-slow-wake';

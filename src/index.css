@@ -740,58 +740,38 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* ==========================================================================
-   NUEVA COREOGRAFÍA TEATRAL DEL NAVBAR
-   1. Luz amarilla adentro de las letras de los botones
-   2. Apagado simultáneo de todos los botones
-   3. Haz cromático secuencial botón por botón (rápido y fluido, se enciende y se apaga)
-   4. 1 segundo completo apagados en silencio/reposo total tras apagarse el último
-   5. Encendido muy lento, suave y continuo (3.8s) hacia los colores originales normales
+/* ==========================================================================
+   COREOGRAFÍA TEATRAL DEL NAVBAR
+   1. Flash amarillo súper rápido en las letras (220ms, se prende y apaga)
+   2. Haz cromático rápido uno a uno (45ms de intervalo / 110ms duración)
+   3. 1 segundo congelados y apagados (delay nativo CSS de 1000ms sin parpadeos)
+   4. Reencendido ultra lento, suave y fluido (6.0 segundos) hacia el color original
    ========================================================================== */
 
-/* 1. LUZ AMARILLA ADENTRO DE LAS LETRAS */
-@keyframes navLettersYellowGlow {
+/* 1. FLASH AMARILLO SÚPER RÁPIDO ADENTRO DE LAS LETRAS (SE PRENDE Y APAGA) */
+@keyframes navLettersYellowFlash {
   0% {
     color: inherit;
     text-shadow: none;
     filter: none;
   }
-  25%, 85% {
+  30%, 65% {
     color: #fde047;
-    text-shadow: 0 0 12px rgba(250, 204, 21, 0.95), 0 0 22px rgba(250, 204, 21, 0.65);
-    filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.85));
+    text-shadow: 0 0 16px rgba(250, 204, 21, 1), 0 0 28px rgba(250, 204, 21, 0.85);
+    filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.95));
   }
   100% {
-    color: #fde047;
-    text-shadow: 0 0 12px rgba(250, 204, 21, 0.95), 0 0 22px rgba(250, 204, 21, 0.65);
+    color: inherit;
+    text-shadow: none;
+    filter: none;
   }
 }
 
 .nav-phase-yellow-letters {
-  animation: navLettersYellowGlow 750ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: navLettersYellowFlash 220ms ease-out forwards;
 }
 
-/* 2. ESTADO APAGADO SIMULTÁNEO (DIMMED) */
-@keyframes navFadeToDim {
-  0% {
-    opacity: 1;
-    filter: brightness(1) grayscale(0);
-  }
-  100% {
-    opacity: 0.18;
-    filter: brightness(0.35) grayscale(0.85);
-  }
-}
-
-.nav-phase-dimmed {
-  animation: navFadeToDim 350ms ease-out forwards !important;
-}
-
-.nav-phase-dimmed-static {
-  opacity: 0.18 !important;
-  filter: brightness(0.35) grayscale(0.85) !important;
-}
-
-/* 3. HAZ DE COLOR SECUENCIAL RÁPIDO Y FLUIDO (SE ENCIENDE Y SE APAGA, QUEDA EN 0.18) */
+/* 2. HAZ CROMÁTICO SECUENCIAL SÚPER RÁPIDO (110ms) DE BOTÓN EN BOTÓN */
 
 /* Enlaces de texto normales (Inicio, Servicios, Metodología, Proyectos, Equipo, Cotizador, FAQ) */
 @keyframes navLinkColorPassFast {
@@ -825,7 +805,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-link {
-  animation: navLinkColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navLinkColorPassFast 110ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Logo */
@@ -845,7 +825,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-logo {
-  animation: navLogoColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navLogoColorPassFast 110ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Botón Agendar Cita */
@@ -869,7 +849,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-booking {
-  animation: navBookingColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navBookingColorPassFast 110ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Botón Cotizar Ahora (Principal) */
@@ -891,10 +871,16 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-primary {
-  animation: navPrimaryColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navPrimaryColorPassFast 110ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
-/* 4 & 5. REENCENDIDO ULTRA LENTO Y SUAVE (4.8s) HACIA EL COLOR ORIGINAL */
+/* Candado y elementos auxiliares apagados durante el barrido */
+.nav-elem-dimmed-static {
+  opacity: 0.18 !important;
+  filter: brightness(0.35) grayscale(0.85) !important;
+}
+
+/* 3 & 4. PAUSA DE 1 SEGUNDO APAGADOS Y REENCENDIDO ULTRA LENTO Y SUAVE (6.0s) */
 @keyframes navSlowWakeUp {
   0% {
     opacity: 0.18;
@@ -907,7 +893,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-phase-slow-wake {
-  animation: navSlowWakeUp 4800ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: navSlowWakeUp 6000ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both !important;
   will-change: opacity, filter;
 }
 
