@@ -10,6 +10,15 @@ interface NavbarProps {
   introFinished?: boolean;
 }
 
+type NavAnimPhase =
+  | 'entrance'
+  | 'yellow_letters'
+  | 'all_dimmed'
+  | 'color_sweep'
+  | 'one_second_pause'
+  | 'slow_wake_up'
+  | 'normal';
+
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenCal,
   onOpenBooking,
@@ -21,30 +30,35 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pairStage, setPairStage] = useState(0); // 0: oculto, 1: Par 1, 2: Par 2, 3: Par 3, 4: Par 4, 5: Par 5
-  const [yellowActive, setYellowActive] = useState(false);
-  const [sweepActive, setSweepActive] = useState(false);
+  const [animPhase, setAnimPhase] = useState<NavAnimPhase>('entrance');
 
   useEffect(() => {
     if (!introFinished) return;
 
-    // Secuencia de aparición de los 5 pares (separados por 600ms de cadencia visible)
+    // Secuencia de aparición de los 5 pares (separados por 550ms de cadencia visible)
     const t1 = setTimeout(() => setPairStage(1), 150);  // Par 1: Logo & Cotizar Ahora
-    const t2 = setTimeout(() => setPairStage(2), 750);  // Par 2: Inicio & Agendar Cita
-    const t3 = setTimeout(() => setPairStage(3), 1350); // Par 3: Servicios & FAQ
-    const t4 = setTimeout(() => setPairStage(4), 1950); // Par 4: Metodología & Cotizador
-    const t5 = setTimeout(() => setPairStage(5), 2550); // Par 5: Proyectos & Equipo
+    const t2 = setTimeout(() => setPairStage(2), 700);  // Par 2: Inicio & Agendar Cita
+    const t3 = setTimeout(() => setPairStage(3), 1250); // Par 3: Servicios & FAQ
+    const t4 = setTimeout(() => setPairStage(4), 1800); // Par 4: Metodología & Cotizador
+    const t5 = setTimeout(() => setPairStage(5), 2350); // Par 5: Proyectos & Equipo
 
-    // 1. Una vez que el Par 5 se asienta (~3150ms), los botones se ponen amarillos
-    const tYellowOn = setTimeout(() => setYellowActive(true), 3150);
+    // 1. Una vez que todos aparecen (~2900ms), la luz amarilla se enciende adentro de las letras de los botones
+    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 3000);
 
-    // 2. Tras brillar en amarillo, se apagan suavemente (~4150ms)
-    const tYellowOff = setTimeout(() => setYellowActive(false), 4150);
+    // 2. A los 3800ms, los botones como que se apagan todos de una vez
+    const tDimmed = setTimeout(() => setAnimPhase('all_dimmed'), 3800);
 
-    // 3. Con los botones ya apagados, pasa la animación de color de lado a lado (UNA ÚNICA VEZ)
-    const tSweepStart = setTimeout(() => setSweepActive(true), 4500);
+    // 3. A los 4300ms, pasa la luz por cada uno de ellos (se enciende con color, se apaga y pasa al siguiente)
+    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 4300);
 
-    // 4. Tras cruzar el último botón (~6500ms), termina el barrido y quedan los botones normales permanentemente
-    const tSweepEnd = setTimeout(() => setSweepActive(false), 6600);
+    // 4. Tras apagarse el último elemento (4300ms + 2300ms = 6600ms), se espera un segundo exacto apagados
+    const tPause = setTimeout(() => setAnimPhase('one_second_pause'), 6600);
+
+    // 5. Tras la pausa de 1 segundo (7600ms), suave y lentamente empiezan a encender al color original
+    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 7600);
+
+    // 6. A los 9400ms (1.8s de despertar suave), quedan en su color original normal y estáticos de forma permanente
+    const tNormal = setTimeout(() => setAnimPhase('normal'), 9400);
 
     return () => {
       clearTimeout(t1);
@@ -52,21 +66,40 @@ export const Navbar: React.FC<NavbarProps> = ({
       clearTimeout(t3);
       clearTimeout(t4);
       clearTimeout(t5);
-      clearTimeout(tYellowOn);
-      clearTimeout(tYellowOff);
-      clearTimeout(tSweepStart);
-      clearTimeout(tSweepEnd);
+      clearTimeout(tYellow);
+      clearTimeout(tDimmed);
+      clearTimeout(tSweep);
+      clearTimeout(tPause);
+      clearTimeout(tSlowWake);
+      clearTimeout(tNormal);
     };
   }, [introFinished]);
 
-  // Fallback de seguridad amplio (9s) solo en caso de recarga directa sin splash
+  // Fallback de seguridad amplio (9.5s) solo en caso de recarga directa sin splash
   useEffect(() => {
     const safety = setTimeout(() => {
       setPairStage(prev => (prev === 0 ? 5 : prev));
-      setSweepActive(true);
-    }, 9000);
+      setAnimPhase('normal');
+    }, 9500);
     return () => clearTimeout(safety);
   }, []);
+
+  const getNavContainerAnim = (itemIndex: number) => {
+    if (animPhase === 'all_dimmed' || animPhase === 'one_second_pause') {
+      return 'nav-phase-dimmed';
+    }
+    if (animPhase === 'slow_wake_up') {
+      return 'nav-phase-slow-wake';
+    }
+    return '';
+  };
+
+  const getNavSweepStyle = (itemIndex: number): React.CSSProperties | undefined => {
+    if (animPhase === 'color_sweep') {
+      return { animationDelay: `${itemIndex * 230}ms` };
+    }
+    return undefined;
+  };
 
   const mobileNavItems = [
     { label: 'Inicio', href: '#inicio' },
@@ -124,11 +157,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           href="#"
           className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${
             pairStage >= 1 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-          }`}
+          } ${getNavContainerAnim(0)}`}
         >
-          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border bg-black flex items-center justify-center shadow-sm transition-all duration-300 ${
-            yellowActive ? 'border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'border-white/15'
-          }`}>
+          <div
+            style={getNavSweepStyle(0)}
+            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border bg-black flex items-center justify-center shadow-sm transition-all duration-300 border-white/15 ${
+              animPhase === 'color_sweep' ? 'nav-sweep-logo-item' : ''
+            }`}
+          >
             <img
               src="/assets/logo-gold.jpeg"
               alt="GeoSoft"
@@ -136,16 +172,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </div>
           <span
-            style={sweepActive ? { animationDelay: '0ms' } : undefined}
+            style={getNavSweepStyle(0)}
             className={`font-display font-bold text-sm sm:text-base tracking-wider transition-all duration-300 ${
-              sweepActive
-                ? 'nav-chromatic-sweep-white'
-                : yellowActive
-                ? 'animate-nav-yellow-text'
+              animPhase === 'yellow_letters'
+                ? 'nav-phase-yellow-letters'
+                : animPhase === 'color_sweep'
+                ? 'nav-sweep-pass-item'
                 : 'text-white'
             }`}
           >
-            GEO<span className={yellowActive ? 'text-yellow-300' : 'text-gradient-accent'}>SOFT</span>
+            GEO<span className={animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-gradient-accent'}>SOFT</span>
           </span>
         </a>
 
@@ -156,13 +192,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="#inicio"
             className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
               pairStage >= 2 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-            } ${
-              yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+            } ${getNavContainerAnim(1)} ${
+              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '120ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              style={getNavSweepStyle(1)}
+              className={`transition-colors ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : animPhase === 'color_sweep'
+                  ? 'nav-sweep-pass-item'
+                  : ''
+              }`}
             >
               Inicio
             </span>
@@ -170,24 +212,30 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Par 3 Izquierda: Botón Servicios (de izquierda a derecha) */}
           <div
-            className={`relative ${pairStage >= 3 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'}`}
+            className={`relative ${pairStage >= 3 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'} ${getNavContainerAnim(2)}`}
             onMouseLeave={() => setDropdownOpen(false)}
           >
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onMouseEnter={() => setDropdownOpen(true)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-full transition-all duration-300 cursor-pointer ${
-                yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+                animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
               }`}
             >
               <span
-                style={sweepActive ? { animationDelay: '240ms' } : undefined}
-                className={sweepActive ? 'nav-chromatic-sweep' : ''}
+                style={getNavSweepStyle(2)}
+                className={`transition-colors ${
+                  animPhase === 'yellow_letters'
+                    ? 'nav-phase-yellow-letters'
+                    : animPhase === 'color_sweep'
+                    ? 'nav-sweep-pass-item'
+                    : ''
+                }`}
               >
                 Servicios
               </span>
               <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${
-                dropdownOpen ? 'rotate-180 text-white' : yellowActive ? 'text-yellow-300' : 'text-gray-400'
+                dropdownOpen ? 'rotate-180 text-white' : animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-gray-400'
               }`} />
             </button>
 
@@ -229,13 +277,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="#como-funciona"
             className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
               pairStage >= 4 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-            } ${
-              yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+            } ${getNavContainerAnim(3)} ${
+              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '360ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              style={getNavSweepStyle(3)}
+              className={`transition-colors ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : animPhase === 'color_sweep'
+                  ? 'nav-sweep-pass-item'
+                  : ''
+              }`}
             >
               Metodología
             </span>
@@ -246,13 +300,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="#proyectos"
             className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
               pairStage >= 5 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-            } ${
-              yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+            } ${getNavContainerAnim(4)} ${
+              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '480ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              style={getNavSweepStyle(4)}
+              className={`transition-colors ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : animPhase === 'color_sweep'
+                  ? 'nav-sweep-pass-item'
+                  : ''
+              }`}
             >
               Proyectos
             </span>
@@ -263,13 +323,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="#equipo"
             className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
               pairStage >= 5 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${
-              yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+            } ${getNavContainerAnim(5)} ${
+              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '600ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              style={getNavSweepStyle(5)}
+              className={`transition-colors ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : animPhase === 'color_sweep'
+                  ? 'nav-sweep-pass-item'
+                  : ''
+              }`}
             >
               Equipo
             </span>
@@ -281,13 +347,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onScrollToQuote}
             className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
               pairStage >= 4 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${
-              yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+            } ${getNavContainerAnim(6)} ${
+              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '720ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              style={getNavSweepStyle(6)}
+              className={`transition-colors ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : animPhase === 'color_sweep'
+                  ? 'nav-sweep-pass-item'
+                  : ''
+              }`}
             >
               Cotizador
             </span>
@@ -298,13 +370,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="#faq"
             className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
               pairStage >= 3 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${
-              yellowActive ? 'animate-nav-yellow-btn' : 'hover:text-white hover:bg-white/5'
+            } ${getNavContainerAnim(7)} ${
+              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '840ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep' : ''}
+              style={getNavSweepStyle(7)}
+              className={`transition-colors ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : animPhase === 'color_sweep'
+                  ? 'nav-sweep-pass-item'
+                  : ''
+              }`}
             >
               FAQ
             </span>
@@ -316,18 +394,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 2 Derecha: Botón Agendar Cita (de derecha a izquierda) */}
           <button
             onClick={onOpenBooking}
-            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full transition-all cursor-pointer whitespace-nowrap ${
+            style={getNavSweepStyle(8)}
+            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#A9F8B5] transition-all cursor-pointer whitespace-nowrap ${
               pairStage >= 2 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
+            } ${getNavContainerAnim(8)} ${
+              animPhase === 'color_sweep' ? 'nav-sweep-booking-item' : ''
             } ${
-              yellowActive
-                ? 'animate-nav-yellow-cta'
-                : 'bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40'
+              animPhase === 'normal' ? 'hover:bg-white/15 hover:border-[#A9F8B5]/40' : ''
             }`}
           >
-            <Clock className={`w-3 h-3 transition-colors ${yellowActive ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
+            <Clock className={`w-3 h-3 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
             <span
-              style={sweepActive ? { animationDelay: '960ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep-emerald' : ''}
+              className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}
             >
               Agendar Cita
             </span>
@@ -336,17 +414,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 1 Derecha: Botón Cotizar Ahora (de derecha a izquierda) */}
           <button
             onClick={onScrollToQuote}
-            className={`px-3.5 py-1 rounded-full text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap ${
+            style={getNavSweepStyle(9)}
+            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider shadow-sm transition-all cursor-pointer whitespace-nowrap ${
               pairStage >= 1 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
+            } ${getNavContainerAnim(9)} ${
+              animPhase === 'color_sweep' ? 'nav-sweep-primary-item' : ''
             } ${
-              yellowActive
-                ? 'animate-nav-yellow-primary'
-                : 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494]'
+              animPhase === 'normal' ? 'hover:opacity-90' : ''
             }`}
           >
             <span
-              style={sweepActive ? { animationDelay: '1080ms' } : undefined}
-              className={sweepActive ? 'nav-chromatic-sweep-dark' : ''}
+              className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}
             >
               Cotizar Ahora
             </span>
@@ -357,7 +435,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onOpenAdmin}
             className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${
               pairStage >= 1 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            }`}
+            } ${getNavContainerAnim(9)}`}
             title="Panel de Administración"
           >
             <Lock className="w-3 h-3" />
@@ -369,8 +447,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={() => setMobileOpen(!mobileOpen)}
           className={`md:hidden p-1.5 rounded-full border transition-all ${
             pairStage >= 1 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-          } ${
-            yellowActive
+          } ${getNavContainerAnim(9)} ${
+            animPhase === 'yellow_letters'
               ? 'border-yellow-400 text-yellow-300 bg-yellow-400/20'
               : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
           }`}
