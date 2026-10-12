@@ -43,12 +43,12 @@ export const Hero: React.FC<HeroProps> = ({
 
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <div className="grid md:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center">
-          {/* Left Column: Headlines & Call to Actions */}
-          <div className="md:col-span-7 space-y-5 text-center md:text-left">
-            {/* Top Badge: aparece de forma suave y fluida en la pantalla de izquierda hacia derecha */}
-            <div className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5] transition-all ${
-              animReady ? 'animate-hero-badge-left' : 'opacity-0 pointer-events-none'
-            }`}>
+          {/* Left Column: Headlines & Call to Actions (todo el bloque entra suave y fluido de izquierda a derecha tras el splash) */}
+          <div className={`md:col-span-7 space-y-5 text-center md:text-left transition-all ${
+            animReady ? 'animate-hero-content-left' : 'opacity-0 pointer-events-none'
+          }`}>
+            {/* Top Badge */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5]">
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] shadow-[0_0_10px_#A9F8B5] animate-ping" />
               <span>Soluciones de IA & Software de Élite</span>
             </div>
