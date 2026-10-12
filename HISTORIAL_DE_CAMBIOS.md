@@ -15,6 +15,31 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-12 — Video Interactivo & Motion Reel de Soluciones GeoSoft + Skill de Video Remotion
+- **Incorporación de Skill de Video Profesional (`remotion-video-studio`):**
+  - Registrada en la Bóveda de Skills (`Skills Auxiliares` y `.gemini/config/skills`), adoptando las especificaciones oficiales de Remotion (`remotion-dev/skills`) y compilación determinística por fotogramas con FFmpeg.
+- **Componente de Video Interactivo & Motion Showcase (`InteractiveVideoShowcase.tsx`):**
+  - **Modo Dual Interactivo / Video MP4:** Permite alternar con un clic entre un reproductor de video HTML5 en Full HD y un simulador interactivo de UI en vivo.
+  - **Barra de Progreso por Segmentos tipo Stories:** Barra dividida en 9 cápsulas que se rellenan de forma continua a 60 FPS al avanzar las diapositivas.
+  - **Exhibición de las 9 Soluciones Solicitadas:**
+    1. *Chatbots & Agentes de IA 24/7:* Simulador de chat en vivo con WhatsApp Cloud API y captura de leads.
+    2. *Páginas Web Profesionales:* Ventana de navegador con 100/100 de puntuación Lighthouse y carga instantánea.
+    3. *Sitios de Membresía & LMS:* Portal de alumnos con barra de progreso de módulos y contenidos protegidos.
+    4. *Plataformas SaaS Escalables:* Telemetría en la nube, métricas de MRR y latencia de 12ms sobre Cloudflare D1.
+    5. *Sistemas CRM a la Medida:* Tablero Kanban de pipeline comercial con etapas (Prospecto, Cotizado, Ganado).
+    6. *Software a la Medida:* Editor de código limpio con lógica de negocio y validaciones fiscales.
+    7. *Automatización de Procesos:* Diagrama de workflow entre Webhooks, IA y facturación electrónica.
+    8. *Sistemas de Reservas & Cobros:* Agenda en tiempo real con selector de horario y verificación Sinpe Móvil.
+    9. *Aplicaciones Web Progresivas (PWA):* Vista móvil de app instalada con funcionamiento offline.
+  - **Integración Sensorial:** Transiciones con sonido de clic armónico (`soundEffects.playClick()`), controles de reproducción, reinicio y salto directo entre servicios.
+  - **Llamadas a la Acción Directas:** Botones "Cotizar esta Solución" con redirección suave al cotizador inteligente y agendamiento de demostraciones.
+- **Generación Programática de Video MP4 (`geosoft-showcase.mp4`):**
+  - Renderizado automático con FFmpeg a 1920x1080 (H.264 / AAC) con las 11 escenas animadas, tipografía Segoe UI, acentos de color esmeralda y mezcla de pista de audio ambiental (`public/videos/geosoft-showcase.mp4`).
+- **Verificación y Despliegue en 3 Filtros:**
+  - Build local con Vite (`dist` actualizado con el video).
+  - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Verificación HTTP 200 en el sitio principal y en el video directo.
+
 ### 2026-10-12 — Menú de Servicios Ultra-Estable, Clic Bonito (click.wav) & Limpieza de Tooltip IA
 - **Burbuja de Asesor IA Flotante (`FloatingChat.tsx`):**
   - Removido el ícono ✨ del tooltip de llamada a la acción para un aspecto minimalista, limpio y nítido.

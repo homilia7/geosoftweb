@@ -8,6 +8,7 @@ import { Hero } from './components/Hero';
 import { StatsSection } from './components/StatsSection';
 import { SalesHook } from './components/SalesHook';
 import { TechMarquee } from './components/TechMarquee';
+import { InteractiveVideoShowcase } from './components/InteractiveVideoShowcase';
 import { ServicesBento } from './components/ServicesBento';
 import { ProcessTimeline } from './components/ProcessTimeline';
 import { ProjectsSection } from './components/ProjectsSection';
@@ -82,6 +83,12 @@ function MainLayout() {
 
         {/* Infinite Tech Marquee */}
         <TechMarquee />
+
+        {/* Interactive Video Showcase & Motion Reel */}
+        <InteractiveVideoShowcase
+          onScrollToQuote={scrollToQuote}
+          onOpenBooking={() => setIsBookingOpen(true)}
+        />
 
         {/* Bento Grid Solutions with Glowing Blobs */}
         <ServicesBento onScrollToQuote={scrollToQuote} />
