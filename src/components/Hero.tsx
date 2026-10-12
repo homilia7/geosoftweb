@@ -8,9 +8,28 @@ interface HeroProps {
   onOpenCal: () => void;
   onOpenBooking: () => void;
   onScrollToQuote: () => void;
+  introFinished?: boolean;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollToQuote }) => {
+export const Hero: React.FC<HeroProps> = ({
+  onOpenCal,
+  onOpenBooking,
+  onScrollToQuote,
+  introFinished = false,
+}) => {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    if (introFinished) {
+      setMounted(true);
+    } else {
+      const timer = setTimeout(() => setMounted(true), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [introFinished]);
+
+  const isReady = introFinished || mounted;
+
   return (
     <section id="inicio" className="relative pt-16 sm:pt-20 md:pt-20 lg:pt-24 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
       {/* Background radial ambient glows */}
@@ -21,8 +40,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
         <div className="grid md:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Left Column: Headlines & Call to Actions */}
           <div className="md:col-span-7 space-y-5 text-center md:text-left">
-            {/* Top Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5]">
+            {/* Top Badge: aparece de forma suave y fluida en la pantalla de izquierda hacia derecha */}
+            <div className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9F8B5] transition-all ${
+              isReady ? 'animate-hero-badge-left' : 'opacity-0 pointer-events-none'
+            }`}>
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] shadow-[0_0_10px_#A9F8B5] animate-ping" />
               <span>Soluciones de IA & Software de Élite</span>
             </div>
@@ -69,9 +90,11 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
             </div>
           </div>
 
-          {/* Right Column: 3D Holographic Cube Showcase */}
-          <Reveal effect="scale" delay={120} className="md:col-span-5 flex justify-center">
-            <div className="relative group w-full max-w-[420px]">
+          {/* Right Column: Cuadro con logo e IA Conectada (aparece desde arriba hacia abajo suavemente y queda flotando) */}
+          <div className={`md:col-span-5 flex justify-center transition-all ${
+            isReady ? 'animate-hero-card-down' : 'opacity-0 pointer-events-none'
+          }`}>
+            <div className="relative group w-full max-w-[420px] animate-hero-floating">
               {/* Outer decorative ambient blur */}
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#A9F8B5]/30 to-[#C1A35B]/30 blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
 
@@ -112,7 +135,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
                 </div>
               </SpotlightCard>
             </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

@@ -15,8 +15,7 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-12 — Coreografía Teatral del Navbar: Encendido Constante y Uniforme (8.5s Linear)
-- **Eliminación del salto en el último milisegundo:** Se erradicó el temporizador 	Normal de React que desmontaba abruptamente la clase al final de la animación provocando un encendido de golpe. Ahora la animación se mantiene de forma permanente en su fotograma final (oth).
-- **Encendido constante y uniforme (curva linear):** Se reemplazó la curva ease agresiva por una progresión linear pura de 8.5 segundos, permitiendo un movimiento suave, continuo, uniforme y predecible desde el primer segundo hasta el final sin saltos ni aceleraciones bruscas.
-- **Pausa de 1 segundo en reposo absoluto:** Congelamiento de 1000ms apagados (opacity: 0.2) gestionado nativamente en el delay de CSS.
-- **Flash amarillo instantáneo (220ms) y barrido rápido (45ms):** Preservados con alta velocidad y fluidez.
+### 2026-10-12 — Coreografía de Entrada en Sección Hero
+- **Badge 'Soluciones de IA & Software de Élite':** Entrada suave y fluida de izquierda a derecha (nimate-hero-badge-left de 950ms con fade y desenfoque progresivo) sincronizada con la carga de la página.
+- **Cuadro Showcase 3D con Logo y 'IA Conectada':** Entrada suave desde arriba hacia abajo (nimate-hero-card-down de 1000ms) y queda flotando de forma continua y armónica mediante levitación gravitacional (nimate-hero-floating cíclica infinita de 5.2s).
+- **Coreografía del Navbar preservada:** Pausa estática tenue y encendido lineal ultra suave de 8.5s sin saltos finales.

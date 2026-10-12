@@ -57,6 +57,7 @@ function MainLayout() {
       <main className="overflow-x-hidden w-full">
         {/* Hero Section */}
         <Hero
+          introFinished={introFinished}
           onOpenCal={() => setIsCalOpen(true)}
           onOpenBooking={() => setIsBookingOpen(true)}
           onScrollToQuote={scrollToQuote}

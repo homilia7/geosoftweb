@@ -897,3 +897,67 @@ h1, h2, h3, h4, .font-display {
   will-change: opacity, filter;
 }
 
+/* ==========================================================================
+   ANIMACIONES HERO: BADGE IZQUIERDO Y CUADRO SHOWCASE FLOTANTE DERECHO
+   ========================================================================== */
+
+/* 1. Badge "Soluciones de IA & Software de Élite" (suave y fluido de izquierda a derecha) */
+@keyframes heroBadgeSlideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-48px);
+    filter: blur(8px);
+  }
+  50% {
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-hero-badge-left {
+  animation: heroBadgeSlideInLeft 950ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+/* 2. Cuadro Showcase con Logo y AI Conectada (suavemente de arriba hacia abajo) */
+@keyframes heroCardDropInTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-56px);
+    filter: blur(10px);
+  }
+  50% {
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-hero-card-down {
+  animation: heroCardDropInTop 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+/* 3. Levitación continua suave y fluida (queda flotando armónicamente) */
+@keyframes heroFloatingLevitate {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-hero-floating {
+  animation: heroFloatingLevitate 5.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+
