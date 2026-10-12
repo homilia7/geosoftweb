@@ -69,34 +69,43 @@ class SoundEffectsService {
         this.startAmbientMusic();
       }
 
+      window.removeEventListener('pointerdown', unlockAudio);
       window.removeEventListener('click', unlockAudio);
       window.removeEventListener('keydown', unlockAudio);
       window.removeEventListener('touchstart', unlockAudio);
     };
 
+    window.addEventListener('pointerdown', unlockAudio, { passive: true });
     window.addEventListener('click', unlockAudio, { passive: true });
     window.addEventListener('keydown', unlockAudio, { passive: true });
     window.addEventListener('touchstart', unlockAudio, { passive: true });
 
     // Delegación global de eventos para hover y click en botones y enlaces
+    let lastHoverTarget: Element | null = null;
+
     document.addEventListener(
       'mouseover',
       (e) => {
         const target = (e.target as HTMLElement)?.closest?.(
-          'button, a, [role="button"], .cursor-pointer, input[type="submit"]'
+          'button, a, [role="button"], .cursor-pointer, input[type="submit"], input[type="button"], label[for]'
         );
         if (target) {
-          this.playHoverSound();
+          if (target !== lastHoverTarget) {
+            lastHoverTarget = target;
+            this.playHoverSound();
+          }
+        } else {
+          lastHoverTarget = null;
         }
       },
       { passive: true }
     );
 
     document.addEventListener(
-      'mousedown',
+      'pointerdown',
       (e) => {
         const target = (e.target as HTMLElement)?.closest?.(
-          'button, a, [role="button"], .cursor-pointer, input[type="submit"]'
+          'button, a, [role="button"], .cursor-pointer, input[type="submit"], input[type="button"], label[for]'
         );
         if (target) {
           this.playClickSound();
@@ -250,66 +259,85 @@ class SoundEffectsService {
 
   /**
    * =========================================================================
-   * 3. SONIDO DE HOVER EN BOTONES (Micro-Tick Sutil y Cristalino)
+   * 3. SONIDO DE HOVER EN BOTONES (Micro-Chime Cristalino & Moderno)
    * =========================================================================
    */
   public playHoverSound() {
     if (this.muted) return;
     const nowMs = Date.now();
-    if (nowMs - this.lastHoverTime < 60) return;
+    if (nowMs - this.lastHoverTime < 50) return;
     this.lastHoverTime = nowMs;
 
     const ctx = this.getContext();
-    if (!ctx || ctx.state !== 'running') return;
+    if (!ctx) return;
 
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(() => this.triggerHoverTone(ctx)).catch(() => {});
+      return;
+    }
+    this.triggerHoverTone(ctx);
+  }
+
+  private triggerHoverTone(ctx: AudioContext) {
     try {
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
+      // Micro-chime moderno y sutil pero claramente audible sobre la música (850Hz -> 1250Hz)
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1200, now);
-      osc.frequency.exponentialRampToValueAtTime(1450, now + 0.015);
+      osc.frequency.setValueAtTime(850, now);
+      osc.frequency.exponentialRampToValueAtTime(1250, now + 0.035);
 
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.018, now + 0.003);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.085, now + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.048);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.022);
+      osc.stop(now + 0.052);
     } catch {}
   }
 
   /**
    * =========================================================================
-   * 4. SONIDO DE CLIC EN BOTONES (Micro-Tap Mecánico Táctil)
+   * 4. SONIDO DE CLIC EN BOTONES (Micro-Tap Mecánico Táctil de Alta Gama)
    * =========================================================================
    */
   public playClickSound() {
     if (this.muted) return;
     const ctx = this.getContext();
-    if (!ctx || ctx.state !== 'running') return;
+    if (!ctx) return;
 
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(() => this.triggerClickTone(ctx)).catch(() => {});
+      return;
+    }
+    this.triggerClickTone(ctx);
+  }
+
+  private triggerClickTone(ctx: AudioContext) {
     try {
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(420, now);
-      osc.frequency.exponentialRampToValueAtTime(180, now + 0.03);
+      // Click táctil háptico nítido con transiente cálido y con cuerpo (340Hz -> 95Hz)
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(340, now);
+      osc.frequency.exponentialRampToValueAtTime(95, now + 0.045);
 
-      gain.gain.setValueAtTime(0.045, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.16, now + 0.004);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.04);
+      osc.stop(now + 0.065);
     } catch {}
   }
 }
