@@ -15,14 +15,13 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-12 — Eliminación del Punto Verde del Cursor & Calibración de Sonidos Táctiles en Botones
+### 2026-10-12 — Clic Profesional Mecánico Háptico & Cobertura Universal de Interacción
+- **Diseño Acústico de Clic de Alta Fidelidad (`soundEffects.ts`):**
+  - **Capa 1 (Snap Mecánico):** Micro-transiente de contacto de 7ms con filtro paso-banda a 3200Hz (Q=3.2), simulando el tacto exacto de un interruptor físico de hardware premium (estilo Apple trackpad Force Touch / teclado de aluminio).
+  - **Capa 2 (Thump de Cuerpo):** Pulso armónico cálido y resonante (250Hz -> 60Hz, 48ms, ganancia `0.22`), aportando solidez, peso y satisfacción táctil de confirmación.
+  - **Cobertura Universal de Interacción:** Detección automática en botones, enlaces, selectores, pestañas, modales, checkboxes, acordeones y cualquier elemento que tenga estilo `cursor: pointer`.
 - **Eliminación del Punto Verde del Cursor (`CustomCursor.tsx` & `App.tsx`):**
-  - Removido el punto verde (`#A9F8B5`) del cursor que causaba interferencia visual.
-  - El puntero del sistema permanece limpio y nítido, manteniendo exclusivamente la **cortina de humo fluido y vaporoso** (`SmokeCursorTrail.tsx`).
-- **Restauración y Calibración Sonora de Botones (`soundEffects.ts`):**
-  - **Hover Cristalino:** Micro-chime moderno y sutil pero claramente perceptible (850Hz -> 1250Hz, ganancia `0.085`) al posar el cursor sobre cualquier botón o enlace interactivo, evitando disparos repetitivos con tracking de elemento actual (`lastHoverTarget`).
-  - **Clic Táctil Háptico:** Tap mecánico con pegada y cuerpo cálido (onda triangular, 340Hz -> 95Hz, ganancia `0.16`) accionado de forma instantánea al `pointerdown`.
-  - **Desbloqueo Inmediato y Auto-Resume:** Manejo robusto del ciclo de vida de Web Audio API: si el `AudioContext` entra en suspensión por inactividad o antes de la primera pulsación, se reactiva automáticamente (`ctx.resume()`) para garantizar que ningún sonido se pierda.
+  - Puntero del sistema limpio y nítido, manteniendo exclusivamente la cortina de humo vaporoso (`SmokeCursorTrail.tsx`).
 
 ### 2026-10-12 — Sustitución Definitiva por Música Moderna Chillout & Cortina de Humo para Cursor
 - **Música Moderna y Bonita de Alta Calidad (`ambient-music.mp3`):**

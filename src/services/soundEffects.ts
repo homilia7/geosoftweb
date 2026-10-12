@@ -80,15 +80,25 @@ class SoundEffectsService {
     window.addEventListener('keydown', unlockAudio, { passive: true });
     window.addEventListener('touchstart', unlockAudio, { passive: true });
 
-    // Delegación global de eventos para hover y click en botones y enlaces
+    // Delegación global de eventos para hover y click en botones y enlaces interactivos
     let lastHoverTarget: Element | null = null;
+
+    const isInteractive = (el: HTMLElement | null): HTMLElement | null => {
+      if (!el) return null;
+      const match = el.closest<HTMLElement>(
+        'button, a, [role="button"], [role="tab"], [role="switch"], [role="checkbox"], [role="menuitem"], .cursor-pointer, input, select, textarea, label, summary, [data-clickable]'
+      );
+      if (match) return match;
+      try {
+        if (window.getComputedStyle(el).cursor === 'pointer') return el;
+      } catch {}
+      return null;
+    };
 
     document.addEventListener(
       'mouseover',
       (e) => {
-        const target = (e.target as HTMLElement)?.closest?.(
-          'button, a, [role="button"], .cursor-pointer, input[type="submit"], input[type="button"], label[for]'
-        );
+        const target = isInteractive(e.target as HTMLElement | null);
         if (target) {
           if (target !== lastHoverTarget) {
             lastHoverTarget = target;
@@ -104,9 +114,7 @@ class SoundEffectsService {
     document.addEventListener(
       'pointerdown',
       (e) => {
-        const target = (e.target as HTMLElement)?.closest?.(
-          'button, a, [role="button"], .cursor-pointer, input[type="submit"], input[type="button"], label[for]'
-        );
+        const target = isInteractive(e.target as HTMLElement | null);
         if (target) {
           this.playClickSound();
         }
@@ -321,23 +329,50 @@ class SoundEffectsService {
   private triggerClickTone(ctx: AudioContext) {
     try {
       const now = ctx.currentTime;
+
+      // --- CAPA 1: SNAP MECÁNICO DE PRECISIÓN (Micro-transiente de contacto) ---
+      // Simula el tacto de un switch de aluminio / trackpad háptico (Force Touch)
+      const sampleRate = ctx.sampleRate;
+      const bufferLen = Math.floor(sampleRate * 0.007); // 7ms
+      const buffer = ctx.createBuffer(1, bufferLen, sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferLen; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferLen * 0.22));
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const bandpass = ctx.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.frequency.setValueAtTime(3200, now);
+      bandpass.Q.setValueAtTime(3.2, now);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.18, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.007);
+
+      noise.connect(bandpass);
+      bandpass.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+
+      // --- CAPA 2: CUERPO HÁPTICO RESONANTE (Confirmación física con solidez y cuerpo) ---
       const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      const oscGain = ctx.createGain();
 
-      // Click táctil háptico nítido con transiente cálido y con cuerpo (340Hz -> 95Hz)
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(340, now);
-      osc.frequency.exponentialRampToValueAtTime(95, now + 0.045);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(250, now);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.042);
 
-      gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.16, now + 0.004);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+      oscGain.gain.setValueAtTime(0.22, now);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.048);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.065);
+      osc.stop(now + 0.05);
     } catch {}
   }
 }
