@@ -1,11 +1,7 @@
 /**
- * soundEffects.ts — Sistema Sensorial Acústico Completo
- * Incluye:
- * 1. Música Ambiental de Fondo Continua Generativa (Atmósfera espacial cinematográfica)
- * 2. Sonido de Bienvenida / Intro
- * 3. Micro-ticks de Hover en botones
- * 4. Micro-taps mecánicos al presionar botones
- * Cero dependencias externas, 0 KB de descargas MP3 y cero consumo de ancho de banda.
+ * soundEffects.ts — Sistema de Audio de Alta Fidelidad
+ * Música de fondo moderna, melódica y relajante (ambient-music.mp3)
+ * + Micro-interacciones táctiles sutiles en botones (Hover & Click)
  */
 
 class SoundEffectsService {
@@ -16,12 +12,10 @@ class SoundEffectsService {
   private listenersAttached: boolean = false;
   private listeners: Set<(muted: boolean) => void> = new Set();
 
-  // Nodos para la música ambiental continua
-  private ambientGain: GainNode | null = null;
-  private ambientFilter: BiquadFilterNode | null = null;
-  private ambientOscs: OscillatorNode[] = [];
-  private ambientLfo: OscillatorNode | null = null;
-  private isAmbientPlaying: boolean = false;
+  // Reproductor de música moderna de fondo
+  private audioElement: HTMLAudioElement | null = null;
+  private targetVolume: number = 0.22; // Volumen suave, moderno y elegante
+  private fadeInterval: number | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -30,6 +24,17 @@ class SoundEffectsService {
         this.muted = saved === 'true';
       }
     }
+  }
+
+  private getAudioElement(): HTMLAudioElement | null {
+    if (typeof window === 'undefined') return null;
+    if (!this.audioElement) {
+      this.audioElement = new Audio('/assets/audio/ambient-music.mp3');
+      this.audioElement.loop = true;
+      this.audioElement.volume = this.muted ? 0 : 0.001;
+      this.audioElement.preload = 'auto';
+    }
+    return this.audioElement;
   }
 
   private getContext(): AudioContext | null {
@@ -52,20 +57,16 @@ class SoundEffectsService {
     if (typeof window === 'undefined' || this.listenersAttached) return;
     this.listenersAttached = true;
 
-    // Desbloquear audio en el primer gesto de usuario (requerido por políticas de navegadores)
+    // Desbloquear audio y reproducir música al primer gesto del usuario
     const unlockAudio = () => {
       this.hasInteracted = true;
       const ctx = this.getContext();
       if (ctx && ctx.state === 'suspended') {
-        ctx.resume().then(() => {
-          if (!this.muted && !this.isAmbientPlaying) {
-            this.startAmbientMusic();
-          }
-        }).catch(() => {});
-      } else {
-        if (!this.muted && !this.isAmbientPlaying) {
-          this.startAmbientMusic();
-        }
+        ctx.resume().catch(() => {});
+      }
+
+      if (!this.muted) {
+        this.startAmbientMusic();
       }
 
       window.removeEventListener('click', unlockAudio);
@@ -78,23 +79,31 @@ class SoundEffectsService {
     window.addEventListener('touchstart', unlockAudio, { passive: true });
 
     // Delegación global de eventos para hover y click en botones y enlaces
-    document.addEventListener('mouseover', (e) => {
-      const target = (e.target as HTMLElement)?.closest?.(
-        'button, a, [role="button"], .cursor-pointer, input[type="submit"]'
-      );
-      if (target) {
-        this.playHoverSound();
-      }
-    }, { passive: true });
+    document.addEventListener(
+      'mouseover',
+      (e) => {
+        const target = (e.target as HTMLElement)?.closest?.(
+          'button, a, [role="button"], .cursor-pointer, input[type="submit"]'
+        );
+        if (target) {
+          this.playHoverSound();
+        }
+      },
+      { passive: true }
+    );
 
-    document.addEventListener('mousedown', (e) => {
-      const target = (e.target as HTMLElement)?.closest?.(
-        'button, a, [role="button"], .cursor-pointer, input[type="submit"]'
-      );
-      if (target) {
-        this.playClickSound();
-      }
-    }, { passive: true });
+    document.addEventListener(
+      'mousedown',
+      (e) => {
+        const target = (e.target as HTMLElement)?.closest?.(
+          'button, a, [role="button"], .cursor-pointer, input[type="submit"]'
+        );
+        if (target) {
+          this.playClickSound();
+        }
+      },
+      { passive: true }
+    );
   }
 
   public isMuted(): boolean {
@@ -129,179 +138,125 @@ class SoundEffectsService {
 
   /**
    * =========================================================================
-   * 1. MÚSICA AMBIENTAL DE FONDO CONTINUA (Atmósfera Espacial Cinematográfica)
+   * 1. MÚSICA MODERNA DE FONDO (Pista Chill / Ambient Melódico)
    * =========================================================================
    */
   public startAmbientMusic() {
-    if (this.muted || this.isAmbientPlaying) return;
-    const ctx = this.getContext();
-    if (!ctx) return;
+    if (this.muted) return;
+    const audio = this.getAudioElement();
+    if (!audio) return;
+
+    if (this.fadeInterval) {
+      window.clearInterval(this.fadeInterval);
+      this.fadeInterval = null;
+    }
 
     try {
-      this.isAmbientPlaying = true;
-      const now = ctx.currentTime;
+      if (audio.paused) {
+        audio.volume = 0.001;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              this.fadeIn(audio);
+            })
+            .catch(() => {
+              // Navegador aún no permite reproducción automática
+            });
+        }
+      } else {
+        this.fadeIn(audio);
+      }
+    } catch {}
+  }
 
-      // Ganancia maestra de música ambiental
-      const masterGain = ctx.createGain();
-      masterGain.gain.setValueAtTime(0.0001, now);
-      // Fade-in suave de 2.5 segundos para una entrada elegante y no invasiva
-      masterGain.gain.linearRampToValueAtTime(0.042, now + 2.5);
-      masterGain.connect(ctx.destination);
-      this.ambientGain = masterGain;
-
-      // Filtro pasa-bajos dinámico con resonancia sutil
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(320, now);
-      filter.Q.setValueAtTime(2.2, now);
-      filter.connect(masterGain);
-      this.ambientFilter = filter;
-
-      // LFO para hacer que el filtro "respire" suavemente como una atmósfera viva
-      const lfo = ctx.createOscillator();
-      const lfoGain = ctx.createGain();
-      lfo.type = 'sine';
-      lfo.frequency.setValueAtTime(0.08, now); // 1 ciclo cada 12.5 segundos
-      lfoGain.gain.setValueAtTime(140, now);
-      lfo.connect(lfoGain);
-      lfoGain.connect(filter.frequency);
-      lfo.start(now);
-      this.ambientLfo = lfo;
-
-      // Capas armónicas del acorde cósmico (C2, G2, D3, E3, B3)
-      const layers = [
-        { freq: 65.41, type: 'sine' as OscillatorType, gain: 0.8 },     // Fundamental Sub C2
-        { freq: 98.00, type: 'sine' as OscillatorType, gain: 0.6 },     // Quinta G2
-        { freq: 146.83, type: 'triangle' as OscillatorType, gain: 0.35 },// Novena D3
-        { freq: 164.81, type: 'sine' as OscillatorType, gain: 0.4 },    // Tercera E3
-        { freq: 246.94, type: 'sine' as OscillatorType, gain: 0.25 },   // Séptima Mayor B3
-      ];
-
-      this.ambientOscs = [];
-
-      layers.forEach((layer) => {
-        const osc = ctx.createOscillator();
-        const layerGain = ctx.createGain();
-
-        osc.type = layer.type;
-        osc.frequency.setValueAtTime(layer.freq, now);
-
-        layerGain.gain.setValueAtTime(layer.gain, now);
-
-        osc.connect(layerGain);
-        layerGain.connect(filter);
-        osc.start(now);
-
-        this.ambientOscs.push(osc);
-      });
-    } catch {
-      this.isAmbientPlaying = false;
-    }
+  private fadeIn(audio: HTMLAudioElement) {
+    if (this.fadeInterval) window.clearInterval(this.fadeInterval);
+    const step = 0.015;
+    this.fadeInterval = window.setInterval(() => {
+      if (audio.volume + step >= this.targetVolume) {
+        audio.volume = this.targetVolume;
+        if (this.fadeInterval) {
+          window.clearInterval(this.fadeInterval);
+          this.fadeInterval = null;
+        }
+      } else {
+        audio.volume += step;
+      }
+    }, 80);
   }
 
   public stopAmbientMusic() {
-    if (!this.isAmbientPlaying) return;
-    const ctx = this.getContext();
-    if (!ctx) return;
+    const audio = this.audioElement;
+    if (!audio || audio.paused) return;
 
-    try {
-      const now = ctx.currentTime;
-      if (this.ambientGain) {
-        // Fade-out suave de 1.2 segundos
-        this.ambientGain.gain.setValueAtTime(this.ambientGain.gain.value, now);
-        this.ambientGain.gain.linearRampToValueAtTime(0.0001, now + 1.2);
-      }
-
-      setTimeout(() => {
-        this.ambientOscs.forEach((osc) => {
-          try {
-            osc.stop();
-            osc.disconnect();
-          } catch {}
-        });
-        this.ambientOscs = [];
-
-        if (this.ambientLfo) {
-          try {
-            this.ambientLfo.stop();
-            this.ambientLfo.disconnect();
-          } catch {}
-          this.ambientLfo = null;
-        }
-
-        if (this.ambientFilter) {
-          this.ambientFilter.disconnect();
-          this.ambientFilter = null;
-        }
-
-        if (this.ambientGain) {
-          this.ambientGain.disconnect();
-          this.ambientGain = null;
-        }
-
-        this.isAmbientPlaying = false;
-      }, 1250);
-    } catch {
-      this.isAmbientPlaying = false;
+    if (this.fadeInterval) {
+      window.clearInterval(this.fadeInterval);
+      this.fadeInterval = null;
     }
+
+    const step = 0.03;
+    this.fadeInterval = window.setInterval(() => {
+      if (audio.volume - step <= 0.01) {
+        audio.volume = 0;
+        audio.pause();
+        if (this.fadeInterval) {
+          window.clearInterval(this.fadeInterval);
+          this.fadeInterval = null;
+        }
+      } else {
+        audio.volume -= step;
+      }
+    }, 60);
   }
 
   /**
    * =========================================================================
-   * 2. SONIDO DE BIENVENIDA / INTRO (Acorde Armónico Etéreo)
+   * 2. SONIDO DE ENTRADA / BIENVENIDA (Acorde brillante suave)
    * =========================================================================
    */
   public playIntroSound() {
     if (this.muted) return;
+    this.startAmbientMusic();
+
     const ctx = this.getContext();
     if (!ctx) return;
 
-    // Si la música de fondo no estaba sonando, arrancarla
-    if (!this.isAmbientPlaying) {
-      this.startAmbientMusic();
-    }
-
     try {
       const now = ctx.currentTime;
-      const frequencies = [261.63, 329.63, 392.00, 493.88, 587.33];
+      // Acorde brillante etéreo suave (E4, G#4, B4, E5)
+      const frequencies = [329.63, 415.30, 493.88, 659.25];
 
       frequencies.forEach((freq, idx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
 
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now);
 
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(450, now);
-        filter.frequency.exponentialRampToValueAtTime(2400, now + 0.3);
-        filter.frequency.exponentialRampToValueAtTime(700, now + 1.5);
-
-        const delay = idx * 0.035;
+        const delay = idx * 0.04;
         gain.gain.setValueAtTime(0, now + delay);
-        gain.gain.linearRampToValueAtTime(0.04 / (idx + 1), now + delay + 0.12);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + 1.6);
+        gain.gain.linearRampToValueAtTime(0.025 / (idx + 1), now + delay + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + 1.2);
 
-        osc.connect(filter);
-        filter.connect(gain);
+        osc.connect(gain);
         gain.connect(ctx.destination);
 
         osc.start(now + delay);
-        osc.stop(now + delay + 1.65);
+        osc.stop(now + delay + 1.25);
       });
     } catch {}
   }
 
   /**
    * =========================================================================
-   * 3. SONIDO DE HOVER EN BOTONES (Micro-Blip Suave y Cristalino)
+   * 3. SONIDO DE HOVER EN BOTONES (Micro-Tick Sutil y Cristalino)
    * =========================================================================
    */
   public playHoverSound() {
     if (this.muted) return;
     const nowMs = Date.now();
-    if (nowMs - this.lastHoverTime < 55) return;
+    if (nowMs - this.lastHoverTime < 60) return;
     this.lastHoverTime = nowMs;
 
     const ctx = this.getContext();
@@ -313,24 +268,24 @@ class SoundEffectsService {
       const gain = ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1050, now);
-      osc.frequency.exponentialRampToValueAtTime(1380, now + 0.018);
+      osc.frequency.setValueAtTime(1200, now);
+      osc.frequency.exponentialRampToValueAtTime(1450, now + 0.015);
 
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.022, now + 0.004);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.024);
+      gain.gain.linearRampToValueAtTime(0.018, now + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.025);
+      osc.stop(now + 0.022);
     } catch {}
   }
 
   /**
    * =========================================================================
-   * 4. SONIDO DE CLIC EN BOTONES (Micro-Tap Táctil y Mecánico)
+   * 4. SONIDO DE CLIC EN BOTONES (Micro-Tap Mecánico Táctil)
    * =========================================================================
    */
   public playClickSound() {
@@ -343,18 +298,18 @@ class SoundEffectsService {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(360, now);
-      osc.frequency.exponentialRampToValueAtTime(140, now + 0.035);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.03);
 
-      gain.gain.setValueAtTime(0.06, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+      gain.gain.setValueAtTime(0.045, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.045);
+      osc.stop(now + 0.04);
     } catch {}
   }
 }
