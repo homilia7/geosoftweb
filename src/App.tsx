@@ -24,17 +24,22 @@ const CalModal = React.lazy(() => import('./components/CalModal').then(m => ({ d
 const BookingModal = React.lazy(() => import('./components/BookingModal').then(m => ({ default: m.BookingModal })));
 const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
 const AdminLoginModal = React.lazy(() => import('./components/AdminLoginModal').then(m => ({ default: m.AdminLoginModal })));
+const HolographicCubeViewer = React.lazy(() => import('./components/HolographicCubeViewer').then(m => ({ default: m.HolographicCubeViewer })));
 
 function MainLayout() {
   useAnalyticsTracker();
   const [isCalOpen, setIsCalOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isCubeViewerOpen, setIsCubeViewerOpen] = useState(false);
   const [introFinished, setIntroFinished] = useState(false);
   const [navAnimStarted, setNavAnimStarted] = useState(false);
   const { openAdminModal } = useGeoSoftStore();
 
   React.useEffect(() => {
     soundEffects.init();
+    if (window.location.hash === '#cubo' || window.location.hash === '#cubo3d') {
+      setIsCubeViewerOpen(true);
+    }
   }, []);
 
   const scrollToQuote = () => {
@@ -136,7 +141,28 @@ function MainLayout() {
         {/* Admin Panel and Login Modal */}
         <AdminPanel />
         <AdminLoginModal />
+
+        {/* Visor 3D Interactivo del Cubo Holográfico */}
+        {isCubeViewerOpen && (
+          <HolographicCubeViewer
+            isOpen={isCubeViewerOpen}
+            onClose={() => setIsCubeViewerOpen(false)}
+          />
+        )}
       </React.Suspense>
+
+      {/* Botón Flotante para Probar el Cubo 3D en Vivo */}
+      <button
+        onClick={() => {
+          soundEffects.playClick();
+          setIsCubeViewerOpen(true);
+        }}
+        className="fixed bottom-6 left-6 z-40 px-3.5 py-2 rounded-full bg-[#0a0f18]/90 hover:bg-[#111a28] border border-[#A9F8B5]/40 text-[#A9F8B5] text-xs font-bold shadow-xl backdrop-blur-md flex items-center gap-2 transition-all hover:scale-105 cursor-pointer group"
+        title="Ver y Probar Cubo 3D Holográfico en Vivo"
+      >
+        <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
+        <span>💎 Probar Cubo 3D en Vivo</span>
+      </button>
     </div>
   );
 }

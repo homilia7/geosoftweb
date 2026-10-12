@@ -15,6 +15,21 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-12 — Visor 3D Interactivo del Cubo Holográfico Esmeralda (Demo en Vivo)
+- **Componente Visor 3D (`HolographicCubeViewer.tsx`):**
+  - **Recreación Exacta del Cubo del Video (`Grabación cubo 2026 cubo.mp4`):**
+    - Carcasa de cristal esmeralda translúcido (`MeshPhysicalMaterial` con transmisión de 0.88, refracción IOR 1.54 y dispersión volumétrica verde agua).
+    - Rejilla quad wireframe holográfica interior de 16x16 divisiones por cara en neón cian/esmeralda con pilares cilíndricos esquineros.
+    - Núcleo de luz interna con resplandor pulsante.
+  - **Cinemática Fly-Through de Cámara:** Botón que reproduce la toma del video (la cámara penetra en el cubo, recorre el entramado holográfico interior y sale suavemente).
+  - **Morfismo a Marco Rombo / Prisma Hueco:** Animación de apertura que transforma el cubo en el marco biselado hueco de 4 barras como en el segundo 20 del video.
+  - **Control Orbital Libre con el Ratón/Touch:** Arrastre de 360°, rotación en cualquier ángulo y zoom infinito con la rueda del ratón.
+  - **Carga Directa de Archivos `.GLB`:** Botón para importar modelos 3D `.glb` exportados por el usuario con detección automática de escala y animaciones.
+  - **Botón Flotante de Acceso Inmediato:** Píldora inferior izquierda *"💎 Probar Cubo 3D en Vivo"* y acceso por URL hash (`#cubo` o `#cubo3d`).
+- **Despliegue y Verificación:**
+  - Compilado con Vite code-splitting (`HolographicCubeViewer-E0SgbJz0.js`).
+  - Desplegado a Cloudflare Pages (`https://geosoftweb.pages.dev`).
+
 ### 2026-10-12 — Video Cinemático de Alta Fidelidad & Showcase Reel con Imágenes Reales y Ken Burns
 - **Imágenes Reales de Producto Ultra-HD en 16:9 (`public/assets/showcase/`):**
   - Generadas 9 piezas visuales fotorrealistas de clase Silicon Valley para cada una de las 9 soluciones:
