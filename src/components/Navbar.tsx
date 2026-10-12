@@ -35,30 +35,29 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     if (!introFinished) return;
 
-    // Secuencia de aparición de los 5 pares (separados por 500ms de cadencia visible)
-    const t1 = setTimeout(() => setPairStage(1), 150);  // Par 1: Logo & Cotizar Ahora
-    const t2 = setTimeout(() => setPairStage(2), 650);  // Par 2: Inicio & Agendar Cita
-    const t3 = setTimeout(() => setPairStage(3), 1150); // Par 3: Servicios & FAQ
-    const t4 = setTimeout(() => setPairStage(4), 1650); // Par 4: Metodología & Cotizador
-    const t5 = setTimeout(() => setPairStage(5), 2150); // Par 5: Proyectos & Equipo
+    // Secuencia de aparición de los 5 pares (separados por 260ms de cadencia visible)
+    const t1 = setTimeout(() => setPairStage(1), 100);  // Par 1: Logo & Cotizar Ahora
+    const t2 = setTimeout(() => setPairStage(2), 360);  // Par 2: Inicio & Agendar Cita
+    const t3 = setTimeout(() => setPairStage(3), 620);  // Par 3: Servicios & FAQ
+    const t4 = setTimeout(() => setPairStage(4), 880);  // Par 4: Metodología & Cotizador
+    const t5 = setTimeout(() => setPairStage(5), 1140); // Par 5: Proyectos & Equipo
 
-    // 1. Al asentarse los botones (~2650ms), la luz amarilla se enciende adentro de las letras
-    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 2750);
+    // 1. Al asentarse los botones (~1700ms), la luz amarilla se enciende adentro de las letras
+    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 1800);
 
-    // 2. A los 3500ms, los botones como que se apagan todos de una vez
-    const tDimmed = setTimeout(() => setAnimPhase('all_dimmed'), 3550);
+    // 2. A los 2550ms, los botones como que se apagan todos de una vez
+    const tDimmed = setTimeout(() => setAnimPhase('all_dimmed'), 2550);
 
-    // 3. A los 3950ms, pasa la luz por cada uno de ellos (RÁPIDO Y FLUIDO: 105ms entre botones)
-    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 3950);
+    // 3. A los 2900ms, pasa la luz rápida y fluida por cada uno de ellos (85ms entre botones)
+    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 2900);
 
-    // 4. Tras apagarse el último elemento (3950ms + 1200ms = 5150ms), se espera exactamente 1 segundo apagados
-    const tPause = setTimeout(() => setAnimPhase('one_second_pause'), 5150);
+    // 4. El último botón termina de apagarse a los: 2900ms + (9 * 85ms) + 190ms = 3855ms.
+    //    Se espera exactamente 1 segundo apagados en calma total (1000ms).
+    //    A los 4855ms, empiezan a encender muy lenta y suavemente (3.8 segundos).
+    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 4855);
 
-    // 5. A los 6150ms (tras 1 segundo de pausa), suave y lentamente empiezan a encender al color original (2.8s)
-    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 6150);
-
-    // 6. A los 9200ms (tras despertar completamente sin saltos), queda en estado normal definitivo
-    const tNormal = setTimeout(() => setAnimPhase('normal'), 9200);
+    // 5. A los 8800ms (tras despertar completamente sin saltos), queda en estado normal definitivo
+    const tNormal = setTimeout(() => setAnimPhase('normal'), 8800);
 
     return () => {
       clearTimeout(t1);
@@ -69,7 +68,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       clearTimeout(tYellow);
       clearTimeout(tDimmed);
       clearTimeout(tSweep);
-      clearTimeout(tPause);
       clearTimeout(tSlowWake);
       clearTimeout(tNormal);
     };
@@ -92,9 +90,18 @@ export const Navbar: React.FC<NavbarProps> = ({
     return '';
   };
 
-  const getNavContainerAnim = (itemIndex: number) => {
-    if (animPhase === 'all_dimmed' || animPhase === 'one_second_pause') {
+  const getNavItemClass = (
+    itemIndex: number,
+    type: 'logo' | 'link' | 'booking' | 'primary'
+  ) => {
+    if (animPhase === 'all_dimmed') {
       return 'nav-phase-dimmed';
+    }
+    if (animPhase === 'color_sweep') {
+      if (type === 'logo') return 'nav-sweep-logo';
+      if (type === 'booking') return 'nav-sweep-booking';
+      if (type === 'primary') return 'nav-sweep-primary';
+      return 'nav-sweep-link';
     }
     if (animPhase === 'slow_wake_up') {
       return 'nav-phase-slow-wake';
@@ -104,9 +111,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const getNavSweepStyle = (itemIndex: number): React.CSSProperties | undefined => {
     if (animPhase === 'color_sweep') {
-      return { animationDelay: `${itemIndex * 105}ms` };
+      return { animationDelay: `${itemIndex * 85}ms` };
     }
     return undefined;
+  };
+
+  const getNavAuxClass = () => {
+    if (animPhase === 'all_dimmed' || animPhase === 'color_sweep') {
+      return 'nav-phase-dimmed';
+    }
+    if (animPhase === 'slow_wake_up') {
+      return 'nav-phase-slow-wake';
+    }
+    return '';
   };
 
   const mobileNavItems = [
@@ -163,14 +180,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Par 1 Izquierda: Logo y Letras GeoSoft (de izquierda a derecha) */}
         <a
           href="#"
-          className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${getEntranceClass('left', 1)} ${getNavContainerAnim(0)}`}
+          style={getNavSweepStyle(0)}
+          className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${getEntranceClass('left', 1)} ${getNavItemClass(0, 'logo')}`}
         >
-          <div
-            style={getNavSweepStyle(0)}
-            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border bg-black flex items-center justify-center shadow-sm transition-all duration-300 border-white/15 ${
-              animPhase === 'color_sweep' ? 'nav-sweep-logo-item' : ''
-            }`}
-          >
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border bg-black flex items-center justify-center shadow-sm transition-all duration-300 border-white/15">
             <img
               src="/assets/logo-gold.jpeg"
               alt="GeoSoft"
@@ -178,12 +191,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </div>
           <span
-            style={getNavSweepStyle(0)}
             className={`font-display font-bold text-sm sm:text-base tracking-wider transition-all duration-300 ${
               animPhase === 'yellow_letters'
                 ? 'nav-phase-yellow-letters'
-                : animPhase === 'color_sweep'
-                ? 'nav-sweep-pass-item'
                 : 'text-white'
             }`}
           >
@@ -196,25 +206,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 2 Izquierda: Botón Inicio (de izquierda a derecha) */}
           <a
             href="#inicio"
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 2)} ${getNavContainerAnim(1)}`}
+            style={getNavSweepStyle(1)}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 2)} ${getNavItemClass(1, 'link')}`}
           >
-            <span
-              style={getNavSweepStyle(1)}
-              className={`transition-colors ${
-                animPhase === 'yellow_letters'
-                  ? 'nav-phase-yellow-letters'
-                  : animPhase === 'color_sweep'
-                  ? 'nav-sweep-pass-item'
-                  : ''
-              }`}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Inicio
             </span>
           </a>
 
           {/* Par 3 Izquierda: Botón Servicios (de izquierda a derecha) */}
           <div
-            className={`relative ${getEntranceClass('left', 3)} ${getNavContainerAnim(2)}`}
+            style={getNavSweepStyle(2)}
+            className={`relative ${getEntranceClass('left', 3)} ${getNavItemClass(2, 'link')}`}
             onMouseLeave={() => setDropdownOpen(false)}
           >
             <button
@@ -222,16 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onMouseEnter={() => setDropdownOpen(true)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             >
-              <span
-                style={getNavSweepStyle(2)}
-                className={`transition-colors ${
-                  animPhase === 'yellow_letters'
-                    ? 'nav-phase-yellow-letters'
-                    : animPhase === 'color_sweep'
-                    ? 'nav-sweep-pass-item'
-                    : ''
-                }`}
-              >
+              <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
                 Servicios
               </span>
               <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${
@@ -275,18 +269,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 4 Izquierda: Botón Metodología (de izquierda a derecha) */}
           <a
             href="#como-funciona"
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 4)} ${getNavContainerAnim(3)}`}
+            style={getNavSweepStyle(3)}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 4)} ${getNavItemClass(3, 'link')}`}
           >
-            <span
-              style={getNavSweepStyle(3)}
-              className={`transition-colors ${
-                animPhase === 'yellow_letters'
-                  ? 'nav-phase-yellow-letters'
-                  : animPhase === 'color_sweep'
-                  ? 'nav-sweep-pass-item'
-                  : ''
-              }`}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Metodología
             </span>
           </a>
@@ -294,18 +280,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 5 Izquierda: Botón Proyectos (de izquierda a derecha) */}
           <a
             href="#proyectos"
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 5)} ${getNavContainerAnim(4)}`}
+            style={getNavSweepStyle(4)}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 5)} ${getNavItemClass(4, 'link')}`}
           >
-            <span
-              style={getNavSweepStyle(4)}
-              className={`transition-colors ${
-                animPhase === 'yellow_letters'
-                  ? 'nav-phase-yellow-letters'
-                  : animPhase === 'color_sweep'
-                  ? 'nav-sweep-pass-item'
-                  : ''
-              }`}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Proyectos
             </span>
           </a>
@@ -313,18 +291,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 5 Derecha: Botón Equipo (de derecha a izquierda) */}
           <a
             href="#equipo"
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 5)} ${getNavContainerAnim(5)}`}
+            style={getNavSweepStyle(5)}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 5)} ${getNavItemClass(5, 'link')}`}
           >
-            <span
-              style={getNavSweepStyle(5)}
-              className={`transition-colors ${
-                animPhase === 'yellow_letters'
-                  ? 'nav-phase-yellow-letters'
-                  : animPhase === 'color_sweep'
-                  ? 'nav-sweep-pass-item'
-                  : ''
-              }`}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Equipo
             </span>
           </a>
@@ -333,18 +303,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <a
             href="#cotizador"
             onClick={onScrollToQuote}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 4)} ${getNavContainerAnim(6)}`}
+            style={getNavSweepStyle(6)}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 4)} ${getNavItemClass(6, 'link')}`}
           >
-            <span
-              style={getNavSweepStyle(6)}
-              className={`transition-colors ${
-                animPhase === 'yellow_letters'
-                  ? 'nav-phase-yellow-letters'
-                  : animPhase === 'color_sweep'
-                  ? 'nav-sweep-pass-item'
-                  : ''
-              }`}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Cotizador
             </span>
           </a>
@@ -352,18 +314,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 3 Derecha: Botón FAQ (de derecha a izquierda) */}
           <a
             href="#faq"
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 3)} ${getNavContainerAnim(7)}`}
+            style={getNavSweepStyle(7)}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 3)} ${getNavItemClass(7, 'link')}`}
           >
-            <span
-              style={getNavSweepStyle(7)}
-              className={`transition-colors ${
-                animPhase === 'yellow_letters'
-                  ? 'nav-phase-yellow-letters'
-                  : animPhase === 'color_sweep'
-                  ? 'nav-sweep-pass-item'
-                  : ''
-              }`}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               FAQ
             </span>
           </a>
@@ -375,14 +329,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onOpenBooking}
             style={getNavSweepStyle(8)}
-            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-colors cursor-pointer whitespace-nowrap ${getEntranceClass('right', 2)} ${getNavContainerAnim(8)} ${
-              animPhase === 'color_sweep' ? 'nav-sweep-booking-item' : ''
-            }`}
+            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-colors cursor-pointer whitespace-nowrap ${getEntranceClass('right', 2)} ${getNavItemClass(8, 'booking')}`}
           >
             <Clock className={`w-3 h-3 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
-            <span
-              className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Agendar Cita
             </span>
           </button>
@@ -391,13 +341,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onScrollToQuote}
             style={getNavSweepStyle(9)}
-            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavContainerAnim(9)} ${
-              animPhase === 'color_sweep' ? 'nav-sweep-primary-item' : ''
-            }`}
+            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavItemClass(9, 'primary')}`}
           >
-            <span
-              className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}
-            >
+            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
               Cotizar Ahora
             </span>
           </button>
@@ -405,7 +351,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Candado Admin (Par 1 Derecha) */}
           <button
             onClick={onOpenAdmin}
-            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavContainerAnim(9)}`}
+            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
             title="Panel de Administración"
           >
             <Lock className="w-3 h-3" />
@@ -415,7 +361,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Hamburger Button (Par 1 Derecha) */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`md:hidden p-1.5 rounded-full border transition-all ${getEntranceClass('right', 1)} ${getNavContainerAnim(9)} ${
+          className={`md:hidden p-1.5 rounded-full border transition-all ${getEntranceClass('right', 1)} ${getNavAuxClass()} ${
             animPhase === 'yellow_letters'
               ? 'border-yellow-400 text-yellow-300 bg-yellow-400/20'
               : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
