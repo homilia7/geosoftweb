@@ -35,30 +35,30 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     if (!introFinished) return;
 
-    // Secuencia de aparición de los 5 pares (separados por 550ms de cadencia visible)
+    // Secuencia de aparición de los 5 pares (separados por 500ms de cadencia visible)
     const t1 = setTimeout(() => setPairStage(1), 150);  // Par 1: Logo & Cotizar Ahora
-    const t2 = setTimeout(() => setPairStage(2), 700);  // Par 2: Inicio & Agendar Cita
-    const t3 = setTimeout(() => setPairStage(3), 1250); // Par 3: Servicios & FAQ
-    const t4 = setTimeout(() => setPairStage(4), 1800); // Par 4: Metodología & Cotizador
-    const t5 = setTimeout(() => setPairStage(5), 2350); // Par 5: Proyectos & Equipo
+    const t2 = setTimeout(() => setPairStage(2), 650);  // Par 2: Inicio & Agendar Cita
+    const t3 = setTimeout(() => setPairStage(3), 1150); // Par 3: Servicios & FAQ
+    const t4 = setTimeout(() => setPairStage(4), 1650); // Par 4: Metodología & Cotizador
+    const t5 = setTimeout(() => setPairStage(5), 2150); // Par 5: Proyectos & Equipo
 
-    // 1. Una vez que todos aparecen (~2900ms), la luz amarilla se enciende adentro de las letras de los botones
-    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 3000);
+    // 1. Al asentarse los botones (~2650ms), la luz amarilla se enciende adentro de las letras
+    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 2750);
 
-    // 2. A los 3800ms, los botones como que se apagan todos de una vez
-    const tDimmed = setTimeout(() => setAnimPhase('all_dimmed'), 3800);
+    // 2. A los 3500ms, los botones como que se apagan todos de una vez
+    const tDimmed = setTimeout(() => setAnimPhase('all_dimmed'), 3550);
 
-    // 3. A los 4300ms, pasa la luz por cada uno de ellos (se enciende con color, se apaga y pasa al siguiente)
-    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 4300);
+    // 3. A los 3950ms, pasa la luz por cada uno de ellos (RÁPIDO Y FLUIDO: 105ms entre botones)
+    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 3950);
 
-    // 4. Tras apagarse el último elemento (4300ms + 2300ms = 6600ms), se espera un segundo exacto apagados
-    const tPause = setTimeout(() => setAnimPhase('one_second_pause'), 6600);
+    // 4. Tras apagarse el último elemento (3950ms + 1200ms = 5150ms), se espera exactamente 1 segundo apagados
+    const tPause = setTimeout(() => setAnimPhase('one_second_pause'), 5150);
 
-    // 5. Tras la pausa de 1 segundo (7600ms), suave y lentamente empiezan a encender al color original
-    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 7600);
+    // 5. A los 6150ms (tras 1 segundo de pausa), suave y lentamente empiezan a encender al color original (2.8s)
+    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 6150);
 
-    // 6. A los 9400ms (1.8s de despertar suave), quedan en su color original normal y estáticos de forma permanente
-    const tNormal = setTimeout(() => setAnimPhase('normal'), 9400);
+    // 6. A los 9200ms (tras despertar completamente sin saltos), queda en estado normal definitivo
+    const tNormal = setTimeout(() => setAnimPhase('normal'), 9200);
 
     return () => {
       clearTimeout(t1);
@@ -84,6 +84,14 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => clearTimeout(safety);
   }, []);
 
+  const getEntranceClass = (direction: 'left' | 'right', minPair: number) => {
+    if (pairStage < minPair) return 'opacity-0 pointer-events-none';
+    if (animPhase === 'entrance') {
+      return direction === 'left' ? 'animate-nav-pair-left' : 'animate-nav-pair-right';
+    }
+    return '';
+  };
+
   const getNavContainerAnim = (itemIndex: number) => {
     if (animPhase === 'all_dimmed' || animPhase === 'one_second_pause') {
       return 'nav-phase-dimmed';
@@ -96,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const getNavSweepStyle = (itemIndex: number): React.CSSProperties | undefined => {
     if (animPhase === 'color_sweep') {
-      return { animationDelay: `${itemIndex * 230}ms` };
+      return { animationDelay: `${itemIndex * 105}ms` };
     }
     return undefined;
   };
@@ -155,9 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Par 1 Izquierda: Logo y Letras GeoSoft (de izquierda a derecha) */}
         <a
           href="#"
-          className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${
-            pairStage >= 1 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-          } ${getNavContainerAnim(0)}`}
+          className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${getEntranceClass('left', 1)} ${getNavContainerAnim(0)}`}
         >
           <div
             style={getNavSweepStyle(0)}
@@ -190,11 +196,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 2 Izquierda: Botón Inicio (de izquierda a derecha) */}
           <a
             href="#inicio"
-            className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
-              pairStage >= 2 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(1)} ${
-              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-            }`}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 2)} ${getNavContainerAnim(1)}`}
           >
             <span
               style={getNavSweepStyle(1)}
@@ -212,15 +214,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Par 3 Izquierda: Botón Servicios (de izquierda a derecha) */}
           <div
-            className={`relative ${pairStage >= 3 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'} ${getNavContainerAnim(2)}`}
+            className={`relative ${getEntranceClass('left', 3)} ${getNavContainerAnim(2)}`}
             onMouseLeave={() => setDropdownOpen(false)}
           >
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onMouseEnter={() => setDropdownOpen(true)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full transition-all duration-300 cursor-pointer ${
-                animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-              }`}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             >
               <span
                 style={getNavSweepStyle(2)}
@@ -275,11 +275,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 4 Izquierda: Botón Metodología (de izquierda a derecha) */}
           <a
             href="#como-funciona"
-            className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
-              pairStage >= 4 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(3)} ${
-              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-            }`}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 4)} ${getNavContainerAnim(3)}`}
           >
             <span
               style={getNavSweepStyle(3)}
@@ -298,11 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 5 Izquierda: Botón Proyectos (de izquierda a derecha) */}
           <a
             href="#proyectos"
-            className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
-              pairStage >= 5 ? 'animate-nav-pair-left' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(4)} ${
-              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-            }`}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 5)} ${getNavContainerAnim(4)}`}
           >
             <span
               style={getNavSweepStyle(4)}
@@ -321,11 +313,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 5 Derecha: Botón Equipo (de derecha a izquierda) */}
           <a
             href="#equipo"
-            className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
-              pairStage >= 5 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(5)} ${
-              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-            }`}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 5)} ${getNavContainerAnim(5)}`}
           >
             <span
               style={getNavSweepStyle(5)}
@@ -345,11 +333,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <a
             href="#cotizador"
             onClick={onScrollToQuote}
-            className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
-              pairStage >= 4 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(6)} ${
-              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-            }`}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 4)} ${getNavContainerAnim(6)}`}
           >
             <span
               style={getNavSweepStyle(6)}
@@ -368,11 +352,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Par 3 Derecha: Botón FAQ (de derecha a izquierda) */}
           <a
             href="#faq"
-            className={`px-2.5 py-1 rounded-full transition-all duration-300 ${
-              pairStage >= 3 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(7)} ${
-              animPhase === 'normal' ? 'hover:text-white hover:bg-white/5' : ''
-            }`}
+            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 3)} ${getNavContainerAnim(7)}`}
           >
             <span
               style={getNavSweepStyle(7)}
@@ -395,12 +375,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onOpenBooking}
             style={getNavSweepStyle(8)}
-            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[#A9F8B5] transition-all cursor-pointer whitespace-nowrap ${
-              pairStage >= 2 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(8)} ${
+            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-colors cursor-pointer whitespace-nowrap ${getEntranceClass('right', 2)} ${getNavContainerAnim(8)} ${
               animPhase === 'color_sweep' ? 'nav-sweep-booking-item' : ''
-            } ${
-              animPhase === 'normal' ? 'hover:bg-white/15 hover:border-[#A9F8B5]/40' : ''
             }`}
           >
             <Clock className={`w-3 h-3 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
@@ -415,12 +391,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onScrollToQuote}
             style={getNavSweepStyle(9)}
-            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider shadow-sm transition-all cursor-pointer whitespace-nowrap ${
-              pairStage >= 1 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(9)} ${
+            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavContainerAnim(9)} ${
               animPhase === 'color_sweep' ? 'nav-sweep-primary-item' : ''
-            } ${
-              animPhase === 'normal' ? 'hover:opacity-90' : ''
             }`}
           >
             <span
@@ -433,9 +405,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Candado Admin (Par 1 Derecha) */}
           <button
             onClick={onOpenAdmin}
-            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${
-              pairStage >= 1 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-            } ${getNavContainerAnim(9)}`}
+            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavContainerAnim(9)}`}
             title="Panel de Administración"
           >
             <Lock className="w-3 h-3" />
@@ -445,9 +415,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Hamburger Button (Par 1 Derecha) */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`md:hidden p-1.5 rounded-full border transition-all ${
-            pairStage >= 1 ? 'animate-nav-pair-right' : 'opacity-0 pointer-events-none'
-          } ${getNavContainerAnim(9)} ${
+          className={`md:hidden p-1.5 rounded-full border transition-all ${getEntranceClass('right', 1)} ${getNavContainerAnim(9)} ${
             animPhase === 'yellow_letters'
               ? 'border-yellow-400 text-yellow-300 bg-yellow-400/20'
               : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
