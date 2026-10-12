@@ -3,6 +3,7 @@ import { StoreProvider, useGeoSoftStore } from './context/StoreContext';
 import { SplashIntro } from './components/SplashIntro';
 import { Navbar } from './components/Navbar';
 import { CustomCursor } from './components/CustomCursor';
+import { SmokeCursorTrail } from './components/SmokeCursorTrail';
 import { soundEffects } from './services/soundEffects';
 import { Hero } from './components/Hero';
 import { StatsSection } from './components/StatsSection';
@@ -48,7 +49,8 @@ function MainLayout() {
 
   return (
     <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative">
-      {/* High-End Fluid Custom Cursor Follower */}
+      {/* High-End Fluid Custom Cursor & Smoke Trail */}
+      <SmokeCursorTrail />
       <CustomCursor />
 
       {/* 3D Isometric Cube Animated Splash Intro */}

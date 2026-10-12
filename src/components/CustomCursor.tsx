@@ -91,21 +91,7 @@ export const CustomCursor: React.FC = () => {
       }`}
       aria-hidden="true"
     >
-      {/* 1. Halo / Anillo orbital con inercia elástica */}
-      <div
-        ref={ringRef}
-        className="fixed top-0 left-0 -ml-4 -mt-4 pointer-events-none will-change-transform"
-      >
-        <div
-          className={`w-8 h-8 rounded-full border transition-all duration-200 ease-out flex items-center justify-center ${
-            isClicking
-              ? 'scale-75 border-[#DFF494] bg-[#DFF494]/20 shadow-[0_0_12px_rgba(223,244,148,0.5)]'
-              : isHovering
-              ? 'scale-175 border-[#A9F8B5] bg-[#A9F8B5]/15 shadow-[0_0_20px_rgba(169,248,181,0.4)] backdrop-blur-[1px]'
-              : 'scale-100 border-[#A9F8B5]/40 bg-[#A9F8B5]/5'
-          }`}
-        />
-      </div>
+
 
       {/* 2. Punto central de precisión nítida */}
       <div
