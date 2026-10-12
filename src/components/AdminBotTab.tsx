@@ -19,17 +19,24 @@ import {
   Zap,
   Target,
   FileText,
-  Check
+  Check,
+  Cpu
 } from 'lucide-react';
 import { api } from '../services/api';
 import { BotAnalyticsData, BotUnansweredQuestion, BotFaqItem, BotLengthMode } from '../types';
+import { AdminAiModelsSubTab } from './AdminAiModelsSubTab';
 
 export const AdminBotTab: React.FC = () => {
   const [analytics, setAnalytics] = useState<BotAnalyticsData | null>(null);
   const [unanswered, setUnanswered] = useState<BotUnansweredQuestion[]>([]);
   const [faqs, setFaqs] = useState<BotFaqItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeSubTab, setActiveSubTab] = useState<'kpis' | 'configuracion' | 'objeciones' | 'aprendizaje' | 'faqs'>('kpis');
+  const [activeSubTab, setActiveSubTab] = useState<'kpis' | 'modelos' | 'configuracion' | 'objeciones' | 'aprendizaje' | 'faqs'>('kpis');
+
+  // Configuración de modelo de Google AI Studio
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.0-flash');
+  const [isSavingModel, setIsSavingModel] = useState(false);
+  const [modelSavedFeedback, setModelSavedFeedback] = useState<string | null>(null);
 
   // Configuración de longitud de respuesta
   const [lengthMode, setLengthMode] = useState<BotLengthMode>('equilibrado');
@@ -95,8 +102,35 @@ export const AdminBotTab: React.FC = () => {
     if (configRes) {
       if (configRes.lengthMode) setLengthMode(configRes.lengthMode);
       if (configRes.welcomeMessage) setWelcomeMessage(configRes.welcomeMessage);
+      if (configRes.selectedModel) setSelectedModel(configRes.selectedModel);
+    }
+    if (analyticsRes?.aiUsage?.selectedModel) {
+      setSelectedModel(analyticsRes.aiUsage.selectedModel);
     }
     setLoading(false);
+  };
+
+  const handleModelChange = async (modelId: string) => {
+    if (isSavingModel || selectedModel === modelId) return;
+    setIsSavingModel(true);
+    const ok = await api.saveBotConfig({ selectedModel: modelId });
+    if (ok) {
+      setSelectedModel(modelId);
+      if (analytics && analytics.aiUsage) {
+        setAnalytics({
+          ...analytics,
+          aiUsage: {
+            ...analytics.aiUsage,
+            selectedModel: modelId,
+            dailyLimitRpd: modelId.includes('pro') ? 50 : 1500,
+            rpmLimit: modelId.includes('pro') ? 2 : (modelId.includes('lite') ? 30 : 15)
+          }
+        });
+      }
+      setModelSavedFeedback(modelId);
+      setTimeout(() => setModelSavedFeedback(null), 3500);
+    }
+    setIsSavingModel(false);
   };
 
   const handleLengthModeChange = async (mode: BotLengthMode) => {
@@ -221,6 +255,24 @@ export const AdminBotTab: React.FC = () => {
         >
           <TrendingUp className="w-3.5 h-3.5" />
           <span>Resumen de Rendimiento</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('modelos')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            activeSubTab === 'modelos'
+              ? 'bg-[#A9F8B5]/20 text-[#A9F8B5] border border-[#A9F8B5]/40'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Cpu className="w-3.5 h-3.5 text-[#A9F8B5]" />
+          <span>Consumo Google AI & Modelos</span>
+          {analytics?.aiUsage?.quotaStatus === 'warning' && (
+            <span className="w-2 h-2 rounded-full bg-amber-400 ml-1" />
+          )}
+          {analytics?.aiUsage?.quotaStatus === 'danger' && (
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping ml-1" />
+          )}
         </button>
 
         <button
@@ -453,6 +505,42 @@ export const AdminBotTab: React.FC = () => {
             </div>
           </div>
 
+          {/* Quick AI Usage & Quota Banner */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-white/[0.07] via-white/[0.04] to-white/[0.02] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#A9F8B5]/20 text-[#A9F8B5] border border-[#A9F8B5]/30 font-semibold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-ping" />
+                  Google AI Studio Free Tier
+                </span>
+                <span className="text-xs text-gray-400 font-mono">Modelo Activo: <strong className="text-white">{selectedModel}</strong></span>
+              </div>
+              <h4 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                <span>Cuota Diaria: {analytics?.aiUsage?.requestsToday || 0} / {analytics?.aiUsage?.dailyLimitRpd || 1500} RPD</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-semibold ${
+                  (analytics?.aiUsage?.quotaPercent || 0) >= 85
+                    ? 'bg-rose-500/20 text-rose-300'
+                    : (analytics?.aiUsage?.quotaPercent || 0) >= 60
+                    ? 'bg-amber-400/20 text-amber-300'
+                    : 'bg-emerald-500/20 text-emerald-300'
+                }`}>
+                  {(analytics?.aiUsage?.quotaPercent || 0)}% consumido hoy
+                </span>
+              </h4>
+              <p className="text-xs text-gray-400">
+                Gasto de API: <strong className="text-emerald-400">$0.00 USD (Gratis)</strong> • Tokens totales procesados: <strong className="text-white font-mono">{(analytics?.aiUsage?.totalTokens || 0).toLocaleString()}</strong>
+              </p>
+            </div>
+
+            <button
+              onClick={() => setActiveSubTab('modelos')}
+              className="px-4 py-2 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs hover:bg-[#A9F8B5]/90 transition-all cursor-pointer flex items-center gap-1.5 self-start md:self-auto shrink-0 shadow-[0_0_15px_rgba(169,248,181,0.2)]"
+            >
+              <Cpu className="w-3.5 h-3.5" />
+              <span>Ver Consumo Completo & Catálogo →</span>
+            </button>
+          </div>
+
           {/* Breakdown by Objection Type */}
           <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
             <h4 className="font-semibold text-white text-sm flex items-center justify-between">
@@ -534,6 +622,18 @@ export const AdminBotTab: React.FC = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* SUB-VIEW 2: CONSUMO GOOGLE AI & MODELOS */}
+      {activeSubTab === 'modelos' && (
+        <AdminAiModelsSubTab
+          aiUsage={analytics?.aiUsage}
+          selectedModel={selectedModel}
+          onModelChange={handleModelChange}
+          isSavingModel={isSavingModel}
+          modelSavedFeedback={modelSavedFeedback}
+          onRefresh={fetchData}
+        />
       )}
 
       {/* SUB-VIEW: CONFIGURACIÓN, SALUDOS & PROTOCOLO DEL BOT */}

@@ -5,7 +5,13 @@ interface Env {
 
 const DEFAULT_GEMINI_KEY = '';
 
-async function callGemini(systemPrompt: string, history: Array<{ role: string; content: string }>, apiKey: string, maxTokens: number = 1800) {
+async function callGemini(
+  systemPrompt: string, 
+  history: Array<{ role: string; content: string }>, 
+  apiKey: string, 
+  maxTokens: number = 1800,
+  preferredModel: string = 'gemini-2.0-flash'
+) {
   const contents = history.map(msg => ({
     role: msg.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: msg.content }]
@@ -23,10 +29,21 @@ async function callGemini(systemPrompt: string, history: Array<{ role: string; c
     }
   };
 
-  const models = ['gemini-3.5-flash', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite'];
+  const allCandidates = [
+    preferredModel,
+    'gemini-3.5-flash',
+    'gemini-flash-lite-latest',
+    'gemini-3.5-flash-lite',
+    'gemini-3-flash-preview',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro'
+  ];
+  const models = Array.from(new Set(allCandidates.filter(Boolean)));
   let lastError = null;
 
   for (const model of models) {
+    const startTime = Date.now();
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const res = await fetch(url, {
@@ -38,14 +55,29 @@ async function callGemini(systemPrompt: string, history: Array<{ role: string; c
       if (res.ok) {
         const data: any = await res.json();
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const latencyMs = Date.now() - startTime;
+        const usage = data?.usageMetadata || null;
+
         if (text) {
+          let parsed: any;
           try {
-            return JSON.parse(text);
+            parsed = JSON.parse(text);
           } catch (pe) {
             // If raw text has backticks or slightly malformed JSON
             const clean = text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(clean);
+            parsed = JSON.parse(clean);
           }
+
+          return {
+            parsed,
+            modelUsed: model,
+            usage: {
+              promptTokens: usage?.promptTokenCount || 0,
+              candidatesTokens: usage?.candidatesTokenCount || 0,
+              totalTokens: usage?.totalTokenCount || 0
+            },
+            latencyMs
+          };
         }
       } else {
         const errText = await res.text();
@@ -236,14 +268,39 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
   }
 }`;
 
+    // Obtener modelo preferido de bot_config
+    let preferredModel = 'gemini-2.0-flash';
+    try {
+      const modelRow = await context.env.DB.prepare("SELECT value FROM bot_config WHERE key = 'selected_model'").first();
+      if (modelRow && modelRow.value) preferredModel = modelRow.value;
+    } catch (_) {}
+
     // Invocar Gemini AI
-    const aiResponse = await callGemini(systemPrompt, conversationHistory, apiKey, maxTokens);
+    const geminiResult = await callGemini(systemPrompt, conversationHistory, apiKey, maxTokens, preferredModel);
+    const aiResponse = geminiResult.parsed;
+    const modelUsed = geminiResult.modelUsed || preferredModel;
+    const usage = geminiResult.usage || { promptTokens: 0, candidatesTokens: 0, totalTokens: 0 };
+    const latencyMs = geminiResult.latencyMs || 0;
 
     const reply = aiResponse.reply || '¡Hola! Con mucho gusto te asesoro con tu proyecto web o solución de IA. ¿Qué tienes en mente?';
     const intent = aiResponse.intent || 'pregunta';
     const objection = aiResponse.objection || { detected: false };
     const isUnanswered = Boolean(aiResponse.is_unanswered);
     const appointmentData = aiResponse.appointment || { should_book: false };
+
+    // Registrar métricas de consumo de tokens y llamadas en bot_api_logs
+    const promptTokens = usage.promptTokens || Math.max(1, Math.round((systemPrompt.length + JSON.stringify(conversationHistory).length) / 3.8));
+    const candidatesTokens = usage.candidatesTokens || Math.max(1, Math.round(reply.length / 3.8));
+    const totalTokens = usage.totalTokens || (promptTokens + candidatesTokens);
+
+    try {
+      await context.env.DB.prepare(`
+        INSERT INTO bot_api_logs (model, prompt_tokens, candidates_tokens, total_tokens, latency_ms, status)
+        VALUES (?, ?, ?, ?, ?, 'success')
+      `).bind(modelUsed, promptTokens, candidatesTokens, totalTokens, latencyMs).run();
+    } catch (logErr) {
+      console.error('Error logging to bot_api_logs:', logErr);
+    }
 
     // 1. Guardar mensajes en bot_messages
     await context.env.DB.prepare(
@@ -336,7 +393,9 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
       objection: objection.detected ? objection : null,
       isUnanswered,
       appointmentBooked: appointmentClosed === 1,
-      appointmentId: createdAppointmentId
+      appointmentId: createdAppointmentId,
+      modelUsed,
+      tokensUsed: totalTokens
     }), {
       headers: {
         'Content-Type': 'application/json',

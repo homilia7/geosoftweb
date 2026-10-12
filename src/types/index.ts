@@ -78,6 +78,41 @@ export interface BotFaqItem {
   created_at: string;
 }
 
+export interface GoogleAiUsage {
+  selectedModel: string;
+  requestsToday: number;
+  requestsTotal: number;
+  dailyLimitRpd: number;
+  rpmLimit: number;
+  promptTokensTotal: number;
+  candidatesTokensTotal: number;
+  totalTokens: number;
+  tokensToday: number;
+  avgLatencyMs: number;
+  freeTierCostUsd: number;
+  estimatedCommercialCostUsd: number;
+  quotaPercent: number;
+  quotaStatus: 'safe' | 'warning' | 'danger';
+}
+
+export interface GoogleModelCatalogItem {
+  id: string;
+  name: string;
+  version: string;
+  badge: string;
+  badgeColor: string;
+  rpdLimit: number;
+  rpmLimit: number;
+  tpmLimit: string;
+  pricing: string;
+  latencyText: string;
+  contextWindow: string;
+  description: string;
+  strengths: string[];
+  bestFor: string[];
+  recommended?: boolean;
+}
+
 export interface BotAnalyticsData {
   totalConversations: number;
   totalQuestions: number;
@@ -90,6 +125,7 @@ export interface BotAnalyticsData {
   objectionsByType: Array<{ objection_type: string; count: number }>;
   recentObjections: BotObjectionLog[];
   botAppointments: Appointment[];
+  aiUsage?: GoogleAiUsage;
 }
 
 export type BotLengthMode = 'corto' | 'equilibrado' | 'detallado';
@@ -97,6 +133,7 @@ export type BotLengthMode = 'corto' | 'equilibrado' | 'detallado';
 export interface BotConfigData {
   lengthMode: BotLengthMode;
   welcomeMessage: string;
+  selectedModel?: string;
 }
 
 

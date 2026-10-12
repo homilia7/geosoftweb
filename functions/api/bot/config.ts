@@ -14,20 +14,23 @@ export const onRequestGet = async (context: { env: Env }) => {
     }
 
     const { results } = await context.env.DB.prepare(
-      "SELECT key, value FROM bot_config WHERE key IN ('length_mode', 'welcome_message')"
+      "SELECT key, value FROM bot_config WHERE key IN ('length_mode', 'welcome_message', 'selected_model')"
     ).all();
 
     let lengthMode = 'equilibrado';
     let welcomeMessage = DEFAULT_WELCOME_MESSAGE;
+    let selectedModel = 'gemini-2.0-flash';
 
     (results || []).forEach((row: any) => {
       if (row.key === 'length_mode') lengthMode = row.value || 'equilibrado';
       if (row.key === 'welcome_message') welcomeMessage = row.value || DEFAULT_WELCOME_MESSAGE;
+      if (row.key === 'selected_model') selectedModel = row.value || 'gemini-2.0-flash';
     });
 
     return new Response(JSON.stringify({
       lengthMode,
-      welcomeMessage
+      welcomeMessage,
+      selectedModel
     }), {
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +55,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     }
 
     const body: any = await context.request.json();
-    const { lengthMode, welcomeMessage } = body;
+    const { lengthMode, welcomeMessage, selectedModel } = body;
 
     if (lengthMode && !['corto', 'equilibrado', 'detallado'].includes(lengthMode)) {
       return new Response(JSON.stringify({ error: 'Modo de longitud inválido. Debe ser: corto, equilibrado o detallado' }), {
@@ -77,10 +80,19 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
       `).bind(welcomeMessage.trim()).run();
     }
 
+    if (selectedModel && typeof selectedModel === 'string') {
+      await context.env.DB.prepare(`
+        INSERT INTO bot_config (key, value, updated_at)
+        VALUES ('selected_model', ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+      `).bind(selectedModel.trim()).run();
+    }
+
     return new Response(JSON.stringify({
       success: true,
       lengthMode,
-      welcomeMessage
+      welcomeMessage,
+      selectedModel
     }), {
       headers: { 'Content-Type': 'application/json' }
     });

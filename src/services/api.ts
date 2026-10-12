@@ -284,7 +284,11 @@ export const api = {
     }
   },
 
-  async saveBotConfig(config: { lengthMode?: import('../types').BotLengthMode; welcomeMessage?: string }): Promise<boolean> {
+  async saveBotConfig(config: {
+    lengthMode?: import('../types').BotLengthMode;
+    welcomeMessage?: string;
+    selectedModel?: string;
+  }): Promise<boolean> {
     try {
       const res = await fetch('/api/bot/config', {
         method: 'POST',
