@@ -49,11 +49,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     // 3. El último botón se apaga a los: 2050ms + (9 * 45ms) + 110ms = 2565ms.
     //    A los 2580ms pasamos DIRECTAMENTE a 'slow_wake_up':
     //    En CSS tiene un delay nativo de 1000ms apagados (de 2580ms a 3580ms), y luego
-    //    despierta muy, muy lentamente durante 6000ms (hasta los 9580ms).
+    //    despierta de forma lineal, constante y uniforme durante 8.5 segundos (hasta 12080ms).
+    //    Al llegar al 100%, se mantiene fija y permanente en su estado natural (sin desmontes ni saltos).
     const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 2580);
-
-    // 4. A los 9800ms (tras despertar completamente sin saltos), queda en estado normal interactivo definitivo:
-    const tNormal = setTimeout(() => setAnimPhase('normal'), 9800);
 
     return () => {
       clearTimeout(t1);
@@ -64,16 +62,15 @@ export const Navbar: React.FC<NavbarProps> = ({
       clearTimeout(tYellow);
       clearTimeout(tSweep);
       clearTimeout(tSlowWake);
-      clearTimeout(tNormal);
     };
   }, [introFinished]);
 
-  // Fallback de seguridad amplio (10s) solo en caso de recarga directa sin splash
+  // Fallback de seguridad solo en caso de recarga directa sin splash
   useEffect(() => {
     const safety = setTimeout(() => {
       setPairStage(prev => (prev === 0 ? 5 : prev));
-      setAnimPhase('normal');
-    }, 10000);
+      setAnimPhase(prev => (prev === 'entrance' ? 'slow_wake_up' : prev));
+    }, 12500);
     return () => clearTimeout(safety);
   }, []);
 

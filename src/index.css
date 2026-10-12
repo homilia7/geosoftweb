@@ -880,11 +880,11 @@ h1, h2, h3, h4, .font-display {
   filter: brightness(0.35) grayscale(0.85) !important;
 }
 
-/* 3 & 4. PAUSA DE 1 SEGUNDO APAGADOS Y REENCENDIDO ULTRA LENTO Y SUAVE (6.0s) */
+/* 3 & 4. PAUSA DE 1 SEGUNDO APAGADOS Y REENCENDIDO ULTRA LENTO Y CONSTANTE (8.5s UNIFORME) */
 @keyframes navSlowWakeUp {
   0% {
-    opacity: 0.18;
-    filter: brightness(0.35) grayscale(0.85);
+    opacity: 0.2;
+    filter: brightness(0.4) grayscale(0.8);
   }
   100% {
     opacity: 1;
@@ -893,7 +893,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-phase-slow-wake {
-  animation: navSlowWakeUp 6000ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both !important;
+  animation: navSlowWakeUp 8500ms linear 1000ms both !important;
   will-change: opacity, filter;
 }
 
