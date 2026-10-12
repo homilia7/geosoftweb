@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bot, CalendarCheck, Layers, Search, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Reveal } from './Reveal';
+import { SpotlightCard } from './SpotlightCard';
 
 interface ServicesBentoProps {
   onScrollToQuote: () => void;
@@ -27,57 +28,63 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
         <div className="grid md:grid-cols-12 gap-6">
           {/* Bento Card 1: Chatbots & Agentes IA (Span 7) */}
           <Reveal effect="left" delay={50} className="md:col-span-7 flex">
-            <div className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
-            <div className="blob-glow" />
-            
-            <div className="space-y-6">
-              <div className="w-14 h-14 rounded-2xl bg-[#A9F8B5]/10 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5]">
-                <Bot className="w-7 h-7" />
-              </div>
-
-              <div className="space-y-3">
-                <div className="inline-block px-3 py-1 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] text-xs font-bold font-mono uppercase">
-                  IA de Próxima Generación
+            <SpotlightCard
+              spotlightColor="rgba(169, 248, 181, 0.18)"
+              className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between"
+            >
+              <div className="blob-glow" />
+              
+              <div className="space-y-6">
+                <div className="w-14 h-14 rounded-2xl bg-[#A9F8B5]/10 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5]">
+                  <Bot className="w-7 h-7" />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  Chatbots & Agentes de Ventas 24/7
-                </h3>
-                <p className="text-gray-300 font-light leading-relaxed text-sm sm:text-base">
-                  El 70% de las ventas se pierden si no respondes en los primeros 5 minutos. Nuestros agentes conversacionales abordan a los visitantes, resuelven dudas frecuentes, califican prospectos y transfieren la conversación a tu equipo con todo el contexto.
-                </p>
+
+                <div className="space-y-3">
+                  <div className="inline-block px-3 py-1 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] text-xs font-bold font-mono uppercase">
+                    IA de Próxima Generación
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold font-display text-white">
+                    Chatbots & Agentes de Ventas 24/7
+                  </h3>
+                  <p className="text-gray-300 font-light leading-relaxed text-sm sm:text-base">
+                    El 70% de las ventas se pierden si no respondes en los primeros 5 minutos. Nuestros agentes conversacionales abordan a los visitantes, resuelven dudas frecuentes, califican prospectos y transfieren la conversación a tu equipo con todo el contexto.
+                  </p>
+                </div>
+
+                <ul className="space-y-2.5 pt-2 text-sm text-gray-300">
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
+                    <span>Integración directa con WhatsApp Cloud, Web y CRM</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
+                    <span>Calificación automática de presupuestos y captura de datos</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
+                    <span>Handoff fluido y transparente a ejecutivos humanos</span>
+                  </li>
+                </ul>
               </div>
 
-              <ul className="space-y-2.5 pt-2 text-sm text-gray-300">
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
-                  <span>Integración directa con WhatsApp Cloud, Web y CRM</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
-                  <span>Calificación automática de presupuestos y captura de datos</span>
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
-                  <span>Handoff fluido y transparente a ejecutivos humanos</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="pt-8">
-              <button
-                onClick={onScrollToQuote}
-                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#A9F8B5] hover:text-[#DFF494] transition-colors cursor-pointer group"
-              >
-                <span>Cotizar Agente de IA</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-        </Reveal>
+              <div className="pt-8">
+                <button
+                  onClick={onScrollToQuote}
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#A9F8B5] hover:text-[#DFF494] transition-colors cursor-pointer group"
+                >
+                  <span>Cotizar Agente de IA</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </SpotlightCard>
+          </Reveal>
 
           {/* Bento Card 2: Sistemas de Reservas & Cobros (Span 5) */}
           <Reveal effect="right" delay={150} className="md:col-span-5 flex">
-            <div className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
+            <SpotlightCard
+              spotlightColor="rgba(223, 244, 148, 0.18)"
+              className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between"
+            >
               <div className="blob-glow" />
 
               <div className="space-y-6">
@@ -118,12 +125,15 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
-            </div>
+            </SpotlightCard>
           </Reveal>
 
           {/* Bento Card 3: Software a Medida & SaaS (Span 6) */}
           <Reveal effect="up" delay={100} className="md:col-span-6 flex">
-            <div className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
+            <SpotlightCard
+              spotlightColor="rgba(193, 163, 91, 0.18)"
+              className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between"
+            >
               <div className="blob-glow" />
 
               <div className="space-y-6">
@@ -153,12 +163,15 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
-            </div>
+            </SpotlightCard>
           </Reveal>
 
           {/* Bento Card 4: SEO & Autoridad Local (Span 6) */}
           <Reveal effect="up" delay={200} className="md:col-span-6 flex">
-            <div className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between">
+            <SpotlightCard
+              spotlightColor="rgba(169, 248, 181, 0.18)"
+              className="w-full card-accent p-6 sm:p-8 md:p-10 flex flex-col justify-between"
+            >
               <div className="blob-glow" />
 
               <div className="space-y-6">
@@ -188,7 +201,7 @@ export const ServicesBento: React.FC<ServicesBentoProps> = ({ onScrollToQuote })
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
-            </div>
+            </SpotlightCard>
           </Reveal>
         </div>
       </div>

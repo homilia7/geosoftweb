@@ -12,13 +12,15 @@ import { ProjectsSection } from './components/ProjectsSection';
 import { TeamSection } from './components/TeamSection';
 import { CostCalculator } from './components/CostCalculator';
 import { FaqSection } from './components/FaqSection';
-import { CalModal } from './components/CalModal';
-import { BookingModal } from './components/BookingModal';
-import { AdminPanel } from './components/AdminPanel';
-import { AdminLoginModal } from './components/AdminLoginModal';
 import { FloatingChat } from './components/FloatingChat';
 import { Footer } from './components/Footer';
 import { useAnalyticsTracker } from './hooks/useAnalyticsTracker';
+
+// Code-splitting para modales y panel de administración
+const CalModal = React.lazy(() => import('./components/CalModal').then(m => ({ default: m.CalModal })));
+const BookingModal = React.lazy(() => import('./components/BookingModal').then(m => ({ default: m.BookingModal })));
+const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
+const AdminLoginModal = React.lazy(() => import('./components/AdminLoginModal').then(m => ({ default: m.AdminLoginModal })));
 
 function MainLayout() {
   useAnalyticsTracker();
@@ -92,21 +94,28 @@ function MainLayout() {
       {/* Floating AI Chat Trigger */}
       <FloatingChat />
 
-      {/* Embedded Cal.com Modal */}
-      <CalModal
-        isOpen={isCalOpen}
-        onClose={() => setIsCalOpen(false)}
-      />
+      {/* Code-Split Lazy Modals & Admin */}
+      <React.Suspense fallback={null}>
+        {/* Embedded Cal.com Modal */}
+        {isCalOpen && (
+          <CalModal
+            isOpen={isCalOpen}
+            onClose={() => setIsCalOpen(false)}
+          />
+        )}
 
-      {/* Native Appointment Booking Modal */}
-      <BookingModal
-        isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
-      />
+        {/* Native Appointment Booking Modal */}
+        {isBookingOpen && (
+          <BookingModal
+            isOpen={isBookingOpen}
+            onClose={() => setIsBookingOpen(false)}
+          />
+        )}
 
-      {/* Admin Panel and Login Modal */}
-      <AdminPanel />
-      <AdminLoginModal />
+        {/* Admin Panel and Login Modal */}
+        <AdminPanel />
+        <AdminLoginModal />
+      </React.Suspense>
     </div>
   );
 }

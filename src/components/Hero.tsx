@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Calendar, Sparkles, ShieldCheck, Zap } from 'lucide-react';
 import { RotatingHeadline } from './RotatingHeadline';
 import { Reveal } from './Reveal';
+import { SpotlightCard } from './SpotlightCard';
 
 interface HeroProps {
   onOpenCal: () => void;
@@ -74,8 +75,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
               {/* Outer decorative ambient blur */}
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#A9F8B5]/30 to-[#C1A35B]/30 blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
 
-              {/* Glass Card Container */}
-              <div className="relative rounded-3xl bg-[#121316]/90 border border-white/15 p-6 shadow-2xl backdrop-blur-xl overflow-hidden">
+              {/* Glass Card Container with Spotlight Cursor */}
+              <SpotlightCard
+                spotlightColor="rgba(169, 248, 181, 0.22)"
+                size={400}
+                className="rounded-3xl bg-[#121316]/90 border border-white/15 p-6 shadow-2xl backdrop-blur-xl"
+              >
                 <div className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 bg-black/60 shadow-inner flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                   <img
                     src="/assets/logo-emerald.jpeg"
@@ -105,7 +110,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCal, onOpenBooking, onScrollTo
                     <div className="text-[11px] text-gray-400 uppercase tracking-wider mt-0.5">Respuesta a Leads</div>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             </div>
           </Reveal>
         </div>
