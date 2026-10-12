@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface StructuredBotMessageProps {
   text: string;
+  isLatest?: boolean;
+  onLineRendered?: () => void;
 }
 
-export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({ text }) => {
+export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({
+  text,
+  isLatest = true,
+  onLineRendered
+}) => {
   // Función para procesar negritas (**texto**) y precios ($XXX)
   const renderInlineFormatted = (rawText: string) => {
-    // Dividir por negritas (**texto**)
     const parts = rawText.split(/(\*\*[^*]+\*\*)/g);
 
     return parts.map((part, idx) => {
@@ -20,7 +25,6 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({ text
         );
       }
 
-      // Resaltar precios y porcentajes clave si están presentes
       const priceRegex = /(\$\d[\d,]*(?:\s*(?:USD|usd))?|\d+%\s*(?:OFF|off|descuento)?)/g;
       const subParts = part.split(priceRegex);
 
@@ -44,7 +48,7 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({ text
     });
   };
 
-  // Dividir el mensaje en bloques por saltos de línea dobles o simples
+  // Dividir el mensaje en bloques por saltos de línea
   const rawLines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
   // Agrupar viñetas consecutivas y párrafos normales
@@ -64,17 +68,44 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({ text
     }
   });
 
-  return (
-    <div className="space-y-2.5 text-xs leading-relaxed text-gray-200">
-      {blocks.map((block, i) => {
-        const delayMs = i * 65;
+  // Animación lenta y fluida del primer renglón hacia abajo
+  const [visibleCount, setVisibleCount] = useState<number>(() => isLatest ? 1 : blocks.length);
+  const [currentText, setCurrentText] = useState(text);
 
+  // Si cambia el texto del mensaje, reiniciar la secuencia progresiva
+  if (currentText !== text) {
+    setCurrentText(text);
+    setVisibleCount(isLatest ? 1 : blocks.length);
+  }
+
+  useEffect(() => {
+    if (!isLatest) {
+      setVisibleCount(blocks.length);
+      return;
+    }
+
+    if (visibleCount < blocks.length) {
+      const timer = setTimeout(() => {
+        setVisibleCount(prev => prev + 1);
+        if (onLineRendered) onLineRendered();
+      }, 340); // 340ms: cadencia lenta, fluida y elegante entre renglones
+
+      return () => clearTimeout(timer);
+    }
+  }, [visibleCount, blocks.length, isLatest, onLineRendered]);
+
+  return (
+    <div
+      onClick={() => setVisibleCount(blocks.length)}
+      className="space-y-2.5 text-xs leading-relaxed text-gray-200 cursor-pointer"
+      title="Toca para mostrar todo de inmediato"
+    >
+      {blocks.slice(0, visibleCount).map((block, i) => {
         if (block.type === 'bullet') {
           return (
             <div
               key={i}
-              style={{ animationDelay: `${delayMs}ms` }}
-              className="flex items-start gap-2.5 pl-1.5 py-0.5 animate-text-soft"
+              className="flex items-start gap-2.5 pl-1.5 py-0.5 animate-line-flow"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] mt-1.5 shrink-0 shadow-[0_0_8px_rgba(169,248,181,0.9)]" />
               <div className="flex-1 text-gray-200 leading-normal">
@@ -88,8 +119,7 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({ text
           return (
             <div
               key={i}
-              style={{ animationDelay: `${delayMs}ms` }}
-              className="pt-2 border-t border-white/10 text-white font-medium flex items-center gap-1.5 text-[11.5px] text-[#A9F8B5] animate-text-soft"
+              className="pt-2 border-t border-white/10 text-white font-medium flex items-center gap-1.5 text-[11.5px] text-[#A9F8B5] animate-line-flow"
             >
               <span>{renderInlineFormatted(block.text)}</span>
             </div>
@@ -99,8 +129,7 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({ text
         return (
           <p
             key={i}
-            style={{ animationDelay: `${delayMs}ms` }}
-            className="animate-text-soft text-gray-200 leading-relaxed"
+            className="animate-line-flow text-gray-200 leading-relaxed"
           >
             {renderInlineFormatted(block.text)}
           </p>

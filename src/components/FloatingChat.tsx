@@ -228,7 +228,11 @@ export const FloatingChat: React.FC = () => {
                     }`}
                   >
                     {msg.role === 'assistant' ? (
-                      <StructuredBotMessage text={msg.text} />
+                      <StructuredBotMessage
+                        text={msg.text}
+                        isLatest={isLatest}
+                        onLineRendered={scrollToBottom}
+                      />
                     ) : (
                       <p className="whitespace-pre-wrap animate-text-soft">{msg.text}</p>
                     )}
