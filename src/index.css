@@ -603,11 +603,12 @@ h1, h2, h3, h4, .font-display {
 @keyframes modalDropInTop {
   0% {
     opacity: 0;
-    transform: translateY(-44px) scale(0.97);
-    filter: blur(8px);
+    transform: translateY(-38px) scale(0.98);
+    filter: blur(10px);
   }
-  60% {
-    filter: blur(0.5px);
+  50% {
+    opacity: 0.85;
+    filter: blur(2px);
   }
   100% {
     opacity: 1;
@@ -617,22 +618,24 @@ h1, h2, h3, h4, .font-display {
 }
 
 .animate-modal-drop {
-  animation: modalDropInTop 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: modalDropInTop 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: transform, opacity, filter;
 }
 
 @keyframes backdropFadeIn {
   0% {
     opacity: 0;
+    backdrop-filter: blur(0px);
   }
   100% {
     opacity: 1;
+    backdrop-filter: blur(12px);
   }
 }
 
 .animate-backdrop-fade {
-  animation: backdropFadeIn 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: opacity;
+  animation: backdropFadeIn 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, backdrop-filter;
 }
 
 /* ==========================================================================
