@@ -15,7 +15,9 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-12 — Menú de Servicios Ultra-Estable & Sonido de Clic Bonito en Alta Fidelidad (click.wav)
+### 2026-10-12 — Menú de Servicios Ultra-Estable, Clic Bonito (click.wav) & Limpieza de Tooltip IA
+- **Burbuja de Asesor IA Flotante (`FloatingChat.tsx`):**
+  - Removido el ícono ✨ del tooltip de llamada a la acción para un aspecto minimalista, limpio y nítido.
 - **Menú Desplegable de Servicios (`Navbar.tsx`):**
   - **Eliminación del Cierre Prematuro:** Se eliminó el espacio muerto (`mt-2`) que provocaba la pérdida de foco del mouse al descender, reemplazándolo por posicionamiento continuo (`pt-2`) y un **puente seguro invisible de 16px** que mantiene la superficie interactiva ininterrumpida.
   - **Retardo de Gracia (Hover Grace Buffer):** Temporizador de 280ms (`dropdownTimeoutRef`) al salir del elemento, permitiendo movimientos diagonales o rápidos sin cierres accidentales.

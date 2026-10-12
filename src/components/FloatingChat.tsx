@@ -155,7 +155,6 @@ export const FloatingChat: React.FC = () => {
           onClick={() => setIsOpen(true)}
           className="card-accent p-3 sm:p-3.5 rounded-2xl border-[#A9F8B5]/40 shadow-2xl max-w-[250px] sm:max-w-[270px] cursor-pointer hover:scale-105 transition-all text-xs font-medium text-white flex items-center gap-2.5 animate-bounce select-none"
         >
-          <span className="text-xl">✨</span>
           <div className="leading-tight">
             <p className="text-gray-100 font-semibold">¿Dudas o cotización rápida?</p>
             <p className="text-gray-400 text-[10px]">Habla con nuestro asesor de IA 24/7</p>
