@@ -274,7 +274,7 @@ export const api = {
     }
   },
 
-  async getBotConfig(): Promise<{ lengthMode: 'corto' | 'equilibrado' | 'detallado' } | null> {
+  async getBotConfig(): Promise<import('../types').BotConfigData | null> {
     try {
       const res = await fetch('/api/bot/config');
       if (!res.ok) return null;
@@ -284,12 +284,12 @@ export const api = {
     }
   },
 
-  async saveBotConfig(lengthMode: 'corto' | 'equilibrado' | 'detallado'): Promise<boolean> {
+  async saveBotConfig(config: { lengthMode?: import('../types').BotLengthMode; welcomeMessage?: string }): Promise<boolean> {
     try {
       const res = await fetch('/api/bot/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lengthMode })
+        body: JSON.stringify(config)
       });
       return res.ok;
     } catch {

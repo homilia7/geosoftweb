@@ -2,6 +2,8 @@ interface Env {
   DB: any;
 }
 
+const DEFAULT_WELCOME_MESSAGE = '¡Hola! 👋 Bienvenido a GeoSoft. Soy tu Asesor de Soluciones Digitales y Software. Cuéntame, ¿qué proyecto o reto tienes en mente para tu negocio?';
+
 export const onRequestGet = async (context: { env: Env }) => {
   try {
     if (!context.env.DB) {
@@ -11,12 +13,21 @@ export const onRequestGet = async (context: { env: Env }) => {
       });
     }
 
-    const row = await context.env.DB.prepare(
-      "SELECT value FROM bot_config WHERE key = 'length_mode'"
-    ).first();
+    const { results } = await context.env.DB.prepare(
+      "SELECT key, value FROM bot_config WHERE key IN ('length_mode', 'welcome_message')"
+    ).all();
+
+    let lengthMode = 'equilibrado';
+    let welcomeMessage = DEFAULT_WELCOME_MESSAGE;
+
+    (results || []).forEach((row: any) => {
+      if (row.key === 'length_mode') lengthMode = row.value || 'equilibrado';
+      if (row.key === 'welcome_message') welcomeMessage = row.value || DEFAULT_WELCOME_MESSAGE;
+    });
 
     return new Response(JSON.stringify({
-      lengthMode: row?.value || 'equilibrado'
+      lengthMode,
+      welcomeMessage
     }), {
       headers: {
         'Content-Type': 'application/json',
@@ -41,24 +52,35 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     }
 
     const body: any = await context.request.json();
-    const { lengthMode } = body;
+    const { lengthMode, welcomeMessage } = body;
 
-    if (!lengthMode || !['corto', 'equilibrado', 'detallado'].includes(lengthMode)) {
+    if (lengthMode && !['corto', 'equilibrado', 'detallado'].includes(lengthMode)) {
       return new Response(JSON.stringify({ error: 'Modo de longitud inválido. Debe ser: corto, equilibrado o detallado' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    await context.env.DB.prepare(`
-      INSERT INTO bot_config (key, value, updated_at)
-      VALUES ('length_mode', ?, CURRENT_TIMESTAMP)
-      ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
-    `).bind(lengthMode).run();
+    if (lengthMode) {
+      await context.env.DB.prepare(`
+        INSERT INTO bot_config (key, value, updated_at)
+        VALUES ('length_mode', ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+      `).bind(lengthMode).run();
+    }
+
+    if (welcomeMessage && typeof welcomeMessage === 'string') {
+      await context.env.DB.prepare(`
+        INSERT INTO bot_config (key, value, updated_at)
+        VALUES ('welcome_message', ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+      `).bind(welcomeMessage.trim()).run();
+    }
 
     return new Response(JSON.stringify({
       success: true,
-      lengthMode
+      lengthMode,
+      welcomeMessage
     }), {
       headers: { 'Content-Type': 'application/json' }
     });

@@ -14,12 +14,13 @@ interface ChatMessage {
 
 export const FloatingChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [welcomeMessage, setWelcomeMessage] = useState('¡Hola! 👋 Bienvenido a GeoSoft. Soy tu Asesor de Soluciones Digitales y Software. Cuéntame, ¿qué proyecto o reto tienes en mente para tu negocio?');
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     return [
       {
         id: 'msg-init',
         role: 'assistant',
-        text: '¡Hola! 👋 Soy el Asesor de Ventas y Soluciones de GeoSoft. Estoy aquí para resolver todas tus dudas sobre diseño web, automatizaciones y agentes de Inteligencia Artificial. ¿Qué tipo de proyecto deseas construir o cotizar?',
+        text: '¡Hola! 👋 Bienvenido a GeoSoft. Soy tu Asesor de Soluciones Digitales y Software. Cuéntame, ¿qué proyecto o reto tienes en mente para tu negocio?',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ];
@@ -37,6 +38,24 @@ export const FloatingChat: React.FC = () => {
 
   const [appointmentClosed, setAppointmentClosed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Cargar saludo configurado desde Cloudflare D1
+  useEffect(() => {
+    api.getBotConfig().then(cfg => {
+      if (cfg && cfg.welcomeMessage) {
+        setWelcomeMessage(cfg.welcomeMessage);
+        setMessages(prev => {
+          if (prev.length === 1 && prev[0].id === 'msg-init') {
+            return [{
+              ...prev[0],
+              text: cfg.welcomeMessage
+            }];
+          }
+          return prev;
+        });
+      }
+    });
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -113,9 +132,9 @@ export const FloatingChat: React.FC = () => {
     setAppointmentClosed(false);
     setMessages([
       {
-        id: 'msg-init-reset',
+        id: `msg-init-reset-${Date.now()}`,
         role: 'assistant',
-        text: '¡Conversación reiniciada! ¿En qué te puedo asesorar hoy? Pregúntame sobre precios, tiempos de entrega o demostraciones en vivo.',
+        text: welcomeMessage,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);

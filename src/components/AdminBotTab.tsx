@@ -29,12 +29,45 @@ export const AdminBotTab: React.FC = () => {
   const [unanswered, setUnanswered] = useState<BotUnansweredQuestion[]>([]);
   const [faqs, setFaqs] = useState<BotFaqItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeSubTab, setActiveSubTab] = useState<'kpis' | 'objeciones' | 'aprendizaje' | 'faqs'>('kpis');
+  const [activeSubTab, setActiveSubTab] = useState<'kpis' | 'configuracion' | 'objeciones' | 'aprendizaje' | 'faqs'>('kpis');
 
   // Configuración de longitud de respuesta
   const [lengthMode, setLengthMode] = useState<BotLengthMode>('equilibrado');
   const [isSavingConfig, setIsSavingConfig] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState(false);
+
+  // Configuración de saludo del bot
+  const [welcomeMessage, setWelcomeMessage] = useState('¡Hola! 👋 Bienvenido a GeoSoft. Soy tu Asesor de Soluciones Digitales y Software. Cuéntame, ¿qué proyecto o reto tienes en mente para tu negocio?');
+  const [isSavingWelcome, setIsSavingWelcome] = useState(false);
+  const [welcomeSavedFeedback, setWelcomeSavedFeedback] = useState(false);
+  const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number | null>(0);
+
+  const greetingTemplates = [
+    {
+      title: 'Predeterminado (Consultivo & Empático)',
+      badge: '⭐ Por Defecto',
+      text: '¡Hola! 👋 Bienvenido a GeoSoft. Soy tu Asesor de Soluciones Digitales y Software. Cuéntame, ¿qué proyecto o reto tienes en mente para tu negocio?',
+      desc: 'Cero presión inicial, enfocado en entender la necesidad del cliente antes de ofrecer servicios.'
+    },
+    {
+      title: 'Sugerido 1: Crecimiento & Ventas',
+      badge: '🚀 Enfoque ROI',
+      text: '¡Hola! Qué gusto saludarte. En GeoSoft ayudamos a empresas a automatizar sus procesos y multiplicar sus ventas con páginas web y agentes de IA. ¿Cuál es el principal objetivo que te gustaría alcanzar este mes?',
+      desc: 'Pensado para prospectos comerciales y directores que buscan resultados tangibles.'
+    },
+    {
+      title: 'Sugerido 2: Ingeniería & Soluciones a Medida',
+      badge: '💻 Técnico & Proyectos',
+      text: '¡Hola! Bienvenido al equipo de ingeniería de GeoSoft. Diseñamos plataformas web, sistemas de reservas y software a tu medida. ¿Tienes una idea nueva que deseas construir o un sistema que necesitas modernizar?',
+      desc: 'Ideal para clientes que buscan desarrollos robustos, integraciones API o SaaS.'
+    },
+    {
+      title: 'Sugerido 3: Directo & Asesoría Rápida',
+      badge: '🎯 Agilidad & Cotizaciones',
+      text: '¡Hola! 👋 Estoy aquí para resolver todas tus consultas sobre desarrollo web, automatizaciones y precios en tiempo real. ¿En qué solución te gustaría que te oriente hoy?',
+      desc: 'Breve y accesible para resolver dudas directas sobre planes y funcionalidades.'
+    }
+  ];
 
   // Answer form state
   const [answeringId, setAnsweringId] = useState<number | null>(null);
@@ -59,19 +92,33 @@ export const AdminBotTab: React.FC = () => {
     if (analyticsRes) setAnalytics(analyticsRes);
     if (unansRes) setUnanswered(unansRes);
     if (faqsRes) setFaqs(faqsRes);
-    if (configRes && configRes.lengthMode) setLengthMode(configRes.lengthMode);
+    if (configRes) {
+      if (configRes.lengthMode) setLengthMode(configRes.lengthMode);
+      if (configRes.welcomeMessage) setWelcomeMessage(configRes.welcomeMessage);
+    }
     setLoading(false);
   };
 
   const handleLengthModeChange = async (mode: BotLengthMode) => {
     setLengthMode(mode);
     setIsSavingConfig(true);
-    const ok = await api.saveBotConfig(mode);
+    const ok = await api.saveBotConfig({ lengthMode: mode });
     if (ok) {
       setSaveFeedback(true);
       setTimeout(() => setSaveFeedback(false), 2500);
     }
     setIsSavingConfig(false);
+  };
+
+  const handleSaveWelcome = async () => {
+    if (!welcomeMessage.trim() || isSavingWelcome) return;
+    setIsSavingWelcome(true);
+    const ok = await api.saveBotConfig({ welcomeMessage });
+    if (ok) {
+      setWelcomeSavedFeedback(true);
+      setTimeout(() => setWelcomeSavedFeedback(false), 2500);
+    }
+    setIsSavingWelcome(false);
   };
 
   useEffect(() => {
@@ -174,6 +221,18 @@ export const AdminBotTab: React.FC = () => {
         >
           <TrendingUp className="w-3.5 h-3.5" />
           <span>Resumen de Rendimiento</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('configuracion')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+            activeSubTab === 'configuracion'
+              ? 'bg-[#A9F8B5]/20 text-[#A9F8B5] border border-[#A9F8B5]/40'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Sliders className="w-3.5 h-3.5 text-[#DFF494]" />
+          <span>Configuración & Saludos</span>
         </button>
 
         <button
@@ -474,6 +533,268 @@ export const AdminBotTab: React.FC = () => {
               </p>
             )}
           </div>
+        </div>
+      )}
+
+      {/* SUB-VIEW: CONFIGURACIÓN, SALUDOS & PROTOCOLO DEL BOT */}
+      {activeSubTab === 'configuracion' && (
+        <div className="space-y-6">
+          
+          {/* 1. SECCIÓN: SALUDO INICIAL DEL BOT */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="font-semibold text-white text-sm flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-[#A9F8B5]" />
+                  <span>Saludo Inicial del Bot (Mensaje de Bienvenida)</span>
+                </h4>
+                <p className="text-xs text-gray-400">
+                  Selecciona uno de los saludos sugeridos o escribe tu propio saludo personalizado.
+                </p>
+              </div>
+
+              {welcomeSavedFeedback && (
+                <span className="text-xs text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1 font-semibold">
+                  <Check className="w-3 h-3 text-emerald-400" />
+                  Saludo guardado en la nube
+                </span>
+              )}
+            </div>
+
+            {/* Cuadrícula de 4 Saludos (Predeterminado + 3 Sugeridos) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {greetingTemplates.map((item, idx) => {
+                const isSelected = welcomeMessage.trim() === item.text.trim();
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setWelcomeMessage(item.text);
+                      setSelectedTemplateIndex(idx);
+                    }}
+                    className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] ring-1 ring-[#A9F8B5] shadow-[0_0_15px_rgba(169,248,181,0.12)]'
+                        : 'bg-black/30 border-white/10 hover:border-white/20 hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-white">{item.title}</span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-[#DFF494]">
+                          {item.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-200 italic leading-relaxed bg-black/20 p-2 rounded-lg border border-white/5">
+                        "{item.text}"
+                      </p>
+                      <p className="text-[10.5px] text-gray-400">{item.desc}</p>
+                    </div>
+
+                    <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                      <span className="text-gray-400 text-[10px]">Toca para cargar al editor</span>
+                      {isSelected ? (
+                        <span className="text-[#A9F8B5] font-semibold flex items-center gap-1 text-[11px]">
+                          <Check className="w-3 h-3" /> Seleccionado
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 hover:text-white text-[11px]">Cargar ➔</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Editor de Saludo Personalizado */}
+            <div className="pt-2 space-y-2">
+              <label className="text-xs font-semibold text-gray-300 flex items-center justify-between">
+                <span>Editar o Escribir Saludo Personalizado del Bot:</span>
+                <span className="text-[11px] text-gray-500 font-mono">{welcomeMessage.length} caracteres</span>
+              </label>
+
+              <textarea
+                rows={3}
+                value={welcomeMessage}
+                onChange={e => setWelcomeMessage(e.target.value)}
+                placeholder="Escribe el saludo con el que el bot abrirá la conversación con tus clientes..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0e1014] border border-white/15 focus:border-[#A9F8B5] text-white text-xs outline-none transition-colors leading-relaxed"
+              />
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                <p className="text-[11px] text-gray-400">
+                  Este mensaje se mostrará automáticamente como el primer mensaje del asesor en el chat web.
+                </p>
+
+                <button
+                  onClick={handleSaveWelcome}
+                  disabled={isSavingWelcome || !welcomeMessage.trim()}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-[#A9F8B5]/20 hover:opacity-95 transition-all cursor-pointer disabled:opacity-50 shrink-0 active:scale-98"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{isSavingWelcome ? 'Guardando...' : 'Guardar Saludo del Bot'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Vista Previa del Saludo en el Chat */}
+            <div className="mt-3 p-3.5 rounded-xl bg-[#090a0d] border border-white/10 space-y-1.5">
+              <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+                Vista Previa en Chat Web:
+              </span>
+              <div className="flex gap-2.5 items-start max-w-md pt-1">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 shadow-sm">
+                  <Sparkles className="w-3 h-3" />
+                </div>
+                <div className="bg-[#181a1f] text-gray-100 border border-white/10 rounded-2xl rounded-tl-sm p-3 text-xs leading-relaxed shadow-md">
+                  {welcomeMessage}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. SECCIÓN: PROTOCOLO CONSULTIVO DE VENTAS DEL BOT */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-950/20 via-black to-[#0d1410] border border-[#A9F8B5]/30 space-y-3.5">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-[#A9F8B5]/20 text-[#A9F8B5] flex items-center justify-center">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="font-bold text-white text-sm">
+                  Protocolo Consultivo de Ventas (Directriz Activa en Gemini)
+                </h4>
+                <p className="text-[11px] text-gray-400">
+                  Reglas de comportamiento y psicología de ventas integradas en el prompt del bot.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+              <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                <div className="text-xs font-bold text-[#A9F8B5] flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#A9F8B5]/20 flex items-center justify-center text-[10px]">1</span>
+                  <span>Diagnóstico & Empatía</span>
+                </div>
+                <p className="text-[11px] text-gray-300 leading-normal">
+                  Saluda con calidez y <strong>nunca presiona agendar en el primer mensaje</strong>. Su meta inicial es escuchar y comprender el dolor o necesidad del cliente.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                <div className="text-xs font-bold text-[#DFF494] flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#DFF494]/20 flex items-center justify-center text-[10px]">2</span>
+                  <span>Solución & Valor GeoSoft</span>
+                </div>
+                <p className="text-[11px] text-gray-300 leading-normal">
+                  Explica estructuradamente cómo resolvemos su problema específico (código propio, entrega en 5-10 días, pasarelas locales e IA).
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-amber-400/20 flex items-center justify-center text-[10px]">3</span>
+                  <span>Agendamiento Natural</span>
+                </div>
+                <p className="text-[11px] text-gray-300 leading-normal">
+                  Solo cuando el cliente comprende el valor y valida su interés, sugiere suavemente coordinar una videollamada de 15 minutos sin compromiso.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. SECCIÓN: CALIBRACIÓN DE LONGITUD */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="font-semibold text-white text-sm flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-[#A9F8B5]" />
+                  <span>Calibración de Longitud de Respuestas</span>
+                </h4>
+                <p className="text-xs text-gray-400">
+                  Controla la extensión con la que el bot responderá a los usuarios.
+                </p>
+              </div>
+
+              {saveFeedback && (
+                <span className="text-xs text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1 font-semibold">
+                  <Check className="w-3 h-3 text-emerald-400" />
+                  Longitud guardada
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div
+                onClick={() => handleLengthModeChange('corto')}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                  lengthMode === 'corto'
+                    ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] ring-1 ring-[#A9F8B5]'
+                    : 'bg-black/30 border-white/10 hover:border-white/20'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-amber-300" /> Modo Corto
+                    </span>
+                    <span className="text-[10px] font-mono text-gray-400">~35-65 palabras</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 mt-1">1-2 oraciones directas sin rodeos.</p>
+                </div>
+                <div className="mt-3 text-[10px] text-gray-400 flex justify-between">
+                  <span>Velocidad: Rápida</span>
+                  {lengthMode === 'corto' && <span className="text-[#A9F8B5] font-semibold">✓ Activo</span>}
+                </div>
+              </div>
+
+              <div
+                onClick={() => handleLengthModeChange('equilibrado')}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                  lengthMode === 'equilibrado'
+                    ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] ring-1 ring-[#A9F8B5]'
+                    : 'bg-black/30 border-white/10 hover:border-white/20'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1">
+                      <Target className="w-3.5 h-3.5 text-[#A9F8B5]" /> Equilibrado
+                    </span>
+                    <span className="text-[10px] font-mono text-[#A9F8B5] bg-[#A9F8B5]/20 px-1 rounded">⭐ Por Defecto</span>
+                  </div>
+                  <p className="text-[11px] text-gray-300 mt-1">1-2 párrafos con viñetas estructuradas (~80-140 palabras).</p>
+                </div>
+                <div className="mt-3 text-[10px] text-gray-400 flex justify-between">
+                  <span className="text-[#DFF494]">Máxima Conversión</span>
+                  {lengthMode === 'equilibrado' && <span className="text-[#A9F8B5] font-semibold">✓ Activo</span>}
+                </div>
+              </div>
+
+              <div
+                onClick={() => handleLengthModeChange('detallado')}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                  lengthMode === 'detallado'
+                    ? 'bg-[#A9F8B5]/15 border-[#A9F8B5] ring-1 ring-[#A9F8B5]'
+                    : 'bg-black/30 border-white/10 hover:border-white/20'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1">
+                      <FileText className="w-3.5 h-3.5 text-blue-300" /> Detallado
+                    </span>
+                    <span className="text-[10px] font-mono text-gray-400">~180-280 palabras</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 mt-1">Explicación técnica y consultiva exhaustiva.</p>
+                </div>
+                <div className="mt-3 text-[10px] text-gray-400 flex justify-between">
+                  <span>Profundidad: Alta</span>
+                  {lengthMode === 'detallado' && <span className="text-[#A9F8B5] font-semibold">✓ Activo</span>}
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       )}
 

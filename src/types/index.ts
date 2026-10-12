@@ -94,4 +94,10 @@ export interface BotAnalyticsData {
 
 export type BotLengthMode = 'corto' | 'equilibrado' | 'detallado';
 
+export interface BotConfigData {
+  lengthMode: BotLengthMode;
+  welcomeMessage: string;
+}
+
+
 
