@@ -771,10 +771,24 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* 2. ESTADO APAGADO SIMULTÁNEO (DIMMED) */
+@keyframes navFadeToDim {
+  0% {
+    opacity: 1;
+    filter: brightness(1) grayscale(0);
+  }
+  100% {
+    opacity: 0.18;
+    filter: brightness(0.35) grayscale(0.85);
+  }
+}
+
 .nav-phase-dimmed {
+  animation: navFadeToDim 350ms ease-out forwards !important;
+}
+
+.nav-phase-dimmed-static {
   opacity: 0.18 !important;
   filter: brightness(0.35) grayscale(0.85) !important;
-  transition: opacity 280ms ease, filter 280ms ease !important;
 }
 
 /* 3. HAZ DE COLOR SECUENCIAL RÁPIDO Y FLUIDO (SE ENCIENDE Y SE APAGA, QUEDA EN 0.18) */
@@ -811,7 +825,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-link {
-  animation: navLinkColorPassFast 190ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navLinkColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Logo */
@@ -831,7 +845,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-logo {
-  animation: navLogoColorPassFast 190ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navLogoColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Botón Agendar Cita */
@@ -855,7 +869,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-booking {
-  animation: navBookingColorPassFast 190ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navBookingColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Botón Cotizar Ahora (Principal) */
@@ -877,14 +891,23 @@ h1, h2, h3, h4, .font-display {
 }
 
 .nav-sweep-primary {
-  animation: navPrimaryColorPassFast 190ms cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: navPrimaryColorPassFast 180ms cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
-/* 4 & 5. ENCENDIDO MUY LENTO Y SUAVE (3.8s) HACIA EL COLOR ORIGINAL */
+/* 4 & 5. REENCENDIDO ULTRA LENTO Y SUAVE (4.8s) HACIA EL COLOR ORIGINAL */
+@keyframes navSlowWakeUp {
+  0% {
+    opacity: 0.18;
+    filter: brightness(0.35) grayscale(0.85);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1) grayscale(0);
+  }
+}
+
 .nav-phase-slow-wake {
-  opacity: 1 !important;
-  filter: brightness(1) grayscale(0) !important;
-  transition: opacity 3800ms cubic-bezier(0.16, 1, 0.3, 1), filter 3800ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  animation: navSlowWakeUp 4800ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   will-change: opacity, filter;
 }
 
