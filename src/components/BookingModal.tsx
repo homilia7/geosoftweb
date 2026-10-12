@@ -154,8 +154,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
   const todayStr = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 select-none">
-      <div className="relative w-full max-w-lg bg-[#111317] rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col h-[510px] max-h-[92vh] animate-message-soft">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 select-none animate-backdrop-fade">
+      <div className="relative w-full max-w-lg bg-[#111317] rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col h-[510px] max-h-[92vh] animate-modal-drop">
         
         {/* Barra de Progreso Superior */}
         <div className="h-1.5 w-full bg-white/5 relative overflow-hidden shrink-0">
