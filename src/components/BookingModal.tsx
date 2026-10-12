@@ -17,6 +17,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
 
   const [step, setStep] = useState<number>(1);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
+  const [isClosing, setIsClosing] = useState(false);
 
   // Form State
   const [date, setDate] = useState('');
@@ -121,6 +122,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
     }
   };
 
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      resetAndClose();
+      setIsClosing(false);
+    }, 460);
+  };
+
   const resetAndClose = () => {
     setStep(1);
     setDirection('next');
@@ -133,6 +143,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
     setNotes('');
     onClose();
   };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isClosing]);
 
   const getWhatsAppUrl = () => {
     const text = encodeURIComponent(
@@ -154,8 +175,18 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
   const todayStr = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 select-none animate-backdrop-fade">
-      <div className="relative w-full max-w-lg bg-[#111317] rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col h-[510px] max-h-[92vh] animate-modal-drop">
+    <div
+      onClick={handleClose}
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 select-none ${
+        isClosing ? 'animate-backdrop-leave' : 'animate-backdrop-fade'
+      }`}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        className={`relative w-full max-w-lg bg-[#111317] rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col h-[510px] max-h-[92vh] ${
+          isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
+        }`}
+      >
         
         {/* Barra de Progreso Superior */}
         <div className="h-1.5 w-full bg-white/5 relative overflow-hidden shrink-0">
@@ -186,7 +217,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
           </div>
 
           <button
-            onClick={resetAndClose}
+            onClick={handleClose}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
@@ -221,7 +252,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   Abrir Confirmación en WhatsApp
                 </a>
                 <button
-                  onClick={resetAndClose}
+                  onClick={handleClose}
                   className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-medium transition-colors cursor-pointer"
                 >
                   Finalizar

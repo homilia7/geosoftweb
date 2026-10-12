@@ -15,15 +15,18 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-12 — Cuadro de Agendar Cita: Animación Simétrica al Dar Clic en Cerrar
+- **Salida Cinemática Hacia Arriba (`animate-modal-leave`):**
+  - Al hacer clic en el botón cerrar (X), en el botón Finalizar, en el backdrop o presionar la tecla Escape, el cuadro se repliega con fluidez simétrica hacia arriba (`translateY(-38px)`), reduciendo sutilmente su escala a `0.98`, difuminándose con `filter: blur(10px)` y desvaneciéndose en `opacity: 0` durante 480ms con curva orgánica `cubic-bezier(0.16, 1, 0.3, 1)`.
+- **Desvanecimiento Suave del Fondo (`animate-backdrop-leave`):**
+  - El telón translúcido se desvanece suavemente en 450ms (`opacity: 0` y `backdrop-filter: blur(0px)`), eliminando cualquier corte abrupto.
+- **Desmontaje Sincronizado:** El componente pospone el cierre efectivo (`onClose`) hasta que la animación de salida se completa, brindando una experiencia 100% pulida y profesional.
+
 ### 2026-10-12 — Cuadro de Agendar Cita: Suavidad Cinemática y Aterrizaje Ultra Sedoso
 - **Transición de Mayor Tersura (`animate-modal-drop`):**
-  - Duración extendida de 480ms a **720ms** para un descenso más pausado, señorial y elegante.
-  - Recorrido vertical optimizado a `translateY(-38px)` con escala `0.98` para evitar sensaciones de salto o brusquedad.
-  - Progresión de nitidez y opacidad escalonada: arranca en `blur(10px)`, transiciona al 50% con `opacity: 0.85` y `blur(2px)`, y aterriza suavemente en el centro con nitidez total (`blur(0px)`) y escala natural (`scale(1)`).
-  - Telón de fondo translúcido con desenfoque de cristal (`animate-backdrop-fade`) sincronizado a **520ms**.
-
-### 2026-10-12 — Cuadro de Agendar Cita: Animación Suave, Profesional y Fluida de Arriba hacia Abajo
-- **Entrada Cinemática (`animate-modal-drop`):** Al abrir el cuadro/modal de agendar cita (`BookingModal` y `CalModal`), el contenedor desciende elegantemente de arriba hacia abajo.
+  - Duración de entrada de **720ms** para un descenso pausado, señorial y elegante.
+  - Recorrido vertical optimizado a `translateY(-38px)` con escala `0.98`.
+  - Progresión de nitidez y opacidad escalonada: arranca en `blur(10px)`, pasa por `blur(2px)` al 50% con `opacity: 0.85` y se asienta en nitidez total (`blur(0px)`) y escala natural (`scale(1)`).
 
 ### 2026-10-12 — Coreografía de 3 Actos Post-Splash: Cuadro Derecho -> Bloque Izquierdo -> Menú Superior
 - **Secuencia Estricta de 3 Fases:**

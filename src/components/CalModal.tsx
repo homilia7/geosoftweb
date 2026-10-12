@@ -7,11 +7,32 @@ interface CalModalProps {
 }
 
 export const CalModal: React.FC<CalModalProps> = ({ isOpen, onClose }) => {
+  const [isClosing, setIsClosing] = React.useState(false);
+
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 460);
+  };
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-backdrop-fade">
-      <div className="relative w-full max-w-4xl h-[90vh] md:h-[82vh] bg-[#121315] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/15 animate-modal-drop">
+    <div
+      onClick={handleClose}
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 ${
+        isClosing ? 'animate-backdrop-leave' : 'animate-backdrop-fade'
+      }`}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        className={`relative w-full max-w-4xl h-[90vh] md:h-[82vh] bg-[#121315] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/15 ${
+          isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
+        }`}
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#16181b]">
           <div className="flex items-center gap-2.5">
@@ -27,7 +48,7 @@ export const CalModal: React.FC<CalModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />

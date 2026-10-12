@@ -638,6 +638,45 @@ h1, h2, h3, h4, .font-display {
   will-change: opacity, backdrop-filter;
 }
 
+/* Salida suave, profesional y fluida del Cuadro de Agendar Cita (hacia arriba) */
+@keyframes modalDropOutTop {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-38px) scale(0.98);
+    filter: blur(10px);
+  }
+}
+
+.animate-modal-leave {
+  animation: modalDropOutTop 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes backdropFadeOut {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+.animate-backdrop-leave {
+  animation: backdropFadeOut 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, backdrop-filter;
+}
+
 /* ==========================================================================
    ANIMACIÓN LENTA Y FLUIDA DE RESPUESTAS DEL BOT (RENGLÓN POR RENGLÓN)
    ========================================================================== */
