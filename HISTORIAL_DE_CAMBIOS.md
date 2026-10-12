@@ -15,30 +15,29 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-12 — Video Interactivo & Motion Reel de Soluciones GeoSoft + Skill de Video Remotion
-- **Incorporación de Skill de Video Profesional (`remotion-video-studio`):**
-  - Registrada en la Bóveda de Skills (`Skills Auxiliares` y `.gemini/config/skills`), adoptando las especificaciones oficiales de Remotion (`remotion-dev/skills`) y compilación determinística por fotogramas con FFmpeg.
-- **Componente de Video Interactivo & Motion Showcase (`InteractiveVideoShowcase.tsx`):**
-  - **Modo Dual Interactivo / Video MP4:** Permite alternar con un clic entre un reproductor de video HTML5 en Full HD y un simulador interactivo de UI en vivo.
-  - **Barra de Progreso por Segmentos tipo Stories:** Barra dividida en 9 cápsulas que se rellenan de forma continua a 60 FPS al avanzar las diapositivas.
-  - **Exhibición de las 9 Soluciones Solicitadas:**
-    1. *Chatbots & Agentes de IA 24/7:* Simulador de chat en vivo con WhatsApp Cloud API y captura de leads.
-    2. *Páginas Web Profesionales:* Ventana de navegador con 100/100 de puntuación Lighthouse y carga instantánea.
-    3. *Sitios de Membresía & LMS:* Portal de alumnos con barra de progreso de módulos y contenidos protegidos.
-    4. *Plataformas SaaS Escalables:* Telemetría en la nube, métricas de MRR y latencia de 12ms sobre Cloudflare D1.
-    5. *Sistemas CRM a la Medida:* Tablero Kanban de pipeline comercial con etapas (Prospecto, Cotizado, Ganado).
-    6. *Software a la Medida:* Editor de código limpio con lógica de negocio y validaciones fiscales.
-    7. *Automatización de Procesos:* Diagrama de workflow entre Webhooks, IA y facturación electrónica.
-    8. *Sistemas de Reservas & Cobros:* Agenda en tiempo real con selector de horario y verificación Sinpe Móvil.
-    9. *Aplicaciones Web Progresivas (PWA):* Vista móvil de app instalada con funcionamiento offline.
-  - **Integración Sensorial:** Transiciones con sonido de clic armónico (`soundEffects.playClick()`), controles de reproducción, reinicio y salto directo entre servicios.
-  - **Llamadas a la Acción Directas:** Botones "Cotizar esta Solución" con redirección suave al cotizador inteligente y agendamiento de demostraciones.
-- **Generación Programática de Video MP4 (`geosoft-showcase.mp4`):**
-  - Renderizado automático con FFmpeg a 1920x1080 (H.264 / AAC) con las 11 escenas animadas, tipografía Segoe UI, acentos de color esmeralda y mezcla de pista de audio ambiental (`public/videos/geosoft-showcase.mp4`).
-- **Verificación y Despliegue en 3 Filtros:**
-  - Build local con Vite (`dist` actualizado con el video).
-  - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
-  - Verificación HTTP 200 en el sitio principal y en el video directo.
+### 2026-10-12 — Video Cinemático de Alta Fidelidad & Showcase Reel con Imágenes Reales y Ken Burns
+- **Imágenes Reales de Producto Ultra-HD en 16:9 (`public/assets/showcase/`):**
+  - Generadas 9 piezas visuales fotorrealistas de clase Silicon Valley para cada una de las 9 soluciones:
+    1. *01-chatbots.jpg:* Dashboard de IA con analítica en vivo y WhatsApp Business.
+    2. *02-web.jpg:* MacBook Pro flotante con landing page Dark Tech y tarjeta holográfica.
+    3. *03-membership.jpg:* Pantalla de cristal oscuro de academia VIP y reproductor de cursos.
+    4. *04-saas.jpg:* Monitor curvo ultrawide con telemetría de servidores y métricas MRR.
+    5. *05-crm.jpg:* Tablero comercial visual en tableta y monitor con pipeline de ventas.
+    6. *06-custom-software.jpg:* Espacio de trabajo de ingeniería con monitores 4K y arquitectura cloud.
+    7. *07-automation.jpg:* Red neuronal de workflows conectando Webhooks, IA y pasarelas de pago.
+    8. *08-booking.jpg:* Plataforma de reservas de lujo con confirmación instantánea de Sinpe Móvil.
+    9. *09-pwa.jpg:* Smartphone flotante con aplicación web progresiva y diseño futurista.
+- **Efecto de Movimiento Cinemático Ken Burns (`scripts/generate_cinematic_showcase_video.js`):**
+  - Eliminado cualquier aspecto plano o estático: la cámara se desplaza y hace zoom continuo (`zoompan`) sobre cada interfaz real.
+  - Viñeta inferior en gradiente oscuro para tipografía nítida en Segoe UI con badges de color glowing y métricas estratégicas.
+  - Transiciones suaves de crossfade (`fade in/out`) sincronizadas con la música ambiental instrumental (`ambient-music.mp3`).
+  - Video renderizado a 1920x1080 Full HD (6.88 MB) en `public/videos/geosoft-showcase.mp4`.
+- **Componente Web Interactivo Elevado (`InteractiveVideoShowcase.tsx`):**
+  - El modo interactivo integra los renders de alta resolución dentro de un marco de ventana tecnológica de software con resplandor ambiental reactivo, badge interactivo y micro-escalado al pasar el ratón.
+  - Selector de modo para reproducir el video cinemático Full HD o interactuar con las soluciones paso a paso.
+- **Verificación y Despliegue en Producción:**
+  - Build local con Vite (`dist` actualizado con imágenes y video).
+  - Desplegado a Cloudflare Pages con verificación HTTP 200 en `geosoftweb.pages.dev`, `/videos/geosoft-showcase.mp4` y `/assets/showcase/01-chatbots.jpg`.
 
 ### 2026-10-12 — Menú de Servicios Ultra-Estable, Clic Bonito (click.wav) & Limpieza de Tooltip IA
 - **Burbuja de Asesor IA Flotante (`FloatingChat.tsx`):**
