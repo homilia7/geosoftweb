@@ -739,6 +739,129 @@ h1, h2, h3, h4, .font-display {
   will-change: transform, opacity, filter;
 }
 
+/* ==========================================================================
+   FASE INTERMEDIA: BOTONES SE PONEN AMARILLOS Y LUEGO SE APAGAN
+   ========================================================================== */
+@keyframes navButtonYellowGlow {
+  0% {
+    color: #d1d5db;
+    background-color: transparent;
+    box-shadow: none;
+    filter: none;
+  }
+  20% {
+    color: #facc15;
+    background-color: rgba(250, 204, 21, 0.18);
+    box-shadow: 0 0 16px rgba(250, 204, 21, 0.45);
+    filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8));
+  }
+  50% {
+    color: #fef08a;
+    background-color: rgba(250, 204, 21, 0.24);
+    box-shadow: 0 0 24px rgba(250, 204, 21, 0.65);
+    filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.95));
+  }
+  80% {
+    color: #eab308;
+    background-color: rgba(250, 204, 21, 0.05);
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.2);
+    filter: drop-shadow(0 0 3px rgba(250, 204, 21, 0.3));
+  }
+  100% {
+    color: #d1d5db;
+    background-color: transparent;
+    box-shadow: none;
+    filter: none;
+  }
+}
+
+.animate-nav-yellow-btn {
+  animation: navButtonYellowGlow 950ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes navLogoYellowGlow {
+  0% {
+    color: #ffffff;
+    filter: none;
+  }
+  25%, 50% {
+    color: #facc15;
+    filter: drop-shadow(0 0 16px rgba(250, 204, 21, 0.9));
+  }
+  80% {
+    color: #eab308;
+    filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.3));
+  }
+  100% {
+    color: #ffffff;
+    filter: none;
+  }
+}
+
+.animate-nav-yellow-text {
+  animation: navLogoYellowGlow 950ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes navCtaYellowGlow {
+  0% {
+    color: #A9F8B5;
+    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+  }
+  25%, 50% {
+    color: #fef08a;
+    border-color: rgba(250, 204, 21, 0.85);
+    background-color: rgba(250, 204, 21, 0.22);
+    box-shadow: 0 0 24px rgba(250, 204, 21, 0.7);
+    filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.85));
+  }
+  80% {
+    color: #eab308;
+    border-color: rgba(250, 204, 21, 0.3);
+    background-color: rgba(250, 204, 21, 0.05);
+    box-shadow: 0 0 6px rgba(250, 204, 21, 0.2);
+  }
+  100% {
+    color: #A9F8B5;
+    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+    filter: none;
+  }
+}
+
+.animate-nav-yellow-cta {
+  animation: navCtaYellowGlow 950ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes navPrimaryYellowGlow {
+  0% {
+    background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 100%);
+    box-shadow: 0 4px 15px rgba(169, 248, 181, 0.25);
+    filter: none;
+  }
+  25%, 50% {
+    background: linear-gradient(78deg, #facc15 0%, #fef08a 100%);
+    box-shadow: 0 0 32px rgba(250, 204, 21, 0.95), 0 0 55px rgba(250, 204, 21, 0.5);
+    filter: brightness(1.25);
+  }
+  80% {
+    background: linear-gradient(78deg, #eab308 0%, #facc15 100%);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+    filter: brightness(1.05);
+  }
+  100% {
+    background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 100%);
+    box-shadow: 0 4px 15px rgba(169, 248, 181, 0.25);
+    filter: none;
+  }
+}
+
+.animate-nav-yellow-primary {
+  animation: navPrimaryYellowGlow 950ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
 /* 3. Desplazamiento de la luz cromática adentro del texto */
 @keyframes textChromaticSweepPass {
   0% {
