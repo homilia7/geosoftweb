@@ -22,6 +22,7 @@ import {
 import { soundEffects } from '../services/soundEffects';
 import { Reveal } from './Reveal';
 import { ScrollVideoShowcase } from './ScrollVideoShowcase';
+import { ThreeScrollyCamera } from './ThreeScrollyCamera';
 
 export interface InteractiveVideoShowcaseProps {
   onScrollToQuote: () => void;
@@ -49,7 +50,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [mode, setMode] = useState<'scroll' | 'interactive' | 'video'>('scroll');
+  const [mode, setMode] = useState<'three' | 'ono' | 'interactive' | 'video'>('three');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -57,8 +58,10 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
       setMode('video');
     } else if (window.location.hash === '#interactivo') {
       setMode('interactive');
-    } else if (window.location.hash === '#scroll' || window.location.hash === '#ono') {
-      setMode('scroll');
+    } else if (window.location.hash === '#ono' || window.location.hash === '#scroll') {
+      setMode('ono');
+    } else if (window.location.hash === '#3d' || window.location.hash === '#three') {
+      setMode('three');
     }
   }, []);
 
@@ -286,22 +289,37 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
             Diseños reales, código de ingeniería y experiencias de software de clase mundial creadas a tu medida.
           </p>
 
-          {/* Selector de Modo: Scroll ONO vs Interactivo vs Video MP4 */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
+          {/* Selector de Modos: Opción 1 (Three.js 3D) vs Opción 2 (Video Continuo ONO) vs Interactivo vs Video */}
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto">
             <button
               onClick={() => {
                 soundEffects.playClick();
-                setMode('scroll');
+                setMode('three');
                 setIsPlaying(false);
               }}
               className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                mode === 'scroll'
+                mode === 'three'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
+                  : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-black" />
+              <span>🌟 Opción 1: 3D en Vivo (Three.js)</span>
+            </button>
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setMode('ono');
+                setIsPlaying(false);
+              }}
+              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                mode === 'ono'
                   ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
               }`}
             >
               <Mouse className="w-3.5 h-3.5 animate-bounce" />
-              <span>✨ Modo Scroll del Ratón (Estilo ONO)</span>
+              <span>🎬 Opción 2: Video 3D Continuo (Estilo ONO)</span>
             </button>
             <button
               onClick={() => {
@@ -316,7 +334,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>🎮 Modo Interactivo en Vivo</span>
+              <span>📱 Showcase Interactivo</span>
             </button>
             <button
               onClick={() => {
@@ -331,15 +349,23 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               }`}
             >
               <Film className="w-3.5 h-3.5" />
-              <span>🎬 Modo Video MP4 HD</span>
+              <span>▶️ Video MP4 HD</span>
             </button>
           </div>
         </Reveal>
 
         {/* Reproductor / Showcase Principal */}
         <Reveal effect="up" delay={100} className="w-full">
-          {mode === 'scroll' ? (
+          {mode === 'three' ? (
+            <ThreeScrollyCamera
+              onScrollToQuote={onScrollToQuote}
+              onOpenBooking={onOpenBooking}
+            />
+          ) : mode === 'ono' ? (
             <ScrollVideoShowcase
+              sequencePath="/assets/cube-sequence"
+              totalFrames={75}
+              sequenceTitle="Opción 2: Video 3D Continuo • Estilo ONO"
               onScrollToQuote={onScrollToQuote}
               onOpenBooking={onOpenBooking}
             />

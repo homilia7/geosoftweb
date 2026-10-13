@@ -15,38 +15,30 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-13 — Implementación de Scrollytelling Video Scrubbing en Canvas a 60 FPS (Estilo ONO.software)
-- **Técnica de Secuencia de Fotogramas en Canvas (Arquitectura ONO / Apple):**
-  - Se analizó el sitio de referencia `ono.software` y se implementó su misma arquitectura de alto rendimiento: renderizado sobre `<canvas>` acelerado por hardware a 60-120 FPS sin usar etiquetas `<video>` (evitando la latencia y buffering del seek con códecs de video estándar).
-  - Extracción y optimización con FFmpeg de 72 fotogramas en WebP (`q=75`, 1280x720) ubicados en `public/assets/scroll-sequence/frame_001.webp` hasta `frame_072.webp` con un peso ultra liviano de solo 2.75 MB en total.
-- **Componente Nuevo `ScrollVideoShowcase.tsx`:**
-  - **Precarga en Memoria & Barra de Progreso:** Precarga progresiva de los 72 fotogramas WebP con buffer continuo y renderizado instantáneo del primer fotograma.
-  - **Física de Desplazamiento Suave (Smooth Lerp 0.25):** El avance de fotogramas interpola suavemente entre el fotograma actual y el fotograma objetivo para evitar cualquier tipo de salto brusco.
-  - **Controles Multientrada:**
-    - Rueda del ratón (`wheel`): Permite avanzar y retroceder el video cuadro por cuadro con la rueda.
-    - Gestos táctiles en smartphones (`touchmove`): Permite deslizar verticalmente con el dedo para controlar el video.
-    - Scrubber de línea de tiempo deslizable: Barra interactiva con porcentaje y contador de fotogramas en tiempo real.
-    - Auto-reproducción a 24 FPS y botón de reinicio.
-    - Botón de pantalla completa inmersiva (`Maximize2` / `Minimize2`).
-  - **HUD Cinemático con Hitos Dinámicos:**
-    - Tarjeta de información sincronizada que cambia automáticamente según el progreso del video:
-      1. *Ecosistema Tecnológico & Arquitectura Digital* (Frames 1-12)
-      2. *Chatbots & Agentes de IA Inteligentes* (Frames 13-24)
-      3. *Páginas Web Ultrarrápidas & Dark Tech* (Frames 25-36)
-      4. *Plataformas SaaS & Sitios de Membresía* (Frames 37-48)
-      5. *Sistemas de Reservas con Sinpe Móvil* (Frames 49-60)
-      6. *CRMs, ERPs & Software a la Medida* (Frames 61-72)
-    - Acceso rápido por botones de hitos ("Web", "Chatbots", "SaaS", "Sinpe", etc.).
-- **Integración en `InteractiveVideoShowcase.tsx`:**
-  - Nuevo selector con 3 modalidades disponibles:
-    1. *✨ Modo Scroll del Ratón (Estilo ONO)* (activo por defecto para evaluación inmediata).
-    2. *🎮 Modo Interactivo en Vivo*.
-    3. *🎬 Modo Video MP4 HD (Reel)*.
-  - Soporte de acceso directo por URL hash (`#scroll`, `#ono`, `#video`).
-- **Verificación y Despliegue:**
+### 2026-10-13 — Implementación Dual: Opción 1 (Three.js 3D en Vivo) vs Opción 2 (Video 3D Continuo Estilo ONO)
+- **Eliminación Total de Cortes de Diapositiva:**
+  - El usuario indicó que en `ono.software` y en su video `Grabación cubo 2026 cubo.mp4`, la cámara realiza un **viaje 3D continuo sin cortes ni diapositivas**, donde la pantalla no baja sino que toda la cinemática ocurre en el centro del campo de visión.
+- **Opción 1: Experiencia 3D Nativa en Tiempo Real (`ThreeScrollyCamera.tsx`):**
+  - Desarrollado con Three.js WebGL a 120 FPS.
+  - La rueda del ratón y el touch del celular controlan un spline de viaje de cámara continuo:
+    - 0% - 25%: Vista panorámica exterior del cubo translúcido de cristal esmeralda (`IOR 1.54`).
+    - 25% - 50%: La cámara viaja hacia adelante y **penetra directamente a través de la pared de cristal hacia el interior del cubo**.
+    - 50% - 75%: Dentro del cubo, navega por la malla quad holográfica y la luz del núcleo mientras el cubo se transforma dinámicamente en el marco de diamante hueco.
+    - 75% - 100%: La cámara sale a través del centro hacia la constelación de nodos de software en la nube.
+  - Incluye selector para alternar entre "Cámara Guiada por Scroll" y "Modo Órbita Libre 360°" con OrbitControls.
+- **Opción 2: Secuencia Cinemática de Video 3D Continuo (`ScrollVideoShowcase.tsx` + `cube-sequence`):**
+  - Generada una secuencia continua de 75 fotogramas WebP (`public/assets/cube-sequence/frame_001.webp` hasta `frame_075.webp`) con un peso total ultra liviano de solo **887 KB**.
+  - Plano secuencia 3D sin un solo corte de diapositiva, renderizado sobre `<canvas>` con curva de interpolación Lerp y timeline scrubber.
+- **Selector de Comparación en Vivo (`InteractiveVideoShowcase.tsx`):**
+  - Pestañas interactivas para alternar al instante entre:
+    1. *🌟 Opción 1: 3D en Vivo (Three.js)* (activa por defecto).
+    2. *🎬 Opción 2: Video 3D Continuo (Estilo ONO)*.
+    3. *📱 Showcase Interactivo de Soluciones*.
+    4. *▶️ Video MP4 HD (Reel)*.
+- **Despliegue y Verificación:**
   - Build local con Vite (`0 errores`).
   - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
-  - Smoke test confirmado con HTTP 200 en producción.
+  - Smoke test confirmado con HTTP 200 en `cube-sequence` y producción.
 
 ### 2026-10-12 — Optimización 100% Responsive para Teléfonos Móviles y Dispositivos Táctiles
 - **Viewport y Meta Etiquetas (`index.html`):**

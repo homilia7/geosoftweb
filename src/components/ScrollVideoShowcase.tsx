@@ -19,6 +19,8 @@ export interface ScrollVideoShowcaseProps {
   onOpenBooking?: () => void;
   totalFrames?: number;
   initialFrame?: number;
+  sequencePath?: string;
+  sequenceTitle?: string;
 }
 
 interface FrameCheckpoint {
@@ -31,6 +33,53 @@ interface FrameCheckpoint {
   accentColor: string;
   features: string[];
 }
+
+const CUBE_CHECKPOINTS: FrameCheckpoint[] = [
+  {
+    start: 1,
+    end: 18,
+    badge: 'ESTRUCTURA 3D MONOLÍTICA',
+    category: 'Ecosistema GeoSoft',
+    title: 'Cubo Holográfico Esmeralda',
+    description:
+      'Video continuo 3D CGI sin cortes de diapositiva. Carcasa de cristal esmeralda con refracción física y entramado cuántico.',
+    accentColor: '#A9F8B5',
+    features: ['Plano Secuencia Continuo', 'Sin Cortes de Pantalla', 'Renderizado 3D']
+  },
+  {
+    start: 19,
+    end: 38,
+    badge: 'VIAJE DE CÁMARA CONTINUO',
+    category: 'Inmersión en el Cristal',
+    title: 'Penetración en el Núcleo & IA 24/7',
+    description:
+      'La cámara viaja sin interrupción a través del cristal. Cada giro del ratón hace que la cámara penetre en la malla de datos.',
+    accentColor: '#38bdf8',
+    features: ['Cámara Dolly In Suave', 'Chatbots & Modelos LLM', 'Automatización de Flujos']
+  },
+  {
+    start: 39,
+    end: 56,
+    badge: 'MALLA INTERNA Y NUBE',
+    category: 'Arquitectura Distribuida',
+    title: 'Navegación Interior & SaaS Multi-Tenant',
+    description:
+      'Dentro del cristal, la cámara recorre los pilares estructurales y la luz del núcleo donde residen las bases de datos y la facturación.',
+    accentColor: '#fb923c',
+    features: ['Plataformas en la Nube', 'Validación Sinpe Móvil', 'Seguridad de Alta Resistencia']
+  },
+  {
+    start: 57,
+    end: 75,
+    badge: 'APERTURA Y EXPANSIÓN',
+    category: 'Geometría Transformable',
+    title: 'Marco Hueco & Software a la Medida',
+    description:
+      'El cubo se expande en un marco de diamante hueco mientras la cámara sale por el centro hacia el ecosistema final de GeoSoft.',
+    accentColor: '#c084fc',
+    features: ['Transformación Cinemática', 'Código Limpio a la Medida', 'Soporte y Garantía Total']
+  }
+];
 
 const CHECKPOINTS: FrameCheckpoint[] = [
   {
@@ -104,7 +153,9 @@ const CHECKPOINTS: FrameCheckpoint[] = [
 export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   onScrollToQuote,
   onOpenBooking,
-  totalFrames = 72
+  sequencePath = '/assets/cube-sequence',
+  totalFrames = 75,
+  sequenceTitle = 'Opción 2: Video 3D Continuo • Estilo ONO'
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -119,17 +170,19 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
 
-  // Formateador de ruta para los frames: frame_001.webp hasta frame_072.webp
+  // Formateador de ruta para los frames
   const getFrameUrl = useCallback((index: number) => {
     const padded = String(index).padStart(3, '0');
-    return `/assets/scroll-sequence/frame_${padded}.webp`;
-  }, []);
+    return `${sequencePath}/frame_${padded}.webp`;
+  }, [sequencePath]);
 
-  // Precargar todos los 72 fotogramas en memoria
+  // Precargar fotogramas en memoria
   useEffect(() => {
     let isMounted = true;
     const images: HTMLImageElement[] = [];
     let loaded = 0;
+    setIsLoading(true);
+    setLoadedCount(0);
 
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
@@ -290,9 +343,10 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
     setTouchStartY(null);
   };
 
-  // Checkpoint activo según el frame actual
+  // Checkpoints activos según la secuencia cargada
+  const currentCheckpoints = sequencePath.includes('cube') ? CUBE_CHECKPOINTS : CHECKPOINTS;
   const activeCheckpoint =
-    CHECKPOINTS.find((c) => currentFrame >= c.start && currentFrame <= c.end) || CHECKPOINTS[0];
+    currentCheckpoints.find((c) => currentFrame >= c.start && currentFrame <= c.end) || currentCheckpoints[0];
 
   const currentPercent = Math.round((currentFrame / totalFrames) * 100);
 
@@ -332,7 +386,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           <div className="flex items-center gap-2">
             <Mouse className="w-3.5 h-3.5 text-[#A9F8B5] animate-bounce" />
             <span className="text-xs font-mono font-bold text-white tracking-wide">
-              Scrollytelling 60 FPS • Estilo ONO.software
+              {sequenceTitle}
             </span>
           </div>
         </div>
@@ -521,7 +575,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           <span className="text-[11px] font-mono text-gray-500 uppercase tracking-wider shrink-0 mr-1 hidden sm:inline">
             Hitos:
           </span>
-          {CHECKPOINTS.map((cp, idx) => {
+          {currentCheckpoints.map((cp, idx) => {
             const isActive = currentFrame >= cp.start && currentFrame <= cp.end;
             return (
               <button
