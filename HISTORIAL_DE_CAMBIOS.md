@@ -15,6 +15,39 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-13 — Implementación de Scrollytelling Video Scrubbing en Canvas a 60 FPS (Estilo ONO.software)
+- **Técnica de Secuencia de Fotogramas en Canvas (Arquitectura ONO / Apple):**
+  - Se analizó el sitio de referencia `ono.software` y se implementó su misma arquitectura de alto rendimiento: renderizado sobre `<canvas>` acelerado por hardware a 60-120 FPS sin usar etiquetas `<video>` (evitando la latencia y buffering del seek con códecs de video estándar).
+  - Extracción y optimización con FFmpeg de 72 fotogramas en WebP (`q=75`, 1280x720) ubicados en `public/assets/scroll-sequence/frame_001.webp` hasta `frame_072.webp` con un peso ultra liviano de solo 2.75 MB en total.
+- **Componente Nuevo `ScrollVideoShowcase.tsx`:**
+  - **Precarga en Memoria & Barra de Progreso:** Precarga progresiva de los 72 fotogramas WebP con buffer continuo y renderizado instantáneo del primer fotograma.
+  - **Física de Desplazamiento Suave (Smooth Lerp 0.25):** El avance de fotogramas interpola suavemente entre el fotograma actual y el fotograma objetivo para evitar cualquier tipo de salto brusco.
+  - **Controles Multientrada:**
+    - Rueda del ratón (`wheel`): Permite avanzar y retroceder el video cuadro por cuadro con la rueda.
+    - Gestos táctiles en smartphones (`touchmove`): Permite deslizar verticalmente con el dedo para controlar el video.
+    - Scrubber de línea de tiempo deslizable: Barra interactiva con porcentaje y contador de fotogramas en tiempo real.
+    - Auto-reproducción a 24 FPS y botón de reinicio.
+    - Botón de pantalla completa inmersiva (`Maximize2` / `Minimize2`).
+  - **HUD Cinemático con Hitos Dinámicos:**
+    - Tarjeta de información sincronizada que cambia automáticamente según el progreso del video:
+      1. *Ecosistema Tecnológico & Arquitectura Digital* (Frames 1-12)
+      2. *Chatbots & Agentes de IA Inteligentes* (Frames 13-24)
+      3. *Páginas Web Ultrarrápidas & Dark Tech* (Frames 25-36)
+      4. *Plataformas SaaS & Sitios de Membresía* (Frames 37-48)
+      5. *Sistemas de Reservas con Sinpe Móvil* (Frames 49-60)
+      6. *CRMs, ERPs & Software a la Medida* (Frames 61-72)
+    - Acceso rápido por botones de hitos ("Web", "Chatbots", "SaaS", "Sinpe", etc.).
+- **Integración en `InteractiveVideoShowcase.tsx`:**
+  - Nuevo selector con 3 modalidades disponibles:
+    1. *✨ Modo Scroll del Ratón (Estilo ONO)* (activo por defecto para evaluación inmediata).
+    2. *🎮 Modo Interactivo en Vivo*.
+    3. *🎬 Modo Video MP4 HD (Reel)*.
+  - Soporte de acceso directo por URL hash (`#scroll`, `#ono`, `#video`).
+- **Verificación y Despliegue:**
+  - Build local con Vite (`0 errores`).
+  - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Smoke test confirmado con HTTP 200 en producción.
+
 ### 2026-10-12 — Optimización 100% Responsive para Teléfonos Móviles y Dispositivos Táctiles
 - **Viewport y Meta Etiquetas (`index.html`):**
   - Configurado `viewport-fit=cover` y `maximum-scale=5.0` para cobertura nativa edge-to-edge en pantallas con Dynamic Island, notch y barras de navegación en iOS Safari y Chrome Android.

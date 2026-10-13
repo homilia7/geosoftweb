@@ -16,10 +16,12 @@ import {
   Sparkles,
   ArrowRight,
   SlidersHorizontal,
-  Maximize2
+  Maximize2,
+  Mouse
 } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 import { Reveal } from './Reveal';
+import { ScrollVideoShowcase } from './ScrollVideoShowcase';
 
 export interface InteractiveVideoShowcaseProps {
   onScrollToQuote: () => void;
@@ -47,8 +49,18 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [mode, setMode] = useState<'interactive' | 'video'>('interactive');
+  const [mode, setMode] = useState<'scroll' | 'interactive' | 'video'>('scroll');
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (window.location.hash === '#video-mp4' || window.location.hash === '#video') {
+      setMode('video');
+    } else if (window.location.hash === '#interactivo') {
+      setMode('interactive');
+    } else if (window.location.hash === '#scroll' || window.location.hash === '#ono') {
+      setMode('scroll');
+    }
+  }, []);
 
   const SLIDE_DURATION = 4200; // ms por diapositiva
 
@@ -274,21 +286,37 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
             Diseños reales, código de ingeniería y experiencias de software de clase mundial creadas a tu medida.
           </p>
 
-          {/* Selector de Modo: Interactivo vs Video MP4 */}
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 max-w-sm sm:max-w-none mx-auto">
+          {/* Selector de Modo: Scroll ONO vs Interactivo vs Video MP4 */}
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setMode('scroll');
+                setIsPlaying(false);
+              }}
+              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                mode === 'scroll'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
+                  : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
+              }`}
+            >
+              <Mouse className="w-3.5 h-3.5 animate-bounce" />
+              <span>✨ Modo Scroll del Ratón (Estilo ONO)</span>
+            </button>
             <button
               onClick={() => {
                 soundEffects.playClick();
                 setMode('interactive');
+                setIsPlaying(true);
               }}
               className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 mode === 'interactive'
-                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/25 scale-102 sm:scale-105'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Modo Interactivo en Vivo</span>
+              <span>🎮 Modo Interactivo en Vivo</span>
             </button>
             <button
               onClick={() => {
@@ -298,19 +326,25 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               }}
               className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 mode === 'video'
-                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/25 scale-102 sm:scale-105'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
               }`}
             >
               <Film className="w-3.5 h-3.5" />
-              <span>Modo Video MP4 Full HD (Reel)</span>
+              <span>🎬 Modo Video MP4 HD</span>
             </button>
           </div>
         </Reveal>
 
         {/* Reproductor / Showcase Principal */}
         <Reveal effect="up" delay={100} className="w-full">
-          <div className="relative rounded-2xl border border-white/15 bg-gradient-to-b from-[#0e131d]/90 to-[#07090f]/95 p-3.5 sm:p-6 md:p-8 shadow-2xl backdrop-blur-2xl overflow-hidden">
+          {mode === 'scroll' ? (
+            <ScrollVideoShowcase
+              onScrollToQuote={onScrollToQuote}
+              onOpenBooking={onOpenBooking}
+            />
+          ) : (
+            <div className="relative rounded-2xl border border-white/15 bg-gradient-to-b from-[#0e131d]/90 to-[#07090f]/95 p-3.5 sm:p-6 md:p-8 shadow-2xl backdrop-blur-2xl overflow-hidden">
             {/* Barra de Progreso Segmentada tipo Stories */}
             {mode === 'interactive' && (
               <div className="grid grid-cols-9 gap-1 sm:gap-1.5 mb-5 sm:mb-8">
@@ -538,6 +572,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               </div>
             </div>
           </div>
+          )}
         </Reveal>
       </div>
     </section>
