@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {
@@ -9,11 +10,10 @@ import {
   Maximize2,
   Minimize2,
   Mouse,
-  Layers,
   ArrowRight,
   Eye,
-  Sliders,
-  CheckCircle2
+  CheckCircle2,
+  X
 } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 
@@ -55,7 +55,7 @@ const STAGES: CameraStage[] = [
   },
   {
     progress: 0.65,
-    badge: 'MORFISMO & ESTRUCTURA HUÈCA',
+    badge: 'MORFISMO & ESTRUCTURA HUECA',
     category: 'Transformación de Geometría',
     title: 'Sistemas SaaS & Validación Sinpe Móvil',
     description:
@@ -80,6 +80,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
   onOpenBooking
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0); // 0 a 1
   const [targetProgress, setTargetProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -94,7 +95,6 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const cubeGroupRef = useRef<THREE.Group | null>(null);
   const outerCubeRef = useRef<THREE.Mesh | null>(null);
-  const innerGridGroupRef = useRef<THREE.Group | null>(null);
   const hollowFrameGroupRef = useRef<THREE.Group | null>(null);
   const particlesRef = useRef<THREE.Points | null>(null);
   const coreLightRef = useRef<THREE.PointLight | null>(null);
@@ -105,21 +105,18 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || 800;
-    const height = container.clientHeight || 500;
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || (isFullscreen ? window.innerHeight : 540);
 
-    // 1. Escena & Fondo Tech Oscuro
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     scene.background = new THREE.Color(0x04060a);
     scene.fog = new THREE.FogExp2(0x04060a, 0.05);
 
-    // 2. Cámara de Perspectiva
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.05, 100);
     camera.position.set(0, 0, 5.5);
     cameraRef.current = camera;
 
-    // 3. Renderer con Antialiasing y Tone Mapping
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -129,16 +126,14 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 4. Orbit Controls (para modo órbita libre)
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.minDistance = 0.4;
     controls.maxDistance = 14;
-    controls.enabled = false; // Se activa solo si el usuario pulsa 'Órbita Libre'
+    controls.enabled = isFreeOrbit;
     controlsRef.current = controls;
 
-    // 5. Sistema de Luces Cinemáticas
     const ambientLight = new THREE.AmbientLight(0x07281f, 2.2);
     scene.add(ambientLight);
 
@@ -155,12 +150,11 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     scene.add(emeraldCore);
     coreLightRef.current = emeraldCore;
 
-    // 6. Grupo del Cubo 3D
     const mainGroup = new THREE.Group();
     scene.add(mainGroup);
     cubeGroupRef.current = mainGroup;
 
-    // A. Cristal Esmeralda Translúcido
+    // Cristal Esmeralda Translúcido
     const outerSize = 1.8;
     const outerGeo = new THREE.BoxGeometry(outerSize, outerSize, outerSize);
     const outerMat = new THREE.MeshPhysicalMaterial({
@@ -184,7 +178,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     mainGroup.add(outerCube);
     outerCubeRef.current = outerCube;
 
-    // B. Rejilla Quad Holográfica Interior
+    // Rejilla Quad Holográfica Interior
     const innerGridGroup = new THREE.Group();
     const faceSize = 1.65;
     const divisions = 14;
@@ -224,9 +218,8 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     innerGridGroup.add(createFaceGrid('y', halfDist));
     innerGridGroup.add(createFaceGrid('y', -halfDist));
     mainGroup.add(innerGridGroup);
-    innerGridGroupRef.current = innerGridGroup;
 
-    // C. Estructura de Marco de Diamante Hueco (Morfismo como en el segundo 20 de la grabación)
+    // Marco de Diamante Hueco (Morfismo del video)
     const hollowGroup = new THREE.Group();
     const barMat = new THREE.MeshPhysicalMaterial({
       color: 0x38f9d7,
@@ -245,7 +238,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     const barLength = 1.9;
     const barGeo = new THREE.CylinderGeometry(barRadius, barRadius, barLength, 16);
 
-    const positions: [number, number, number, number, number, number][] = [
+    const barCoords: [number, number, number, number, number, number][] = [
       [0, 0.9, 0.9, 0, 0, Math.PI / 2],
       [0, -0.9, 0.9, 0, 0, Math.PI / 2],
       [0.9, 0, 0.9, 0, 0, 0],
@@ -260,7 +253,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
       [-0.9, -0.9, 0, Math.PI / 2, 0, 0]
     ];
 
-    positions.forEach(([x, y, z, rx, ry, rz]) => {
+    barCoords.forEach(([x, y, z, rx, ry, rz]) => {
       const mesh = new THREE.Mesh(barGeo, barMat);
       mesh.position.set(x, y, z);
       mesh.rotation.set(rx, ry, rz);
@@ -271,7 +264,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     mainGroup.add(hollowGroup);
     hollowFrameGroupRef.current = hollowGroup;
 
-    // D. Nube de Partículas Cuánticas Flotantes (Efecto Cosmos Tech)
+    // Nube de Partículas Cósmicas
     const particleCount = 700;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
@@ -292,36 +285,25 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     scene.add(particles);
     particlesRef.current = particles;
 
-    // 7. Bucle Principal de Renderizado con interpolación Scrollytelling
     let clock = new THREE.Clock();
 
     const animate = () => {
       const elapsedTime = clock.getElapsedTime();
 
-      // Rotación sutil y flotación del cubo
       if (mainGroup) {
         mainGroup.rotation.y = elapsedTime * 0.15 + scrollProgress * Math.PI * 1.5;
         mainGroup.rotation.x = Math.sin(elapsedTime * 0.3) * 0.1 + scrollProgress * 0.6;
       }
 
-      // Animación de partículas cósmicas
       if (particles) {
         particles.rotation.y = elapsedTime * 0.04;
       }
 
-      // Pulsación de luz del núcleo
       if (coreLightRef.current) {
         coreLightRef.current.intensity = 4.5 + Math.sin(elapsedTime * 3) * 1.5;
       }
 
-      // Cálculo de Posición de Cámara basado en scrollProgress (si no está en modo órbita libre)
       if (!isFreeOrbit && camera) {
-        // Spline de viaje continuo de cámara hacia el interior del cubo y a través de él:
-        // P0 (0.0): fuera, vista panorámica (0, 0.4, 5.5)
-        // P1 (0.35): entra en el cubo atravesando la pared de cristal (0, 0.1, 1.1)
-        // P2 (0.65): dentro del entramado holográfico en el centro (0.3, 0.0, 0.2)
-        // P3 (1.0): sale al otro lado y encuadra en ángulo contrapicado (-0.5, 0.8, -4.5)
-
         const p = scrollProgress;
         let camX = 0;
         let camY = 0;
@@ -329,19 +311,16 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
         let targetY = 0;
 
         if (p < 0.4) {
-          // Fase 1: Viaje desde afuera hacia la superficie e interior
           const t = p / 0.4;
           camX = Math.sin(t * Math.PI * 0.5) * 0.4;
           camY = 0.4 * (1 - t) + 0.1 * t;
-          camZ = 5.5 * (1 - t) + 1.2 * t; // Se mete directamente al cristal
+          camZ = 5.5 * (1 - t) + 1.2 * t;
         } else if (p < 0.75) {
-          // Fase 2: Dentro del cubo, navega por el interior del holograma
           const t = (p - 0.4) / 0.35;
           camX = 0.4 * (1 - t) + 0.1 * t;
           camY = 0.1 * (1 - t) + 0.2 * t;
-          camZ = 1.2 * (1 - t) - 0.5 * t; // Cruza el centro exacto
+          camZ = 1.2 * (1 - t) - 0.5 * t;
         } else {
-          // Fase 3: Emerge al otro lado, mostrando la transformación
           const t = (p - 0.75) / 0.25;
           camX = 0.1 * (1 - t) - 1.2 * t;
           camY = 0.2 * (1 - t) + 0.6 * t;
@@ -352,7 +331,6 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
         camera.position.set(camX, camY, camZ);
         camera.lookAt(0, targetY, 0);
 
-        // Morfismo dinámico del cubo al marco hueco de diamante según el avance
         if (p > 0.55) {
           const morphT = Math.min(1, (p - 0.55) / 0.25);
           if (outerCubeRef.current) outerCubeRef.current.scale.setScalar(1 - morphT * 0.4);
@@ -374,11 +352,10 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
 
     animFrameId.current = requestAnimationFrame(animate);
 
-    // Ajuste de Redimensión
     const handleResize = () => {
       if (!container || !renderer || !camera) return;
-      const w = container.clientWidth || 800;
-      const h = container.clientHeight || 500;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || (isFullscreen ? window.innerHeight : 540);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -392,7 +369,99 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
       renderer.dispose();
       if (container) container.innerHTML = '';
     };
-  }, [isFreeOrbit]);
+  }, [isFreeOrbit, isFullscreen]);
+
+  // Listener NATIVO para Wheel y Touch con { passive: false } para BLOQUEAR 100% el scroll de la web
+  useEffect(() => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      // Bloquear estrictamente el scroll vertical de la ventana
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (isFreeOrbit) return;
+      if (isPlaying) setIsPlaying(false);
+
+      const step = e.deltaY > 0 ? 0.035 : -0.035;
+      setTargetProgress((prev) => Math.max(0, Math.min(1, prev + step)));
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (isFreeOrbit) return;
+      setTouchStartY(e.touches[0].clientY);
+      if (isPlaying) setIsPlaying(false);
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isFreeOrbit || touchStartY === null) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const currentY = e.touches[0].clientY;
+      const diff = touchStartY - currentY;
+
+      if (Math.abs(diff) > 4) {
+        const step = diff / 320;
+        setTargetProgress((prev) => Math.max(0, Math.min(1, prev + step)));
+        setTouchStartY(currentY);
+      }
+    };
+
+    const onTouchEnd = () => {
+      setTouchStartY(null);
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [isFreeOrbit, isPlaying, touchStartY, isFullscreen]);
+
+  // Bloqueo total del scroll del navegador y tecla Escape al estar en Pantalla Completa
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          soundEffects.playClick();
+          setIsFullscreen(false);
+          try {
+            if (document.fullscreenElement && document.exitFullscreen) {
+              document.exitFullscreen().catch(() => {});
+            }
+          } catch (err) {}
+        }
+      };
+
+      const handleGlobalWheel = (e: WheelEvent) => {
+        e.preventDefault();
+        if (isFreeOrbit) return;
+        const step = e.deltaY > 0 ? 0.035 : -0.035;
+        setTargetProgress((prev) => Math.max(0, Math.min(1, prev + step)));
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('wheel', handleGlobalWheel, { passive: false });
+
+      return () => {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('wheel', handleGlobalWheel);
+      };
+    }
+  }, [isFullscreen, isFreeOrbit]);
 
   // Interpolación de avance suave (Smooth Lerp)
   useEffect(() => {
@@ -419,40 +488,26 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
     return () => cancelAnimationFrame(animId);
   }, [targetProgress, isPlaying]);
 
-  // Manejo de la rueda del mouse (Wheel)
-  const handleWheel = (e: React.WheelEvent) => {
-    if (isFreeOrbit) return;
-    e.preventDefault();
-    if (isPlaying) setIsPlaying(false);
+  const toggleFullscreen = () => {
+    soundEffects.playClick();
+    const next = !isFullscreen;
+    setIsFullscreen(next);
 
-    const step = e.deltaY > 0 ? 0.03 : -0.03;
-    setTargetProgress((prev) => Math.max(0, Math.min(1, prev + step)));
-  };
-
-  // Manejo de gestos táctiles en smartphones (Touch)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (isFreeOrbit) return;
-    setTouchStartY(e.touches[0].clientY);
-    if (isPlaying) setIsPlaying(false);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isFreeOrbit || touchStartY === null) return;
-    const currentY = e.touches[0].clientY;
-    const diff = touchStartY - currentY;
-
-    if (Math.abs(diff) > 5) {
-      const step = diff / 400;
-      setTargetProgress((prev) => Math.max(0, Math.min(1, prev + step)));
-      setTouchStartY(currentY);
+    if (next) {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } catch (err) {}
+    } else {
+      try {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      } catch (err) {}
     }
   };
 
-  const handleTouchEnd = () => {
-    setTouchStartY(null);
-  };
-
-  // Determinar la etapa activa para el HUD
   const activeStage =
     STAGES.find((s, idx) => {
       const nextP = STAGES[idx + 1]?.progress ?? 1.1;
@@ -461,14 +516,17 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
 
   const currentPercent = Math.round(scrollProgress * 100);
 
-  return (
+  // Render del contenido (compartido entre modo normal y modo portal fullscreen)
+  const viewerContent = (
     <div
-      className={`relative w-full rounded-2xl overflow-hidden border border-white/20 bg-[#04060a] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen bg-black' : ''
+      className={`relative w-full overflow-hidden bg-[#04060a] transition-all duration-300 ${
+        isFullscreen
+          ? 'fixed inset-0 z-[99999] w-screen h-screen rounded-none border-none flex flex-col justify-between'
+          : 'rounded-2xl border border-white/20 shadow-2xl'
       }`}
     >
-      {/* Barra Superior de Control y Estado */}
-      <div className="bg-[#080d18] px-4 py-3 border-b border-white/10 flex items-center justify-between z-20 relative backdrop-blur-md">
+      {/* Barra Superior */}
+      <div className="bg-[#080d18]/95 px-4 py-3 sm:px-6 sm:py-3.5 border-b border-white/10 flex items-center justify-between z-30 relative backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
@@ -479,13 +537,13 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
           <div className="flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-[#A9F8B5]" />
             <span className="text-xs font-mono font-bold text-white tracking-wide">
-              Opción 1: Three.js 3D en Vivo • 120 FPS
+              {isFullscreen ? 'Pantalla Completa Inmersiva • Three.js 120 FPS' : 'Opción 1: Three.js 3D en Vivo • 120 FPS'}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Alternar entre Modo Recorrido de Cámara vs Órbita Libre */}
+          {/* Alternar Órbita Libre */}
           <button
             onClick={() => {
               soundEffects.playClick();
@@ -494,7 +552,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
                 controlsRef.current.enabled = !isFreeOrbit;
               }
             }}
-            className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${
               isFreeOrbit
                 ? 'bg-[#A9F8B5] text-black border-[#A9F8B5]'
                 : 'bg-white/5 text-gray-300 border-white/10 hover:text-white hover:bg-white/10'
@@ -505,42 +563,50 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
             <span className="hidden sm:inline">{isFreeOrbit ? 'Órbita Libre 360°' : 'Cámara Guiada'}</span>
           </button>
 
-          <div className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 font-mono text-[11px] text-gray-300">
+          <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 font-mono text-[11px] text-gray-300">
             <span>Progreso:</span>
             <span className="text-[#A9F8B5] font-bold">{currentPercent}%</span>
           </div>
 
+          {/* Botón de Agrandar / Salir */}
           <button
-            onClick={() => {
-              soundEffects.playClick();
-              setIsFullscreen(!isFullscreen);
-            }}
-            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-            title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa inmersiva'}
+            onClick={toggleFullscreen}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-lg ${
+              isFullscreen
+                ? 'bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-200'
+                : 'bg-[#A9F8B5] text-black hover:bg-[#DFF494] shadow-[#A9F8B5]/25'
+            }`}
+            title={isFullscreen ? 'Salir de pantalla completa (Esc)' : 'Agrandar a Pantalla Completa Inmersiva'}
           >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {isFullscreen ? (
+              <>
+                <X className="w-4 h-4" />
+                <span>Salir (Esc)</span>
+              </>
+            ) : (
+              <>
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Agrandar Pantalla</span>
+              </>
+            )}
           </button>
         </div>
       </div>
 
-      {/* Visor 3D Interactivo con Captura de Scroll */}
+      {/* Área del Canvas Interactivo */}
       <div
-        onWheel={handleWheel}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        className={`relative w-full aspect-video select-none cursor-ns-resize overflow-hidden ${
-          isFullscreen ? 'h-[calc(100vh-130px)] aspect-auto' : 'min-h-[380px] sm:min-h-[480px] md:min-h-[540px]'
+        ref={scrollAreaRef}
+        className={`relative w-full select-none overflow-hidden touch-none flex-1 ${
+          isFullscreen ? 'h-full min-h-0' : 'aspect-video min-h-[380px] sm:min-h-[480px] md:min-h-[540px]'
         }`}
       >
-        {/* Contenedor del Canvas Three.js */}
         <div ref={mountRef} className="w-full h-full block" />
 
-        {/* Gradiente Perimetral para integración estética */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#04060a] via-transparent to-black/25" />
+        {/* Gradiente Perimetral */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#04060a] via-transparent to-black/30" />
 
-        {/* HUD Cinemático Dinámico Flotante en Vivo */}
-        <div className="absolute top-4 left-4 sm:top-8 sm:left-8 max-w-sm sm:max-w-md p-4 sm:p-6 rounded-2xl bg-[#080d18]/85 backdrop-blur-xl border border-white/20 shadow-2xl z-20 pointer-events-auto transition-all duration-300">
+        {/* HUD Cinemático */}
+        <div className="absolute top-4 left-4 sm:top-8 sm:left-8 max-w-sm sm:max-w-md p-4 sm:p-6 rounded-2xl bg-[#080d18]/90 backdrop-blur-xl border border-white/20 shadow-2xl z-20 pointer-events-auto transition-all duration-300">
           <div className="flex items-center gap-2 mb-2">
             <span
               className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
@@ -580,6 +646,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
             <button
               onClick={() => {
                 soundEffects.playClick();
+                if (isFullscreen) setIsFullscreen(false);
                 onScrollToQuote();
               }}
               className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#DFF494] transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-[#A9F8B5]/20"
@@ -591,6 +658,7 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
               <button
                 onClick={() => {
                   soundEffects.playClick();
+                  if (isFullscreen) setIsFullscreen(false);
                   onOpenBooking();
                 }}
                 className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold text-xs transition-colors cursor-pointer"
@@ -603,25 +671,25 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
 
         {/* Prompt Indicador de Scroll */}
         {!isFreeOrbit && (
-          <div className="absolute bottom-6 right-4 sm:bottom-8 sm:right-8 bg-[#080d18]/85 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-xs text-white z-20 pointer-events-none shadow-xl">
+          <div className="absolute bottom-6 right-4 sm:bottom-8 sm:right-8 bg-[#080d18]/90 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-xs text-white z-20 pointer-events-none shadow-xl">
             <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-[#A9F8B5]">
               <Mouse className="w-4 h-4 animate-bounce" />
             </div>
             <div>
               <div className="font-semibold text-[11px] sm:text-xs text-white flex items-center gap-1.5">
-                <span>Rueda del ratón avanza la cámara 3D</span>
+                <span>Rueda del mouse controla la cámara</span>
                 <span className="text-[#A9F8B5]">↕</span>
               </div>
               <div className="text-[9px] sm:text-[10px] text-gray-400">
-                La cámara penetra dentro del cristal sin saltos
+                La página no baja; el scroll avanza la animación
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Barra Inferior de Scrubbing Interactivo */}
-      <div className="bg-[#080d18] px-4 py-3 sm:px-6 sm:py-3.5 border-t border-white/10 flex flex-col gap-2.5 z-20 relative">
+      {/* Barra Inferior de Scrubbing */}
+      <div className="bg-[#080d18]/95 px-4 py-3 sm:px-6 sm:py-3.5 border-t border-white/10 flex flex-col gap-2.5 z-30 relative backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
@@ -647,7 +715,6 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
             <RotateCcw className="w-4 h-4" />
           </button>
 
-          {/* Timeline de Scrubbing */}
           <div className="relative flex-1 flex items-center py-1">
             <input
               type="range"
@@ -668,7 +735,6 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
           </div>
         </div>
 
-        {/* Puntos de Parada / Checkpoints de Cámara */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-xs">
           <span className="text-[11px] font-mono text-gray-500 uppercase tracking-wider shrink-0 mr-1 hidden sm:inline">
             Etapas 3D:
@@ -701,4 +767,11 @@ export const ThreeScrollyCamera: React.FC<ThreeScrollyCameraProps> = ({
       </div>
     </div>
   );
+
+  // Si está en pantalla completa, usar createPortal en document.body para evitar cualquier contención CSS de padres
+  if (isFullscreen && typeof document !== 'undefined') {
+    return createPortal(viewerContent, document.body);
+  }
+
+  return viewerContent;
 };

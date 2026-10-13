@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Sparkles,
   Play,
@@ -10,7 +11,8 @@ import {
   CheckCircle2,
   Mouse,
   SlidersHorizontal,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 
@@ -157,7 +159,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   totalFrames = 75,
   sequenceTitle = 'Opción 2: Video 3D Continuo • Estilo ONO'
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const animationFrameRef = useRef<number | null>(null);
@@ -170,7 +172,6 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
 
-  // Formateador de ruta para los frames
   const getFrameUrl = useCallback((index: number) => {
     const padded = String(index).padStart(3, '0');
     return `${sequencePath}/frame_${padded}.webp`;
@@ -225,7 +226,6 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
     const imgWidth = img.naturalWidth;
     const imgHeight = img.naturalHeight;
 
-    // Calcular escala para 'cover' centrado
     const hRatio = canvasWidth / imgWidth;
     const vRatio = canvasHeight / imgHeight;
     const ratio = Math.max(hRatio, vRatio);
@@ -247,7 +247,6 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
     );
   }, []);
 
-  // Ajustar tamaño del canvas al contenedor con soporte High-DPI (Retina)
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -265,9 +264,9 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     return () => window.removeEventListener('resize', resizeCanvas);
-  }, [resizeCanvas]);
+  }, [resizeCanvas, isFullscreen]);
 
-  // Bucle de interpolación suave (Smooth Lerp) para sensación Apple / ONO
+  // Bucle de interpolación suave (Smooth Lerp)
   useEffect(() => {
     let lastTime = performance.now();
 
@@ -276,7 +275,6 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
       lastTime = time;
 
       if (isPlaying) {
-        // En modo auto-play, avanza a 24 FPS
         setTargetFrame((prev) => {
           const next = prev + 24 * delta;
           return next > totalFrames ? 1 : next;
@@ -284,7 +282,6 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
       }
 
       setCurrentFrame((prev) => {
-        // Suavizado Lerp: avanza hacia targetFrame de forma orgánica
         const diff = targetFrame - prev;
         if (Math.abs(diff) < 0.05) {
           renderFrame(Math.round(targetFrame));
@@ -304,51 +301,93 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
     };
   }, [targetFrame, isPlaying, totalFrames, renderFrame]);
 
-  // Manejador del Scroll del Ratón (Wheel)
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (isPlaying) setIsPlaying(false);
+  // Listener NATIVO para Wheel y Touch con { passive: false } para BLOQUEAR 100% el scroll de la web
+  useEffect(() => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
 
-    // Sensibilidad del scroll: 1 tick de rueda ≈ 1-2 frames
-    const step = e.deltaY > 0 ? 1.5 : -1.5;
-    setTargetFrame((prev) => {
-      const next = Math.max(1, Math.min(totalFrames, prev + step));
-      return next;
-    });
-  };
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  // Manejador de Gestos Táctiles Móviles (Touch)
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchStartY(e.touches[0].clientY);
-    if (isPlaying) setIsPlaying(false);
-  };
+      if (isPlaying) setIsPlaying(false);
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (touchStartY === null) return;
-    const currentY = e.touches[0].clientY;
-    const diff = touchStartY - currentY;
+      const step = e.deltaY > 0 ? 1.6 : -1.6;
+      setTargetFrame((prev) => Math.max(1, Math.min(totalFrames, prev + step)));
+    };
 
-    // Sensibilidad táctil: cada 15px de swipe desplaza 1 frame
-    if (Math.abs(diff) > 8) {
-      const frameDelta = (diff / 15);
-      setTargetFrame((prev) => {
-        const next = Math.max(1, Math.min(totalFrames, prev + frameDelta));
-        return next;
-      });
-      setTouchStartY(currentY);
+    const onTouchStart = (e: TouchEvent) => {
+      setTouchStartY(e.touches[0].clientY);
+      if (isPlaying) setIsPlaying(false);
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (touchStartY === null) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const currentY = e.touches[0].clientY;
+      const diff = touchStartY - currentY;
+
+      if (Math.abs(diff) > 5) {
+        const frameDelta = diff / 12;
+        setTargetFrame((prev) => Math.max(1, Math.min(totalFrames, prev + frameDelta)));
+        setTouchStartY(currentY);
+      }
+    };
+
+    const onTouchEnd = () => {
+      setTouchStartY(null);
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [isPlaying, touchStartY, totalFrames, isFullscreen]);
+
+  // Bloqueo total del scroll del navegador y tecla Escape al estar en Pantalla Completa
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          soundEffects.playClick();
+          setIsFullscreen(false);
+          try {
+            if (document.fullscreenElement && document.exitFullscreen) {
+              document.exitFullscreen().catch(() => {});
+            }
+          } catch (err) {}
+        }
+      };
+
+      const handleGlobalWheel = (e: WheelEvent) => {
+        e.preventDefault();
+        const step = e.deltaY > 0 ? 1.6 : -1.6;
+        setTargetFrame((prev) => Math.max(1, Math.min(totalFrames, prev + step)));
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('wheel', handleGlobalWheel, { passive: false });
+
+      return () => {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('wheel', handleGlobalWheel);
+      };
     }
-  };
-
-  const handleTouchEnd = () => {
-    setTouchStartY(null);
-  };
-
-  // Checkpoints activos según la secuencia cargada
-  const currentCheckpoints = sequencePath.includes('cube') ? CUBE_CHECKPOINTS : CHECKPOINTS;
-  const activeCheckpoint =
-    currentCheckpoints.find((c) => currentFrame >= c.start && currentFrame <= c.end) || currentCheckpoints[0];
-
-  const currentPercent = Math.round((currentFrame / totalFrames) * 100);
+  }, [isFullscreen, totalFrames]);
 
   const togglePlay = () => {
     soundEffects.playClick();
@@ -364,18 +403,40 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
 
   const toggleFullscreen = () => {
     soundEffects.playClick();
-    setIsFullscreen((prev) => !prev);
+    const next = !isFullscreen;
+    setIsFullscreen(next);
+
+    if (next) {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } catch (err) {}
+    } else {
+      try {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      } catch (err) {}
+    }
   };
 
-  return (
+  const currentCheckpoints = sequencePath.includes('cube') ? CUBE_CHECKPOINTS : CHECKPOINTS;
+  const activeCheckpoint =
+    currentCheckpoints.find((c) => currentFrame >= c.start && currentFrame <= c.end) || currentCheckpoints[0];
+
+  const currentPercent = Math.round((currentFrame / totalFrames) * 100);
+
+  const viewerContent = (
     <div
-      ref={containerRef}
-      className={`relative w-full rounded-2xl overflow-hidden border border-white/20 bg-[#07090f] shadow-2xl transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen bg-black' : ''
+      className={`relative w-full overflow-hidden bg-[#07090f] transition-all duration-300 ${
+        isFullscreen
+          ? 'fixed inset-0 z-[99999] w-screen h-screen rounded-none border-none flex flex-col justify-between'
+          : 'rounded-2xl border border-white/20 shadow-2xl'
       }`}
     >
-      {/* Barra Superior Tecnológica / Indicador ONO */}
-      <div className="bg-[#0b101c] px-4 py-3 border-b border-white/10 flex items-center justify-between z-20 relative backdrop-blur-md">
+      {/* Barra Superior */}
+      <div className="bg-[#0b101c]/95 px-4 py-3 sm:px-6 sm:py-3.5 border-b border-white/10 flex items-center justify-between z-30 relative backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
@@ -386,7 +447,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           <div className="flex items-center gap-2">
             <Mouse className="w-3.5 h-3.5 text-[#A9F8B5] animate-bounce" />
             <span className="text-xs font-mono font-bold text-white tracking-wide">
-              {sequenceTitle}
+              {isFullscreen ? 'Pantalla Completa Inmersiva • Video 3D 60 FPS' : sequenceTitle}
             </span>
           </div>
         </div>
@@ -403,41 +464,46 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
 
           <button
             onClick={toggleFullscreen}
-            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-            title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa inmersiva'}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-lg ${
+              isFullscreen
+                ? 'bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-200'
+                : 'bg-[#A9F8B5] text-black hover:bg-[#DFF494] shadow-[#A9F8B5]/25'
+            }`}
+            title={isFullscreen ? 'Salir de pantalla completa (Esc)' : 'Agrandar a Pantalla Completa Inmersiva'}
           >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {isFullscreen ? (
+              <>
+                <X className="w-4 h-4" />
+                <span>Salir (Esc)</span>
+              </>
+            ) : (
+              <>
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Agrandar Pantalla</span>
+              </>
+            )}
           </button>
         </div>
       </div>
 
-      {/* Área Principal del Canvas Scrubbing */}
+      {/* Área del Canvas */}
       <div
-        onWheel={handleWheel}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        className={`relative w-full aspect-video select-none cursor-ns-resize overflow-hidden ${
-          isFullscreen ? 'h-[calc(100vh-130px)] aspect-auto' : 'min-h-[340px] sm:min-h-[460px] md:min-h-[520px]'
+        ref={scrollAreaRef}
+        className={`relative w-full select-none overflow-hidden touch-none flex-1 ${
+          isFullscreen ? 'h-full min-h-0' : 'aspect-video min-h-[380px] sm:min-h-[480px] md:min-h-[540px]'
         }`}
       >
-        {/* Canvas de Alta Velocidad (WebGL/2D Hardware-Accelerated) */}
-        <canvas
-          ref={canvasRef}
-          className="w-full h-full block object-cover"
-        />
+        <canvas ref={canvasRef} className="w-full h-full block object-cover" />
 
-        {/* Overlay con Gradiente Cinematográfico */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#07090f] via-transparent to-black/30" />
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
 
-        {/* Loader de Precarga de Frames */}
         {isLoading && (
           <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center gap-3 z-30">
             <Loader2 className="w-8 h-8 text-[#A9F8B5] animate-spin" />
             <div className="text-center space-y-1">
               <p className="text-xs font-mono font-bold text-white tracking-widest uppercase">
-                Precargando Secuencia de Video ({loadedCount}/{totalFrames})
+                Precargando Secuencia 3D ({loadedCount}/{totalFrames})
               </p>
               <div className="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden mx-auto">
                 <div
@@ -450,8 +516,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           </div>
         )}
 
-        {/* Tarjeta de Información Dinámica Sincronizada con el Frame (Estilo ONO) */}
-        <div className="absolute top-4 left-4 sm:top-8 sm:left-8 max-w-sm sm:max-w-md p-4 sm:p-6 rounded-2xl bg-[#090e18]/85 backdrop-blur-xl border border-white/20 shadow-2xl z-20 pointer-events-auto transition-all duration-300">
+        <div className="absolute top-4 left-4 sm:top-8 sm:left-8 max-w-sm sm:max-w-md p-4 sm:p-6 rounded-2xl bg-[#090e18]/90 backdrop-blur-xl border border-white/20 shadow-2xl z-20 pointer-events-auto transition-all duration-300">
           <div className="flex items-center gap-2 mb-2">
             <span
               className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
@@ -491,17 +556,19 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
             <button
               onClick={() => {
                 soundEffects.playClick();
+                if (isFullscreen) setIsFullscreen(false);
                 onScrollToQuote();
               }}
               className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#DFF494] transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-[#A9F8B5]/20"
             >
-              <span>Cotizar</span>
+              <span>Cotizar Solución</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
             {onOpenBooking && (
               <button
                 onClick={() => {
                   soundEffects.playClick();
+                  if (isFullscreen) setIsFullscreen(false);
                   onOpenBooking();
                 }}
                 className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold text-xs transition-colors cursor-pointer"
@@ -512,26 +579,24 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           </div>
         </div>
 
-        {/* Indicador Flotante Central de Ayuda (Scroll Prompt) */}
-        <div className="absolute bottom-6 right-4 sm:bottom-8 sm:right-8 bg-[#090e18]/85 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-xs text-white z-20 pointer-events-none shadow-xl">
+        <div className="absolute bottom-6 right-4 sm:bottom-8 sm:right-8 bg-[#090e18]/90 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-xs text-white z-20 pointer-events-none shadow-xl">
           <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-[#A9F8B5]">
             <Mouse className="w-4 h-4 animate-bounce" />
           </div>
           <div>
             <div className="font-semibold text-[11px] sm:text-xs text-white flex items-center gap-1.5">
-              <span>Gira la rueda del mouse</span>
+              <span>Rueda del mouse avanza el video 3D</span>
               <span className="text-[#A9F8B5]">↕</span>
             </div>
             <div className="text-[9px] sm:text-[10px] text-gray-400">
-              o desliza el dedo en móvil para avanzar el video
+              La página no baja; el scroll mueve los fotogramas
             </div>
           </div>
         </div>
       </div>
 
-      {/* Barra Inferior de Scrubbing Interactivo (Timeline Scrubber) */}
-      <div className="bg-[#0b101c] px-4 py-3.5 sm:px-6 sm:py-4 border-t border-white/10 flex flex-col gap-3 z-20 relative">
-        {/* Slider Timeline Drag & Scrub */}
+      {/* Barra Inferior */}
+      <div className="bg-[#0b101c]/95 px-4 py-3 sm:px-6 sm:py-3.5 border-t border-white/10 flex flex-col gap-2.5 z-30 relative backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={togglePlay}
@@ -549,8 +614,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
             <RotateCcw className="w-4 h-4" />
           </button>
 
-          {/* Timeline interactivo tipo Video Scrubber */}
-          <div className="relative flex-1 flex items-center group py-1 cursor-pointer">
+          <div className="relative flex-1 flex items-center py-1">
             <input
               type="range"
               min="1"
@@ -570,8 +634,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           </div>
         </div>
 
-        {/* Badges de Salto Rápido por Hitos Tecnológicos */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-xs">
           <span className="text-[11px] font-mono text-gray-500 uppercase tracking-wider shrink-0 mr-1 hidden sm:inline">
             Hitos:
           </span>
@@ -603,4 +666,10 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
       </div>
     </div>
   );
+
+  if (isFullscreen && typeof document !== 'undefined') {
+    return createPortal(viewerContent, document.body);
+  }
+
+  return viewerContent;
 };

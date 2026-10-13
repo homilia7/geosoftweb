@@ -35,6 +35,9 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
     2. *🎬 Opción 2: Video 3D Continuo (Estilo ONO)*.
     3. *📱 Showcase Interactivo de Soluciones*.
     4. *▶️ Video MP4 HD (Reel)*.
+- **Corrección Crítica de Bloqueo de Scroll y Pantalla Completa:**
+  - **Bloqueo Total del Scroll de la Página:** Los eventos sintéticos de React usaban listeners pasivos que permitían que el navegador hiciera scroll hacia abajo en la web. Se implementaron listeners nativos en el DOM con `{ passive: false }` tanto para rueda del ratón (`wheel`) como para gestos táctiles (`touchmove`) invocando `e.preventDefault()` y `e.stopPropagation()`. La página web queda 100% inmóvil mientras el usuario avanza el video o la cámara 3D.
+  - **Botón Agrandar / Pantalla Completa Real (`createPortal`):** El contenedor estaba atrapado dentro de contenedores ancestros con transformaciones CSS de `<Reveal>`. Se migró el renderizado de pantalla completa a `createPortal(..., document.body)`, bloqueando el scroll del body (`document.body.style.overflow = 'hidden'`), con soporte para tecla Escape, salida nativa de Fullscreen y botón destacado de cierre.
 - **Despliegue y Verificación:**
   - Build local con Vite (`0 errores`).
   - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
