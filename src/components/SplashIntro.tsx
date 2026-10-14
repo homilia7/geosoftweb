@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight } from 'lucide-react';
-import { UltraCube3D } from './UltraCube3D';
+import React, { useState, useEffect, useRef } from 'react';
+import { Sparkles, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 
 interface SplashIntroProps {
@@ -9,9 +8,15 @@ interface SplashIntroProps {
 
 export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
   const [visible, setVisible] = useState(true);
-  // Fases: 'cube3d' (Intro 1: Cubo 3D ultra realista) -> 'brand' (Intro 2: Presentación de marca) -> 'entering' (Entrada a la web)
-  const [stage, setStage] = useState<'cube3d' | 'brand' | 'entering'>('cube3d');
-  const [shockwaveKey, setShockwaveKey] = useState(0);
+  // Fases: 'cinematic' (Video 3 en reversa ➔ Video 1 ➔ Video 2) -> 'brand' (Pantalla con "Iniciando experiencia...") -> 'entering' (Carga la página web)
+  const [stage, setStage] = useState<'cinematic' | 'brand' | 'entering'>('cinematic');
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleVideoEnd = () => {
+    soundEffects.playIntroSound();
+    setStage('brand');
+  };
 
   const handleDismiss = () => {
     soundEffects.playIntroSound();
@@ -22,18 +27,16 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     }, 650);
   };
 
-  // Cuando el cubo 3D frena
-  const handleCubeStop = () => {
-    setShockwaveKey(prev => prev + 1);
-
-    // Permite admirar el cubo 3D detenido durante 850ms y luego pasa a la intro de marca
-    setTimeout(() => {
-      setStage('brand');
-    }, 850);
+  const toggleSound = () => {
+    if (videoRef.current) {
+      const nextMuted = !isMuted;
+      videoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
+    }
   };
 
+  // Si está en fase 'brand', tras 2.2s entra automáticamente a la web
   useEffect(() => {
-    // Si está en fase 'brand', tras 2.2s entra automáticamente a la web
     if (stage === 'brand') {
       const brandTimer = setTimeout(() => {
         handleDismiss();
@@ -42,48 +45,95 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     }
   }, [stage]);
 
-  useEffect(() => {
-    // Fallback de seguridad global por si acaso
-    const safetyTimer = setTimeout(() => {
-      if (stage !== 'entering') handleDismiss();
-    }, 5500);
-
-    return () => clearTimeout(safetyTimer);
-  }, []);
+  // Si el usuario hace clic durante la cinemática, avanza a la pantalla de "Iniciando experiencia..."
+  const handleContainerClick = () => {
+    if (stage === 'cinematic') {
+      handleVideoEnd();
+    } else if (stage === 'brand') {
+      handleDismiss();
+    }
+  };
 
   if (!visible) return null;
 
   return (
     <div
-      onClick={handleDismiss}
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#020403] transition-all duration-700 cursor-pointer select-none overflow-hidden ${
+      onClick={handleContainerClick}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-all duration-700 cursor-pointer select-none overflow-hidden ${
         stage === 'entering' ? 'opacity-0 scale-105 filter blur-sm pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
-      {/* Luz ambiental cinematográfica de fondo */}
-      <div className="absolute w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-[#A9F8B5]/18 via-[#00ff88]/12 to-[#C1A35B]/12 blur-[150px] pointer-events-none animate-pulse" />
+      {/* ================= ETAPA 1: SECUENCIA CINEMÁTICA VIDEO 3 (REVERSA) + 1 + 2 A TODO COLOR ================= */}
+      {stage === 'cinematic' && (
+        <div className="relative w-full h-full flex items-center justify-center bg-black">
+          <video
+            ref={videoRef}
+            src="/videos/geosoft-intro-sequence.mp4"
+            autoPlay
+            playsInline
+            muted={isMuted}
+            onEnded={handleVideoEnd}
+            onError={handleVideoEnd}
+            className="w-full h-full object-cover select-none pointer-events-none"
+          />
 
-      {/* ================= ETAPA 1: CUBO 3D ULTRA REALISTA ================= */}
-      {stage === 'cube3d' && (
-        <div className="relative w-full h-full flex items-center justify-center animate-message-soft">
-          {/* Onda de choque lumínica cuando el cubo frena */}
-          {shockwaveKey > 0 && (
-            <div
-              key={shockwaveKey}
-              className="absolute w-56 h-56 rounded-full border-2 border-[#A9F8B5] shadow-[0_0_60px_rgba(169,248,181,0.95)] animate-shockwave pointer-events-none z-10"
-            />
-          )}
+          {/* Botones Superiores Flotantes: Activar Sonido & Saltar Animación */}
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex items-center gap-2 pointer-events-auto">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleSound();
+              }}
+              className="px-3 py-1.5 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 text-white font-mono text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-lg"
+              title={isMuted ? 'Activar sonido' : 'Silenciar'}
+            >
+              {isMuted ? (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="hidden sm:inline">Activar Sonido</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-[#A9F8B5]" />
+                  <span className="hidden sm:inline">Sonido ON</span>
+                </>
+              )}
+            </button>
 
-          <div className="w-full h-full relative z-20">
-            <UltraCube3D onStop={handleCubeStop} />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleVideoEnd();
+              }}
+              className="px-3.5 py-1.5 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-[#A9F8B5] text-white font-mono text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-lg"
+              title="Saltar animación"
+            >
+              <span>Saltar</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#A9F8B5]" />
+            </button>
+          </div>
+
+          {/* Indicador inferior discreto */}
+          <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-8 sm:right-8 z-30 flex items-center justify-between pointer-events-none">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[11px] font-mono text-gray-300">
+              <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-pulse" />
+              <span>GeoSoft • Intro Cinemática</span>
+            </div>
+            <div className="text-[10px] sm:text-xs font-mono text-gray-400 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 hidden sm:block">
+              Toca para continuar a la web
+            </div>
           </div>
         </div>
       )}
 
-      {/* ================= ETAPA 2: LA INTRO QUE ESTABA ANTES (MARCA GEOSOFT) ================= */}
+      {/* ================= ETAPA 2: PANTALLA "INICIANDO EXPERIENCIA..." (MARCA GEOSOFT) ================= */}
       {stage === 'brand' && (
         <div className="relative flex flex-col items-center z-20 px-6 text-center max-w-lg mx-auto animate-message-soft">
-          
+          {/* Luz ambiental cinematográfica de fondo */}
+          <div className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-[#A9F8B5]/18 via-[#00ff88]/12 to-[#C1A35B]/12 blur-[150px] pointer-events-none animate-pulse" />
+
           {/* Emblema GeoSoft con resplandor */}
           <div className="relative group mb-6">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] opacity-40 blur-xl animate-pulse" />
@@ -139,3 +189,4 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     </div>
   );
 };
+

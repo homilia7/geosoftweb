@@ -15,6 +15,26 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-14 — Intro Cinemática al Cargar la Web: Video 3 (Reversa) ➔ Video 1 ➔ Video 2 ➔ Pantalla "Iniciando experiencia..."
+- **Secuencia Cinemática como Primer Impacto al Cargar (`SplashIntro.tsx`):**
+  - Al abrir o recargar la página, lo primero que ve el usuario es la secuencia cinemática a pantalla completa en alta definición y a todo color real.
+  - **Fase 1 (Video 3 en Reversa):** La cámara inicia en el fondo del túnel cuántico y viaja en reversa hacia el exterior revelando el cubo monolítico esmeralda sobre la placa de circuito integrado.
+  - **Fase 2 (Video 1):** Conecta de forma fluida con el cubo 3D de GeoSoft, el lanzamiento del cohete (*"Hacemos tus ideas realidad"*) y el viaje hacia el iMac (*"Impulsamos tu negocio"*).
+  - **Fase 3 (Video 2):** La cámara entra en la pantalla del iMac dando paso al panel interactivo de software con el planeta Tierra y el túnel de datos.
+- **Transición Automática a Pantalla "Iniciando experiencia...":**
+  - Al finalizar la reproducción del video (o al pulsar "Saltar"), el sistema pasa de inmediato a la pantalla de presentación de marca con el emblema de cristal, resplandor esmeralda, barra de progreso sweep y el indicador animado `Iniciando experiencia...`.
+  - Tras 2.2 segundos de preparación, se realiza el desenfoque suave de entrada (`stage === 'entering'`) y la web carga sus componentes principales (Hero, Navbar y métricas).
+- **Controles Integrados en la Intro:**
+  - Botón flotante para activar sonido (`Volume2` / `VolumeX`).
+  - Botón para saltar la cinemática (`ArrowRight`) y acceder al instante a la pantalla de inicio.
+- **Actualización de la Secuencia de Scroll Interactiva (`transition-sequence`):**
+  - Extraídos 189 fotogramas WebP optimizados de alta resolución (`public/assets/transition-sequence/frame_001.webp` hasta `frame_189.webp`) que abarcan los 25.2 segundos completos.
+  - En el showcase interactivo de la página, el usuario puede manipular con la rueda del ratón o con la pantalla táctil la secuencia completa de los 3 videos a 6 hitos detallados.
+- **Despliegue y Verificación en Producción:**
+  - Build local con Vite (`0 errores`).
+  - Desplegado a Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Smoke tests HTTP 200 confirmados en `/videos/geosoft-intro-sequence.mp4`, `/assets/transition-sequence/frame_001.webp`, `/assets/transition-sequence/frame_189.webp` y la página raíz.
+
 ### 2026-10-14 — Transición Cinemática Continua Video 1 + Video 2 (A Todo Color, Cero Opacidad y Scroll ONO)
 - **Concatenación Directa y Match-Cut Perfecto (Video 1 -> Video 2):**
   - Los videos provistos por el usuario (`video 1.mp4` y `video 2.mp4`) fueron concatenados de forma ininterrumpida sin pérdida (`-c copy`) en una secuencia continua de 20 segundos.

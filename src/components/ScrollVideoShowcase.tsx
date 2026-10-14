@@ -39,51 +39,62 @@ interface FrameCheckpoint {
 const TRANSITION_CHECKPOINTS: FrameCheckpoint[] = [
   {
     start: 1,
-    end: 25,
+    end: 39,
+    badge: 'NÚCLEO 3D & HARDWARE',
+    category: 'Arquitectura & Cristal',
+    title: 'Descompresión del Núcleo Cuántico',
+    description:
+      'La cámara viaja en reversa desde el entramado interno de datos hacia la revelación de la estructura monolítica esmeralda.',
+    accentColor: '#A9F8B5',
+    features: ['Plano Secuencia Inverso', 'Refracción Óptica de Cristal', 'Arquitectura Monolítica']
+  },
+  {
+    start: 40,
+    end: 75,
     badge: 'IDENTIDAD 3D & INGENIERÍA',
     category: 'Ecosistema GeoSoft',
     title: 'Arquitectura Digital de Vanguardia',
     description:
       'Soluciones de software y plataformas web de alto rendimiento desde Costa Rica para toda la región. Cero plantillas genéricas.',
-    accentColor: '#A9F8B5',
+    accentColor: '#38bdf8',
     features: ['Estructura 3D Monolítica', 'Código Limpio a Medida', 'Rendimiento Extremo']
   },
   {
-    start: 26,
-    end: 50,
+    start: 76,
+    end: 100,
     badge: 'DESPEGUE Y ESCALABILIDAD',
     category: 'Impulso Empresarial',
     title: 'Hacemos tus Ideas Realidad',
     description:
       'Lanzamiento continuo de plataformas preparadas para escalar a millones de usuarios con latencia mínima.',
-    accentColor: '#38bdf8',
+    accentColor: '#fb923c',
     features: ['Arquitectura Serverless', 'Velocidad de Carga < 0.4s', 'Despliegues Continuos']
   },
   {
-    start: 51,
-    end: 75,
+    start: 101,
+    end: 125,
     badge: 'ECOSISTEMA PROFESIONAL',
     category: 'Software Corporativo',
     title: 'Impulsamos tu Negocio',
     description:
       'Sistemas de reservas con Sinpe Móvil, CRMs a la medida y plataformas SaaS con diseño Dark Tech premium.',
-    accentColor: '#fb923c',
+    accentColor: '#c084fc',
     features: ['Validación Sinpe Móvil', 'Sync Google Calendar', 'Membresías con DRM']
   },
   {
-    start: 76,
-    end: 110,
+    start: 126,
+    end: 155,
     badge: 'CONECTIVIDAD GLOBAL',
     category: 'Red Distribuida en Tiempo Real',
     title: 'Transición a Plataforma Global',
     description:
       'Inmersión instantánea en la interfaz de software. Centraliza operaciones, sucursales y clientes en una sola nube.',
-    accentColor: '#c084fc',
+    accentColor: '#38bdf8',
     features: ['Monitoreo en Tiempo Real', 'Chatbots WhatsApp Cloud', 'Multi-Tenant & Nube']
   },
   {
-    start: 111,
-    end: 150,
+    start: 156,
+    end: 189,
     badge: 'NÚCLEO CUÁNTICO 3D',
     category: 'Ciberespacio & Datos',
     title: 'Túnel de Datos & Cubo Holográfico',
@@ -214,8 +225,8 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   onScrollToQuote,
   onOpenBooking,
   sequencePath = '/assets/transition-sequence',
-  totalFrames = 150,
-  sequenceTitle = 'Transición Video 1 + Video 2 • Estilo ONO'
+  totalFrames = 189,
+  sequenceTitle = 'Transición Cinemática • Video 3 (Reversa) + 1 + 2'
 }) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
