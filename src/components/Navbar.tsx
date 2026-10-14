@@ -161,7 +161,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const mobileNavItems = [
     { label: 'Inicio', href: '#inicio' },
-    { label: 'Showcase en Video', href: '#video-showcase' },
     { label: 'Servicios & Soluciones', href: '#servicios', onClick: onScrollToServices },
     { label: 'Cómo Trabajamos', href: '#como-funciona' },
     { label: 'Nuestros Proyectos', href: '#proyectos' },

@@ -15,7 +15,17 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-14 — Control Único de Audio, Limpieza de Showcase y Estela Vaporosa en Autopilot
+### 2026-10-14 — Eliminación del Cuadro / Sección del Showcase de Video en la Página
+- **Retiro Completo del Cuadro y Sección de Video en el Cuerpo de la Web (`App.tsx` & `Navbar.tsx`):**
+  - Se eliminó por completo la sección `#video-showcase` (`InteractiveVideoShowcase`) que contenía el reproductor de video en el cuerpo de la web, ya que la secuencia completa de video (Video 3 en reversa ➔ Video 1 ➔ Video 2) ahora pertenece exclusivamente a la experiencia de entrada interactiva (`SplashIntro`).
+  - La navegación web fluye ahora de forma limpia y directa: Hero ➔ Métricas ➔ Sales Hook ➔ Tech Marquee ➔ Ecosistema de Servicios Bento (`#servicios`) ➔ Metodología ➔ Proyectos (`#proyectos`).
+  - Se eliminó el enlace redundante *"Showcase en Video"* del menú móvil.
+  - El peso del bundle JS principal se redujo en más de 72 KB.
+- **Despliegue y Verificación en Producción:**
+  - Build local con Vite (`0 errores`).
+  - Desplegado exitosamente a Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Script en vivo confirmado: `index-BBvHY792.js`.
+
 - **Control Centralizado de Música y Eliminación de Altavoz en la Intro (`SplashIntro.tsx` & `soundEffects.ts`):**
   - Se eliminó el botón de altavoz duplicado de la pantalla de introducción interactiva.
   - La música de fondo tecnológica se activa con el primer gesto de scroll o toque mediante el singleton `soundEffects.startAmbientMusic()`, asegurando que al entrar a la página la música ya esté sonando de manera continua.

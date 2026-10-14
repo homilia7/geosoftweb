@@ -25,9 +25,6 @@ export const SmokeCursorTrail: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    // Solo para dispositivos con mouse/puntero fino (ignora pantallas táctiles)
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -59,7 +56,8 @@ export const SmokeCursorTrail: React.FC = () => {
     let moveTimeout: ReturnType<typeof setTimeout>;
     let animId: number | null = null;
 
-    // Autopilot para reposo (cuando el usuario deja de mover el mouse)
+    // Autopilot en reposo: se activa a los 1.0 segundos (1000ms) de inactividad
+    const IDLE_DELAY_MS = 1000;
     let lastUserMoveTime = Date.now();
     let isIdle = false;
     let autopilotPos = { x: -100, y: -100 };
@@ -69,16 +67,16 @@ export const SmokeCursorTrail: React.FC = () => {
 
     const createParticle = (x: number, y: number, spreadFactor = 1): SmokeParticle => {
       const angle = Math.random() * Math.PI * 2;
-      const speed = (0.2 + Math.random() * 0.7) * spreadFactor;
+      const speed = (0.25 + Math.random() * 0.75) * spreadFactor;
       // Deriva sutil hacia arriba y laterales como el humo real
-      const vx = Math.cos(angle) * speed + (Math.random() - 0.5) * 0.3;
-      const vy = Math.sin(angle) * speed - (0.15 + Math.random() * 0.4);
+      const vx = Math.cos(angle) * speed + (Math.random() - 0.5) * 0.35;
+      const vy = Math.sin(angle) * speed - (0.15 + Math.random() * 0.45);
 
       const colorRoll = Math.random();
       const hueType: 'emerald' | 'gold' | 'mist' =
-        colorRoll > 0.5 ? 'emerald' : colorRoll > 0.25 ? 'gold' : 'mist';
+        colorRoll > 0.45 ? 'emerald' : colorRoll > 0.2 ? 'gold' : 'mist';
 
-      const initialRadius = 14 + Math.random() * 12;
+      const initialRadius = 16 + Math.random() * 12;
       const maxRadius = initialRadius + 45 + Math.random() * 35;
 
       return {
@@ -88,9 +86,9 @@ export const SmokeCursorTrail: React.FC = () => {
         vy,
         radius: initialRadius,
         maxRadius,
-        alpha: 0.32 + Math.random() * 0.12,
-        maxAlpha: 0.38,
-        decay: 0.0075 + Math.random() * 0.006, // Dura entre ~1.2s y 1.8s dejando estela continua
+        alpha: 0.36 + Math.random() * 0.12,
+        maxAlpha: 0.42,
+        decay: 0.0075 + Math.random() * 0.006, // Deja estela continua de ~1.5 segundos
         rotation: Math.random() * Math.PI * 2,
         spin: (Math.random() - 0.5) * 0.02,
         hueType,
@@ -118,7 +116,7 @@ export const SmokeCursorTrail: React.FC = () => {
         return;
       }
 
-      // Interpolación continua para que la cortina de humo no tenga huecos si el mouse se mueve rápido
+      // Interpolación continua para que la estela no tenga cortes
       const stepSize = 8;
       const steps = Math.max(1, Math.min(Math.floor(dist / stepSize), 14));
 
@@ -150,10 +148,6 @@ export const SmokeCursorTrail: React.FC = () => {
         lastX = -100;
         lastY = -100;
       }, 90);
-
-      if (!animId) {
-        render();
-      }
     };
 
     const onMouseLeave = () => {
@@ -169,12 +163,12 @@ export const SmokeCursorTrail: React.FC = () => {
       ctx.clearRect(0, 0, width, height);
 
       const now = Date.now();
-      // Si pasan más de 850ms sin interacción del usuario, activar modo reposo / autopilot
-      if (!isMouseMoving && now - lastUserMoveTime > 850) {
+      // Si pasan más de 1.0s sin interacción del usuario, activar modo reposo / autopilot
+      if (!isMouseMoving && now - lastUserMoveTime >= IDLE_DELAY_MS) {
         isIdle = true;
       }
 
-      // LÓGICA DE AUTOPILOT EN REPOSO:
+      // ================= LÓGICA DE AUTOPILOT EN REPOSO =================
       if (isIdle) {
         const logoEl = document.getElementById('hero-logo-box');
         let inHeroView = false;
@@ -182,7 +176,7 @@ export const SmokeCursorTrail: React.FC = () => {
 
         if (logoEl) {
           const r = logoEl.getBoundingClientRect();
-          // El cuadro del logo está en la vista si está dentro del viewport visible
+          // El cuadro del logo está en vista si está dentro del viewport visible
           if (r.bottom > 80 && r.top < height - 80) {
             inHeroView = true;
             logoRect = r;
@@ -193,20 +187,20 @@ export const SmokeCursorTrail: React.FC = () => {
         let targetY = 0;
 
         if (inHeroView && logoRect) {
-          // ESTADO 1: Usuario en vista Hero -> El rastro circula alrededor del cuadro del logo
+          // ESTADO 1: Vista Hero -> Circula alrededor del cuadro del logo 3D de GeoSoft
           const cx = logoRect.left + logoRect.width / 2;
           const cy = logoRect.top + logoRect.height / 2;
-          const rx = logoRect.width / 2 + 14;
-          const ry = logoRect.height / 2 + 14;
+          const rx = logoRect.width / 2 + 18;
+          const ry = logoRect.height / 2 + 18;
 
-          orbitAngle += 0.024;
+          orbitAngle += 0.028;
           const cosT = Math.cos(orbitAngle);
           const sinT = Math.sin(orbitAngle);
-          // Curva squircle suave que bordea el rectángulo redondeado
+          // Curva squircle que bordea de forma armoniosa el contenedor redondeado
           targetX = cx + rx * Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.72);
           targetY = cy + ry * Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.72);
         } else {
-          // ESTADO 2: Usuario abajo en otra sección -> El rastro recorre el menú superior de lado a lado
+          // ESTADO 2: Abajo en otra sección de la web -> Recorre el menú superior de lado a lado
           const navEl = document.getElementById('main-nav-capsule');
           let navLeft = 80;
           let navRight = width - 80;
@@ -214,12 +208,12 @@ export const SmokeCursorTrail: React.FC = () => {
 
           if (navEl) {
             const nr = navEl.getBoundingClientRect();
-            navLeft = Math.max(20, nr.left + 24);
-            navRight = Math.min(width - 20, nr.right - 24);
+            navLeft = Math.max(30, nr.left + 24);
+            navRight = Math.min(width - 30, nr.right - 24);
             navY = nr.top + nr.height / 2;
           }
 
-          sweepProgress += 0.007 * sweepDir;
+          sweepProgress += 0.009 * sweepDir;
           if (sweepProgress >= 1) {
             sweepProgress = 1;
             sweepDir = -1;
@@ -239,77 +233,74 @@ export const SmokeCursorTrail: React.FC = () => {
           lastX = targetX;
           lastY = targetY;
         } else {
-          autopilotPos.x += (targetX - autopilotPos.x) * 0.4;
-          autopilotPos.y += (targetY - autopilotPos.y) * 0.4;
+          autopilotPos.x += (targetX - autopilotPos.x) * 0.45;
+          autopilotPos.y += (targetY - autopilotPos.y) * 0.45;
         }
 
         addSmokeAt(autopilotPos.x, autopilotPos.y);
       }
 
-      // Si no hay partículas y el mouse no se mueve y no está en idle, dormimos el bucle
-      if (particles.length === 0 && !isMouseMoving && !isIdle) {
-        animId = null;
-        return;
+      // Dibujar partículas activas
+      if (particles.length > 0) {
+        ctx.globalCompositeOperation = 'screen';
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+
+          // Física del humo: expansión y elevación
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.985;
+          p.vy *= 0.985;
+          p.rotation += p.spin;
+
+          if (p.radius < p.maxRadius) {
+            p.radius += (p.maxRadius - p.radius) * 0.035;
+          }
+
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          const radGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+
+          let colorCore = `rgba(169, 248, 181, ${p.alpha * 0.95})`;
+          let colorMid = `rgba(169, 248, 181, ${p.alpha * 0.5})`;
+
+          if (p.hueType === 'gold') {
+            colorCore = `rgba(223, 244, 148, ${p.alpha * 0.9})`;
+            colorMid = `rgba(193, 163, 91, ${p.alpha * 0.4})`;
+          } else if (p.hueType === 'mist') {
+            colorCore = `rgba(235, 255, 242, ${p.alpha * 0.8})`;
+            colorMid = `rgba(169, 248, 181, ${p.alpha * 0.3})`;
+          }
+
+          radGrad.addColorStop(0, colorCore);
+          radGrad.addColorStop(0.35, colorMid);
+          radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.translate(-p.x, -p.y);
+
+          ctx.fillStyle = radGrad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+        }
       }
 
-      ctx.globalCompositeOperation = 'screen';
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-
-        // Física del humo: expansión y elevación
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vx *= 0.985; // fricción con el aire
-        p.vy *= 0.985;
-        p.rotation += p.spin;
-
-        // El radio crece mientras el humo se disipa
-        if (p.radius < p.maxRadius) {
-          p.radius += (p.maxRadius - p.radius) * 0.035;
-        }
-
-        p.alpha -= p.decay;
-
-        if (p.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        // Gradiente radial difuso que simula una nube de gas/humo
-        const radGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-
-        let colorCore = `rgba(169, 248, 181, ${p.alpha * 0.9})`;
-        let colorMid = `rgba(169, 248, 181, ${p.alpha * 0.45})`;
-
-        if (p.hueType === 'gold') {
-          colorCore = `rgba(223, 244, 148, ${p.alpha * 0.85})`;
-          colorMid = `rgba(193, 163, 91, ${p.alpha * 0.35})`;
-        } else if (p.hueType === 'mist') {
-          colorCore = `rgba(235, 255, 242, ${p.alpha * 0.7})`;
-          colorMid = `rgba(169, 248, 181, ${p.alpha * 0.25})`;
-        }
-
-        radGrad.addColorStop(0, colorCore);
-        radGrad.addColorStop(0.35, colorMid);
-        radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.translate(-p.x, -p.y);
-
-        ctx.fillStyle = radGrad;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-      }
-
+      // El bucle de animación se mantiene activo permanentemente
       animId = requestAnimationFrame(render);
     };
 
+    // Iniciar bucle continuo inmediatamente
     animId = requestAnimationFrame(render);
 
     return () => {
