@@ -283,6 +283,24 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     };
   }, [stage, tryPlayAudio]);
 
+  // Bloqueo estricto del scroll del navegador mientras la intro está activa
+  useEffect(() => {
+    if (!visible) return;
+
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      window.scrollTo(0, 0);
+    };
+  }, [visible]);
+
   const handleDismiss = () => {
     soundEffects.playIntroSound();
     setStage('entering');
