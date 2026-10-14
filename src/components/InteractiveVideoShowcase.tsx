@@ -50,7 +50,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [mode, setMode] = useState<'three' | 'ono' | 'interactive' | 'video'>('three');
+  const [mode, setMode] = useState<'ono' | 'three' | 'interactive' | 'video'>('ono');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -294,21 +294,6 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
             <button
               onClick={() => {
                 soundEffects.playClick();
-                setMode('three');
-                setIsPlaying(false);
-              }}
-              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                mode === 'three'
-                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
-                  : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-black" />
-              <span>🌟 Opción 1: 3D en Vivo (Three.js)</span>
-            </button>
-            <button
-              onClick={() => {
-                soundEffects.playClick();
                 setMode('ono');
                 setIsPlaying(false);
               }}
@@ -319,7 +304,22 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               }`}
             >
               <Mouse className="w-3.5 h-3.5 animate-bounce" />
-              <span>🎬 Opción 2: Video 3D Continuo (Estilo ONO)</span>
+              <span>🎬 Opción 1: Transición Video 1 + 2 (Scroll ONO)</span>
+            </button>
+            <button
+              onClick={() => {
+                soundEffects.playClick();
+                setMode('three');
+                setIsPlaying(false);
+              }}
+              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                mode === 'three'
+                  ? 'bg-[#A9F8B5] text-black shadow-lg shadow-[#A9F8B5]/30 scale-102 sm:scale-105 ring-2 ring-[#A9F8B5]/50'
+                  : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-black" />
+              <span>🌟 Opción 2: 3D en Vivo (Three.js)</span>
             </button>
             <button
               onClick={() => {
@@ -349,7 +349,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               }`}
             >
               <Film className="w-3.5 h-3.5" />
-              <span>▶️ Video MP4 HD</span>
+              <span>▶️ Video MP4 HD Completo</span>
             </button>
           </div>
         </Reveal>
@@ -363,9 +363,9 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
             />
           ) : mode === 'ono' ? (
             <ScrollVideoShowcase
-              sequencePath="/assets/cube-sequence"
-              totalFrames={75}
-              sequenceTitle="Opción 2: Video 3D Continuo • Estilo ONO"
+              sequencePath="/assets/transition-sequence"
+              totalFrames={150}
+              sequenceTitle="Transición Cinemática • Video 1 + Video 2 (A todo color)"
               onScrollToQuote={onScrollToQuote}
               onOpenBooking={onOpenBooking}
             />

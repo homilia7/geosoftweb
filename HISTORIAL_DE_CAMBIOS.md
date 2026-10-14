@@ -15,6 +15,28 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-14 — Transición Cinemática Continua Video 1 + Video 2 (A Todo Color, Cero Opacidad y Scroll ONO)
+- **Concatenación Directa y Match-Cut Perfecto (Video 1 -> Video 2):**
+  - Los videos provistos por el usuario (`video 1.mp4` y `video 2.mp4`) fueron concatenados de forma ininterrumpida sin pérdida (`-c copy`) en una secuencia continua de 20 segundos.
+  - Video 1 (0 a 10s): Logo "G" esmeralda en espacio 3D cinemático -> Despegue del cohete espacial con *"Hacemos tus ideas realidad"* -> Viaje de cámara hacia el iMac con *"Impulsamos tu negocio"*.
+  - Transición inmediata (segundo 10.0 / fotograma 75 a 76): La cámara penetra directamente en la pantalla del iMac dando paso instantáneo al panel global de software de Video 2.
+  - Video 2 (10 a 20s): Plataforma de software con globo terráqueo e hiperconectividad de red -> Inmersión en el túnel cuántico 3D con cubos holográficos de GeoSoft.
+- **Erradicación Total de Opacidad / Capas Oscuras ("A Todo Color tal cual es el Video"):**
+  - Se eliminaron por completo las capas superpuestas de gradiente oscuro (`bg-gradient-to-t` y `bg-gradient-to-r from-black/80`) que opacaban la imagen.
+  - El `<canvas>` renderiza ahora los fotogramas WebP nativos a **100% de color real, nítido y vívido**, preservando la fidelidad exacta del metraje original.
+- **Generación de Secuencia de Fotogramas de Alta Definición (`transition-sequence`):**
+  - Generados 150 fotogramas WebP de alta fidelidad (`public/assets/transition-sequence/frame_001.webp` hasta `frame_150.webp`) con compresión fotográfica de alta calidad (calidad 85, Lanczos scaling, peso total ultra optimizado de solo **2.92 MB**).
+  - Tasa de reproducción calibrada a 7.5 FPS para una duración exacta de 20 segundos en reproducción continua.
+- **Control y Navegación Mejorada:**
+  - Panel de información flotante con opción de minimizar ("Ocultar") para permitir al usuario ver la pantalla 100% despejada.
+  - Checkpoints sincronizados con los 5 hitos clave del video (Identidad 3D, Despegue y Tracción, Ecosistema iMac, Plataforma Global y Núcleo Cuántico 3D).
+  - Bloqueo de scroll de la página mantenido con listeners nativos `{ passive: false }` y soporte a pantalla completa inmersiva con `createPortal`.
+  - Establecida como la **Opción 1 principal** en `InteractiveVideoShowcase.tsx`.
+- **Despliegue y Verificación en Producción:**
+  - Build de producción con Vite (`0 errores`).
+  - Desplegado exitosamente a Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Smoke tests HTTP 200 confirmados en producción para la web principal y los fotogramas de la secuencia (`frame_001.webp`, `frame_075.webp`, `frame_150.webp`).
+
 ### 2026-10-13 — Implementación Dual: Opción 1 (Three.js 3D en Vivo) vs Opción 2 (Video 3D Continuo Estilo ONO)
 - **Eliminación Total de Cortes de Diapositiva:**
   - El usuario indicó que en `ono.software` y en su video `Grabación cubo 2026 cubo.mp4`, la cámara realiza un **viaje 3D continuo sin cortes ni diapositivas**, donde la pantalla no baja sino que toda la cinemática ocurre en el centro del campo de visión.

@@ -36,6 +36,64 @@ interface FrameCheckpoint {
   features: string[];
 }
 
+const TRANSITION_CHECKPOINTS: FrameCheckpoint[] = [
+  {
+    start: 1,
+    end: 25,
+    badge: 'IDENTIDAD 3D & INGENIERÍA',
+    category: 'Ecosistema GeoSoft',
+    title: 'Arquitectura Digital de Vanguardia',
+    description:
+      'Soluciones de software y plataformas web de alto rendimiento desde Costa Rica para toda la región. Cero plantillas genéricas.',
+    accentColor: '#A9F8B5',
+    features: ['Estructura 3D Monolítica', 'Código Limpio a Medida', 'Rendimiento Extremo']
+  },
+  {
+    start: 26,
+    end: 50,
+    badge: 'DESPEGUE Y ESCALABILIDAD',
+    category: 'Impulso Empresarial',
+    title: 'Hacemos tus Ideas Realidad',
+    description:
+      'Lanzamiento continuo de plataformas preparadas para escalar a millones de usuarios con latencia mínima.',
+    accentColor: '#38bdf8',
+    features: ['Arquitectura Serverless', 'Velocidad de Carga < 0.4s', 'Despliegues Continuos']
+  },
+  {
+    start: 51,
+    end: 75,
+    badge: 'ECOSISTEMA PROFESIONAL',
+    category: 'Software Corporativo',
+    title: 'Impulsamos tu Negocio',
+    description:
+      'Sistemas de reservas con Sinpe Móvil, CRMs a la medida y plataformas SaaS con diseño Dark Tech premium.',
+    accentColor: '#fb923c',
+    features: ['Validación Sinpe Móvil', 'Sync Google Calendar', 'Membresías con DRM']
+  },
+  {
+    start: 76,
+    end: 110,
+    badge: 'CONECTIVIDAD GLOBAL',
+    category: 'Red Distribuida en Tiempo Real',
+    title: 'Transición a Plataforma Global',
+    description:
+      'Inmersión instantánea en la interfaz de software. Centraliza operaciones, sucursales y clientes en una sola nube.',
+    accentColor: '#c084fc',
+    features: ['Monitoreo en Tiempo Real', 'Chatbots WhatsApp Cloud', 'Multi-Tenant & Nube']
+  },
+  {
+    start: 111,
+    end: 150,
+    badge: 'NÚCLEO CUÁNTICO 3D',
+    category: 'Ciberespacio & Datos',
+    title: 'Túnel de Datos & Cubo Holográfico',
+    description:
+      'Viaje a través del flujo de información con el cubo monolítico de GeoSoft como núcleo central de seguridad y código.',
+    accentColor: '#A9F8B5',
+    features: ['Cifrado Extremo SHA', 'Propiedad 100% del Código', 'Soporte y Garantía Total']
+  }
+];
+
 const CUBE_CHECKPOINTS: FrameCheckpoint[] = [
   {
     start: 1,
@@ -155,9 +213,9 @@ const CHECKPOINTS: FrameCheckpoint[] = [
 export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   onScrollToQuote,
   onOpenBooking,
-  sequencePath = '/assets/cube-sequence',
-  totalFrames = 75,
-  sequenceTitle = 'Opción 2: Video 3D Continuo • Estilo ONO'
+  sequencePath = '/assets/transition-sequence',
+  totalFrames = 150,
+  sequenceTitle = 'Transición Video 1 + Video 2 • Estilo ONO'
 }) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -170,6 +228,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isInfoVisible, setIsInfoVisible] = useState(true);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
 
   const getFrameUrl = useCallback((index: number) => {
@@ -276,7 +335,8 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
 
       if (isPlaying) {
         setTargetFrame((prev) => {
-          const next = prev + 24 * delta;
+          const fpsRate = totalFrames > 100 ? 7.5 : 24;
+          const next = prev + fpsRate * delta;
           return next > totalFrames ? 1 : next;
         });
       }
@@ -312,7 +372,7 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
 
       if (isPlaying) setIsPlaying(false);
 
-      const step = e.deltaY > 0 ? 1.6 : -1.6;
+      const step = e.deltaY > 0 ? (totalFrames > 100 ? 3.0 : 1.6) : (totalFrames > 100 ? -3.0 : -1.6);
       setTargetFrame((prev) => Math.max(1, Math.min(totalFrames, prev + step)));
     };
 
@@ -329,8 +389,9 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
       const currentY = e.touches[0].clientY;
       const diff = touchStartY - currentY;
 
-      if (Math.abs(diff) > 5) {
-        const frameDelta = diff / 12;
+      if (Math.abs(diff) > 4) {
+        const factor = totalFrames > 100 ? 1.8 : 1.0;
+        const frameDelta = (diff / 10) * factor;
         setTargetFrame((prev) => Math.max(1, Math.min(totalFrames, prev + frameDelta)));
         setTouchStartY(currentY);
       }
@@ -421,7 +482,11 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
     }
   };
 
-  const currentCheckpoints = sequencePath.includes('cube') ? CUBE_CHECKPOINTS : CHECKPOINTS;
+  const currentCheckpoints = sequencePath.includes('transition')
+    ? TRANSITION_CHECKPOINTS
+    : sequencePath.includes('cube')
+      ? CUBE_CHECKPOINTS
+      : CHECKPOINTS;
   const activeCheckpoint =
     currentCheckpoints.find((c) => currentFrame >= c.start && currentFrame <= c.end) || currentCheckpoints[0];
 
@@ -486,17 +551,14 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
         </div>
       </div>
 
-      {/* Área del Canvas */}
+      {/* Área del Canvas - 100% Sin overlays ni opacidad oscura */}
       <div
         ref={scrollAreaRef}
-        className={`relative w-full select-none overflow-hidden touch-none flex-1 ${
+        className={`relative w-full select-none overflow-hidden touch-none flex-1 bg-black ${
           isFullscreen ? 'h-full min-h-0' : 'aspect-video min-h-[380px] sm:min-h-[480px] md:min-h-[540px]'
         }`}
       >
         <canvas ref={canvasRef} className="w-full h-full block object-cover" />
-
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#07090f] via-transparent to-black/30" />
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
 
         {isLoading && (
           <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center gap-3 z-30">
@@ -516,68 +578,89 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
           </div>
         )}
 
-        <div className="absolute top-4 left-4 sm:top-8 sm:left-8 max-w-sm sm:max-w-md p-4 sm:p-6 rounded-2xl bg-[#090e18]/90 backdrop-blur-xl border border-white/20 shadow-2xl z-20 pointer-events-auto transition-all duration-300">
-          <div className="flex items-center gap-2 mb-2">
-            <span
-              className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
-              style={{
-                backgroundColor: `${activeCheckpoint.accentColor}25`,
-                color: activeCheckpoint.accentColor
-              }}
-            >
-              {activeCheckpoint.badge}
-            </span>
-            <span className="text-[10px] sm:text-xs text-gray-400 font-mono">
-              {activeCheckpoint.category}
-            </span>
-          </div>
-
-          <h3 className="text-lg sm:text-2xl font-extrabold text-white font-display tracking-tight leading-tight mb-2">
-            {activeCheckpoint.title}
-          </h3>
-
-          <p className="text-xs sm:text-sm text-gray-300 font-light leading-relaxed mb-4 line-clamp-3">
-            {activeCheckpoint.description}
-          </p>
-
-          <div className="space-y-1.5 mb-4">
-            {activeCheckpoint.features.map((feat, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-[11px] sm:text-xs text-gray-200">
-                <CheckCircle2
-                  className="w-3.5 h-3.5 shrink-0"
-                  style={{ color: activeCheckpoint.accentColor }}
-                />
-                <span>{feat}</span>
+        {/* Panel de Información Flotante (Con opción de minimizar para apreciar el video 100% despejado) */}
+        {isInfoVisible ? (
+          <div className="absolute top-4 left-4 sm:top-8 sm:left-8 max-w-xs sm:max-w-sm md:max-w-md p-4 sm:p-5 rounded-2xl bg-[#090e18]/85 backdrop-blur-xl border border-white/20 shadow-2xl z-20 pointer-events-auto transition-all duration-300">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                  style={{
+                    backgroundColor: `${activeCheckpoint.accentColor}25`,
+                    color: activeCheckpoint.accentColor
+                  }}
+                >
+                  {activeCheckpoint.badge}
+                </span>
+                <span className="text-[10px] sm:text-xs text-gray-400 font-mono hidden sm:inline">
+                  {activeCheckpoint.category}
+                </span>
               </div>
-            ))}
-          </div>
+              <button
+                onClick={() => setIsInfoVisible(false)}
+                className="text-gray-400 hover:text-white px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] font-mono cursor-pointer transition-colors"
+                title="Minimizar panel"
+              >
+                Ocultar
+              </button>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                soundEffects.playClick();
-                if (isFullscreen) setIsFullscreen(false);
-                onScrollToQuote();
-              }}
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#DFF494] transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-[#A9F8B5]/20"
-            >
-              <span>Cotizar Solución</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-            {onOpenBooking && (
+            <h3 className="text-base sm:text-xl md:text-2xl font-extrabold text-white font-display tracking-tight leading-tight mb-2">
+              {activeCheckpoint.title}
+            </h3>
+
+            <p className="text-xs sm:text-sm text-gray-300 font-light leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
+              {activeCheckpoint.description}
+            </p>
+
+            <div className="space-y-1 mb-3 sm:mb-4">
+              {activeCheckpoint.features.map((feat, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-[11px] sm:text-xs text-gray-200">
+                  <CheckCircle2
+                    className="w-3.5 h-3.5 shrink-0"
+                    style={{ color: activeCheckpoint.accentColor }}
+                  />
+                  <span>{feat}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => {
                   soundEffects.playClick();
                   if (isFullscreen) setIsFullscreen(false);
-                  onOpenBooking();
+                  onScrollToQuote();
                 }}
-                className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold text-xs transition-colors cursor-pointer"
+                className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#A9F8B5] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#DFF494] transition-all cursor-pointer flex items-center gap-1.5 shadow-md shadow-[#A9F8B5]/20"
               >
-                Demo en Vivo
+                <span>Cotizar Solución</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
-            )}
+              {onOpenBooking && (
+                <button
+                  onClick={() => {
+                    soundEffects.playClick();
+                    if (isFullscreen) setIsFullscreen(false);
+                    onOpenBooking();
+                  }}
+                  className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold text-xs transition-colors cursor-pointer"
+                >
+                  Demo en Vivo
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <button
+            onClick={() => setIsInfoVisible(true)}
+            className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-xl bg-[#090e18]/85 backdrop-blur-md border border-white/20 text-xs font-mono text-white hover:bg-white/10 flex items-center gap-2 cursor-pointer shadow-lg transition-all"
+            title="Expandir información"
+          >
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: activeCheckpoint.accentColor }} />
+            <span>{activeCheckpoint.badge} • Ver info</span>
+          </button>
+        )}
 
         <div className="absolute bottom-6 right-4 sm:bottom-8 sm:right-8 bg-[#090e18]/90 backdrop-blur-md border border-white/20 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-xs text-white z-20 pointer-events-none shadow-xl">
           <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-[#A9F8B5]">
