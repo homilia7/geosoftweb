@@ -15,7 +15,27 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-14 — Intro Cinemática al Cargar la Web: Video 3 (Reversa) ➔ Video 1 ➔ Video 2 ➔ Pantalla "Iniciando experiencia..."
+### 2026-10-14 — Intro Ultra-Nítida Interactiva con Scroll del Ratón y Música Tecnológica Instrumental
+- **Erradicación Total de Opacidad y Baja Calidad (Super Nítido Full HD / WebP 1280x720 Lanczos + Unsharp):**
+  - Se eliminaron por completo las reproducciones borrosas o con filtros oscuros.
+  - Los 189 fotogramas de la secuencia (Video 3 en reversa ➔ Video 1 ➔ Video 2) fueron procesados con escalado Lanczos y filtro unsharp de alta definición (`unsharp=5:5:1.1:5:5:0.0`) a WebP calidad 90.
+  - El motor `<canvas>` renderiza a pantalla completa con soporte para pantallas Retina (`devicePixelRatio`), `imageSmoothingQuality = 'high'` y colores 100% vívidos y nítidos.
+- **Avance Interactivo Exclusivo con el Scroll del Ratón (Wheel) y Swipe Táctil:**
+  - El usuario controla el avance del video directamente con la rueda del ratón (`wheel`) o con gestos táctiles.
+  - Curva de interpolación lerp para un avance suave a 60/120 FPS sin saltos ni tirones.
+  - Bloqueo total del scroll de la página de fondo con `{ passive: false }`.
+  - Pill flotante inferior con indicador animado: *"Gira la rueda del mouse para avanzar"* y barra de progreso en vivo de 0% a 100% con contador de fotogramas (`Fotograma X / 189`).
+  - Al completar el scroll al 100% (fotograma 189): transiciona inmediatamente a la pantalla de marca con *"Iniciando experiencia..."*, y tras 2.2 segundos da acceso fluido a la página principal.
+- **Banda Sonora Tecnológica Profesional (100% Instrumental, Cero Voces):**
+  - Integrada la pista de audio sintético ambiental `/assets/audio/ambient-music.mp3` (4.5 MB, alta fidelidad).
+  - Cero voces humanas; ambientación sonora puramente electrónica, futurista y tecnológica.
+  - Inicio automático en la primera interacción o scroll con volumen calibrado a 0.35.
+  - Botón de control flotante superior para silenciar o activar la música (`Música Tech ON / OFF`).
+  - Botón *"Saltar"* disponible en todo momento para acceso inmediato a la pantalla de inicio.
+- **Despliegue y Verificación:**
+  - Compilación de producción con Vite exitosa (`0 errores`).
+  - Push directo a `main` para despliegue automatizado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
+
 - **Secuencia Cinemática como Primer Impacto al Cargar (`SplashIntro.tsx`):**
   - Al abrir o recargar la página, lo primero que ve el usuario es la secuencia cinemática a pantalla completa en alta definición y a todo color real.
   - **Fase 1 (Video 3 en Reversa):** La cámara inicia en el fondo del túnel cuántico y viaja en reversa hacia el exterior revelando el cubo monolítico esmeralda sobre la placa de circuito integrado.
