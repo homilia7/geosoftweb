@@ -15,7 +15,16 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-14 — Intro Ultra-Nítida Interactiva con Scroll del Ratón y Música Tecnológica Instrumental
+### 2026-10-14 — Calibración de Velocidad del Menú de Navegación tras la Intro
+- **Aceleración Sutil del Menú Superior (`Navbar.tsx` & `Hero.tsx`):**
+  - Reducido el tiempo de espera para el disparo de la animación del menú superior de 2180ms a 1450ms.
+  - La cadencia de entrada de los 5 pares de botones se aceleró a ~180ms entre pares (antes 260ms), haciendo que el menú se arme de forma más dinámica, fluida y sin pausas largas.
+  - La transición de la pantalla de marca *"Iniciando experiencia..."* (`SplashIntro.tsx`) se calibró a 1.8s (antes 2.2s).
+- **Despliegue y Verificación en Producción:**
+  - Build local con Vite (`0 errores`).
+  - Desplegado exitosamente en Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Script en vivo verificado: `index-B776PhwN.js`.
+
 - **Erradicación Total de Opacidad y Baja Calidad (Super Nítido Full HD / WebP 1280x720 Lanczos + Unsharp):**
   - Se eliminaron por completo las reproducciones borrosas o con filtros oscuros.
   - Los 189 fotogramas de la secuencia (Video 3 en reversa ➔ Video 1 ➔ Video 2) fueron procesados con escalado Lanczos y filtro unsharp de alta definición (`unsharp=5:5:1.1:5:5:0.0`) a WebP calidad 90.

@@ -310,12 +310,12 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     }, 650);
   };
 
-  // Si está en fase 'brand', tras 2.2s entra automáticamente a la web
+  // Si está en fase 'brand', tras 1.8s entra automáticamente a la web (cadencia más dinámica)
   useEffect(() => {
     if (stage === 'brand') {
       const brandTimer = setTimeout(() => {
         handleDismiss();
-      }, 2200);
+      }, 1800);
       return () => clearTimeout(brandTimer);
     }
   }, [stage]);

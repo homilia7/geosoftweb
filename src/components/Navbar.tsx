@@ -81,25 +81,21 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     if (!introFinished) return;
 
-    // Secuencia de aparición de los 5 pares (separados por 260ms de cadencia visible)
-    const t1 = setTimeout(() => setPairStage(1), 100);  // Par 1: Logo & Cotizar Ahora
-    const t2 = setTimeout(() => setPairStage(2), 360);  // Par 2: Inicio & Agendar Cita
-    const t3 = setTimeout(() => setPairStage(3), 620);  // Par 3: Servicios & FAQ
-    const t4 = setTimeout(() => setPairStage(4), 880);  // Par 4: Metodología & Cotizador
-    const t5 = setTimeout(() => setPairStage(5), 1140); // Par 5: Proyectos & Equipo
+    // Secuencia de aparición de los 5 pares (cadencia ágil y elegante de ~180ms entre pares)
+    const t1 = setTimeout(() => setPairStage(1), 50);   // Par 1: Logo & Cotizar Ahora
+    const t2 = setTimeout(() => setPairStage(2), 230);  // Par 2: Inicio & Agendar Cita
+    const t3 = setTimeout(() => setPairStage(3), 410);  // Par 3: Servicios & FAQ
+    const t4 = setTimeout(() => setPairStage(4), 590);  // Par 4: Metodología & Cotizador
+    const t5 = setTimeout(() => setPairStage(5), 770);  // Par 5: Proyectos & Equipo
 
-    // 1. Al asentarse los botones (~1650ms), Flash amarillo rápido como un relámpago (220ms)
-    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 1750);
+    // 1. Al asentarse los botones (~1200ms), Flash amarillo rápido como un relámpago
+    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 1200);
 
-    // 2. A los 2050ms, arranca la animación de luz rápida de botón en botón (45ms entre botones, 110ms duración)
-    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 2050);
+    // 2. A los 1450ms, arranca la animación de luz rápida de botón en botón
+    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 1450);
 
-    // 3. El último botón se apaga a los: 2050ms + (9 * 45ms) + 110ms = 2565ms.
-    //    A los 2580ms pasamos DIRECTAMENTE a 'slow_wake_up':
-    //    En CSS tiene un delay nativo de 1000ms apagados (de 2580ms a 3580ms), y luego
-    //    despierta de forma lineal, constante y uniforme durante 8.5 segundos (hasta 12080ms).
-    //    Al llegar al 100%, se mantiene fija y permanente en su estado natural (sin desmontes ni saltos).
-    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 2580);
+    // 3. A los 1950ms pasamos a 'slow_wake_up'
+    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 1950);
 
     return () => {
       clearTimeout(t1);

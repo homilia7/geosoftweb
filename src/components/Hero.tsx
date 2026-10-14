@@ -29,16 +29,16 @@ export const Hero: React.FC<HeroProps> = ({
 
   React.useEffect(() => {
     if (introFinished) {
-      // 1. Primero aparece el contenedor derecho (cuadro 3D de arriba hacia abajo, 1000ms)
-      const tRight = setTimeout(() => setRightReady(true), 100);
+      // 1. Primero aparece el contenedor derecho (cuadro 3D de arriba hacia abajo)
+      const tRight = setTimeout(() => setRightReady(true), 80);
 
-      // 2. El contenedor izquierdo completo aparece DESPUÉS de que aparece el contenedor derecho (~1000ms)
-      const tLeft = setTimeout(() => setLeftReady(true), 1120);
+      // 2. El contenedor izquierdo completo aparece de forma ágil y fluida
+      const tLeft = setTimeout(() => setLeftReady(true), 750);
 
-      // 3. Después de que aparece el contenedor izquierdo (~1050ms), inicia la animación del menú de arriba
+      // 3. El menú de arriba inicia su aparición de forma más rápida y natural
       const tNav = setTimeout(() => {
         onLeftContentAppearedRef.current?.();
-      }, 2180);
+      }, 1450);
 
       return () => {
         clearTimeout(tRight);
