@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Sparkles, ArrowRight, Volume2, VolumeX, Mouse, ChevronDown } from 'lucide-react';
+import { Sparkles, ArrowRight, Mouse, ChevronDown } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 
 interface SplashIntroProps {
@@ -13,13 +13,10 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
   const [visible, setVisible] = useState(true);
   // Fases: 'cinematic' (Video interactivo con scroll) -> 'brand' (Pantalla con "Iniciando experiencia...") -> 'entering' (Carga la página web)
   const [stage, setStage] = useState<'cinematic' | 'brand' | 'entering'>('cinematic');
-  const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentFrameNum, setCurrentFrameNum] = useState(1);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const loadedMapRef = useRef<boolean[]>([]);
   const targetFrameRef = useRef(1);
@@ -28,47 +25,14 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
   const touchStartYRef = useRef<number | null>(null);
   const completedRef = useRef(false);
 
-  // Iniciar la música tecnológica profesional (instrumental, cero voces)
+  // Iniciar la música tecnológica profesional del sitio (instrumental, cero voces)
   const tryPlayAudio = useCallback(() => {
-    if (!audioRef.current) return;
-    audioRef.current.volume = 0.35;
-    audioRef.current.muted = isMuted;
-    audioRef.current
-      .play()
-      .then(() => setIsAudioPlaying(true))
-      .catch(() => {
-        // El navegador requiere interacción del usuario
-        setIsAudioPlaying(false);
-      });
-  }, [isMuted]);
+    soundEffects.startAmbientMusic();
+  }, []);
 
-  const toggleSound = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    const nextMuted = !isMuted;
-    setIsMuted(nextMuted);
-    if (audioRef.current) {
-      audioRef.current.muted = nextMuted;
-      if (!nextMuted && audioRef.current.paused) {
-        audioRef.current.play().then(() => setIsAudioPlaying(true)).catch(() => {});
-      }
-    }
-  };
-
-  // Inicializar audio
   useEffect(() => {
-    const audio = new Audio('/assets/audio/ambient-music.mp3');
-    audio.loop = true;
-    audio.preload = 'auto';
-    audioRef.current = audio;
-
-    // Intentar reproducir de inmediato si la política del navegador lo permite
+    // Intentar iniciar audio si la interacción previa lo permite
     tryPlayAudio();
-
-    return () => {
-      audio.pause();
-      audio.src = '';
-      audioRef.current = null;
-    };
   }, [tryPlayAudio]);
 
   // Dibujar un frame específico en el canvas con máxima nitidez
@@ -347,27 +311,8 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
               <span className="text-[11px] text-[#A9F8B5]">Intro Interactiva</span>
             </div>
 
-            {/* Controles: Audio y Saltar */}
+            {/* Control Superior: Botón Saltar */}
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={toggleSound}
-                className="px-3.5 py-1.5 rounded-full bg-black/75 hover:bg-black/95 backdrop-blur-md border border-white/20 hover:border-[#A9F8B5]/50 text-white font-mono text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xl active:scale-95"
-                title={isMuted ? 'Activar música' : 'Silenciar música'}
-              >
-                {isMuted ? (
-                  <>
-                    <VolumeX className="w-3.5 h-3.5 text-gray-400" />
-                    <span className="hidden sm:inline text-gray-400">Música OFF</span>
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="w-3.5 h-3.5 text-[#A9F8B5] animate-pulse" />
-                    <span className="hidden sm:inline text-[#A9F8B5]">Música Tech ON</span>
-                  </>
-                )}
-              </button>
-
               <button
                 type="button"
                 onClick={handleSequenceComplete}

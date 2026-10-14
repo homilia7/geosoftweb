@@ -304,7 +304,7 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
               }`}
             >
               <Mouse className="w-3.5 h-3.5 animate-bounce" />
-              <span>🎬 Opción 1: Transición Video 3 (Reversa) + 1 + 2 (Scroll ONO)</span>
+              <span>🎬 Opción 1: Showcase Interactivo (Scroll)</span>
             </button>
             <button
               onClick={() => {
@@ -365,7 +365,6 @@ export const InteractiveVideoShowcase: React.FC<InteractiveVideoShowcaseProps> =
             <ScrollVideoShowcase
               sequencePath="/assets/transition-sequence"
               totalFrames={189}
-              sequenceTitle="Transición Cinemática • Video 3 (Reversa) + 1 + 2 (A todo color)"
               onScrollToQuote={onScrollToQuote}
               onOpenBooking={onOpenBooking}
             />

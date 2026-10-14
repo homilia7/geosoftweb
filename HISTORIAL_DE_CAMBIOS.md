@@ -15,7 +15,24 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-14 — Calibración de Velocidad del Menú de Navegación tras la Intro
+### 2026-10-14 — Control Único de Audio, Limpieza de Showcase y Estela Vaporosa en Autopilot
+- **Control Centralizado de Música y Eliminación de Altavoz en la Intro (`SplashIntro.tsx` & `soundEffects.ts`):**
+  - Se eliminó el botón de altavoz duplicado de la pantalla de introducción interactiva.
+  - La música de fondo tecnológica se activa con el primer gesto de scroll o toque mediante el singleton `soundEffects.startAmbientMusic()`, asegurando que al entrar a la página la música ya esté sonando de manera continua.
+  - El único botón de control de altavoz en todo el sitio es el de la barra de navegación (`Navbar.tsx`), que permite silenciar o reactivar el sonido con un solo clic.
+- **Eliminación del Cuadro de Texto de Transición (`ScrollVideoShowcase.tsx` & `InteractiveVideoShowcase.tsx`):**
+  - Se eliminó por completo el texto/caja *"Transición Cinemática • Video 3 (Reversa) + 1 + 2 (A todo color)"*.
+  - La barra superior del reproductor queda completamente limpia y minimalista, con los indicadores luminosos y el botón de pantalla completa.
+- **Estela de Humo en Autopilot al Dejar de Mover el Mouse (`SmokeCursorTrail.tsx`):**
+  - **Detección de Reposo:** Cuando el usuario deja de mover el ratón durante más de 850ms, el sistema activa automáticamente el modo autopilot continuo.
+  - **Vista Hero (Logo 3D en pantalla):** La estela de humo etéreo circula suavemente en bucle alrededor del cuadro del logo 3D de GeoSoft (`#hero-logo-box`).
+  - **Otras secciones de la web (scrolled down):** Si el usuario se desplaza más abajo en la página, la estela vaporosa sube al menú superior (`#main-nav-capsule`) y recorre la cápsula de navegación de izquierda a derecha y de vuelta en un bucle sinusoidal hipnótico.
+  - **Retorno Instantáneo:** Tan pronto como el usuario vuelve a tocar o mover el ratón, el autopilot se desactiva de inmediato y la estela sigue el cursor real con suavidad.
+- **Despliegue y Verificación en Producción:**
+  - Build local con Vite (`0 errores`).
+  - Desplegado en Cloudflare Pages (`https://geosoftweb.pages.dev`).
+  - Script en vivo confirmado: `index-DRU6LGIs.js`.
+
 - **Aceleración Sutil del Menú Superior (`Navbar.tsx` & `Hero.tsx`):**
   - Reducido el tiempo de espera para el disparo de la animación del menú superior de 2180ms a 1450ms.
   - La cadencia de entrada de los 5 pares de botones se aceleró a ~180ms entre pares (antes 260ms), haciendo que el menú se arme de forma más dinámica, fluida y sin pausas largas.

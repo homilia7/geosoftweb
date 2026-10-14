@@ -59,6 +59,14 @@ export const SmokeCursorTrail: React.FC = () => {
     let moveTimeout: ReturnType<typeof setTimeout>;
     let animId: number | null = null;
 
+    // Autopilot para reposo (cuando el usuario deja de mover el mouse)
+    let lastUserMoveTime = Date.now();
+    let isIdle = false;
+    let autopilotPos = { x: -100, y: -100 };
+    let orbitAngle = 0;
+    let sweepProgress = 0;
+    let sweepDir = 1;
+
     const createParticle = (x: number, y: number, spreadFactor = 1): SmokeParticle => {
       const angle = Math.random() * Math.PI * 2;
       const speed = (0.2 + Math.random() * 0.7) * spreadFactor;
@@ -102,6 +110,14 @@ export const SmokeCursorTrail: React.FC = () => {
       const dy = currY - lastY;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
+      // Si la distancia es muy grande (salto brusco al retomar el mouse), reiniciar sin línea cruzada
+      if (dist > 180) {
+        lastX = currX;
+        lastY = currY;
+        particles.push(createParticle(currX, currY));
+        return;
+      }
+
       // Interpolación continua para que la cortina de humo no tenga huecos si el mouse se mueve rápido
       const stepSize = 8;
       const steps = Math.max(1, Math.min(Math.floor(dist / stepSize), 14));
@@ -118,6 +134,14 @@ export const SmokeCursorTrail: React.FC = () => {
     };
 
     const onMouseMove = (e: MouseEvent) => {
+      lastUserMoveTime = Date.now();
+      if (isIdle) {
+        isIdle = false;
+        autopilotPos = { x: -100, y: -100 };
+        lastX = e.clientX;
+        lastY = e.clientY;
+      }
+
       addSmokeAt(e.clientX, e.clientY);
       isMouseMoving = true;
       clearTimeout(moveTimeout);
@@ -144,8 +168,86 @@ export const SmokeCursorTrail: React.FC = () => {
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Si no hay partículas y el mouse no se mueve, dormimos el bucle (0% CPU)
-      if (particles.length === 0 && !isMouseMoving) {
+      const now = Date.now();
+      // Si pasan más de 850ms sin interacción del usuario, activar modo reposo / autopilot
+      if (!isMouseMoving && now - lastUserMoveTime > 850) {
+        isIdle = true;
+      }
+
+      // LÓGICA DE AUTOPILOT EN REPOSO:
+      if (isIdle) {
+        const logoEl = document.getElementById('hero-logo-box');
+        let inHeroView = false;
+        let logoRect: DOMRect | null = null;
+
+        if (logoEl) {
+          const r = logoEl.getBoundingClientRect();
+          // El cuadro del logo está en la vista si está dentro del viewport visible
+          if (r.bottom > 80 && r.top < height - 80) {
+            inHeroView = true;
+            logoRect = r;
+          }
+        }
+
+        let targetX = 0;
+        let targetY = 0;
+
+        if (inHeroView && logoRect) {
+          // ESTADO 1: Usuario en vista Hero -> El rastro circula alrededor del cuadro del logo
+          const cx = logoRect.left + logoRect.width / 2;
+          const cy = logoRect.top + logoRect.height / 2;
+          const rx = logoRect.width / 2 + 14;
+          const ry = logoRect.height / 2 + 14;
+
+          orbitAngle += 0.024;
+          const cosT = Math.cos(orbitAngle);
+          const sinT = Math.sin(orbitAngle);
+          // Curva squircle suave que bordea el rectángulo redondeado
+          targetX = cx + rx * Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.72);
+          targetY = cy + ry * Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.72);
+        } else {
+          // ESTADO 2: Usuario abajo en otra sección -> El rastro recorre el menú superior de lado a lado
+          const navEl = document.getElementById('main-nav-capsule');
+          let navLeft = 80;
+          let navRight = width - 80;
+          let navY = 32;
+
+          if (navEl) {
+            const nr = navEl.getBoundingClientRect();
+            navLeft = Math.max(20, nr.left + 24);
+            navRight = Math.min(width - 20, nr.right - 24);
+            navY = nr.top + nr.height / 2;
+          }
+
+          sweepProgress += 0.007 * sweepDir;
+          if (sweepProgress >= 1) {
+            sweepProgress = 1;
+            sweepDir = -1;
+          } else if (sweepProgress <= 0) {
+            sweepProgress = 0;
+            sweepDir = 1;
+          }
+
+          // Easing sinusoidal suave para desacelerar y retornar en los extremos
+          const eased = (1 - Math.cos(sweepProgress * Math.PI)) / 2;
+          targetX = navLeft + (navRight - navLeft) * eased;
+          targetY = navY + Math.sin(sweepProgress * Math.PI * 4) * 2.5;
+        }
+
+        if (autopilotPos.x === -100 || autopilotPos.y === -100) {
+          autopilotPos = { x: targetX, y: targetY };
+          lastX = targetX;
+          lastY = targetY;
+        } else {
+          autopilotPos.x += (targetX - autopilotPos.x) * 0.4;
+          autopilotPos.y += (targetY - autopilotPos.y) * 0.4;
+        }
+
+        addSmokeAt(autopilotPos.x, autopilotPos.y);
+      }
+
+      // Si no hay partículas y el mouse no se mueve y no está en idle, dormimos el bucle
+      if (particles.length === 0 && !isMouseMoving && !isIdle) {
         animId = null;
         return;
       }

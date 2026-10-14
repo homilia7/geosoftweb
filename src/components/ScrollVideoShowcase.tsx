@@ -519,13 +519,17 @@ export const ScrollVideoShowcase: React.FC<ScrollVideoShowcaseProps> = ({
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
           </div>
-          <div className="h-4 w-px bg-white/15" />
-          <div className="flex items-center gap-2">
-            <Mouse className="w-3.5 h-3.5 text-[#A9F8B5] animate-bounce" />
-            <span className="text-xs font-mono font-bold text-white tracking-wide">
-              {isFullscreen ? 'Pantalla Completa Inmersiva • Video 3D 60 FPS' : sequenceTitle}
-            </span>
-          </div>
+          {isFullscreen && (
+            <>
+              <div className="h-4 w-px bg-white/15" />
+              <div className="flex items-center gap-2">
+                <Mouse className="w-3.5 h-3.5 text-[#A9F8B5] animate-bounce" />
+                <span className="text-xs font-mono font-bold text-white tracking-wide">
+                  Pantalla Completa Inmersiva • Video 3D 60 FPS
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">

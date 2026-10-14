@@ -122,7 +122,7 @@ export const Hero: React.FC<HeroProps> = ({
           <div className={`md:col-span-5 flex justify-center transition-all ${
             rightReady ? 'animate-hero-card-down' : 'opacity-0 pointer-events-none'
           }`}>
-            <div className="relative group w-full max-w-[420px] animate-hero-floating">
+            <div id="hero-logo-box" className="relative group w-full max-w-[420px] animate-hero-floating">
               {/* Outer decorative ambient blur */}
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#A9F8B5]/30 to-[#C1A35B]/30 blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
 

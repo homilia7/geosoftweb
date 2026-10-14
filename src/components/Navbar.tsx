@@ -208,7 +208,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2 sm:py-2.5 px-3 sm:px-4 pointer-events-none">
-      <div className={`pointer-events-auto w-full max-w-5xl bg-[#121316]/30 backdrop-blur-2xl border border-white/10 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center justify-between transition-opacity duration-300 ${
+      <div id="main-nav-capsule" className={`pointer-events-auto w-full max-w-5xl bg-[#121316]/30 backdrop-blur-2xl border border-white/10 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center justify-between transition-opacity duration-300 ${
         pairStage > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}>
         {/* Par 1 Izquierda: Logo y Letras GeoSoft (de izquierda a derecha) */}
