@@ -136,6 +136,10 @@ export const Hero: React.FC<HeroProps> = ({
                   <img
                     src="/assets/logo-emerald.jpeg"
                     alt="GeoSoft 3D Cube Emblem"
+                    width={400}
+                    height={400}
+                    fetchPriority="high"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:rotate-1"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />

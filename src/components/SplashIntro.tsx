@@ -111,37 +111,45 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     }
   }, [renderFrame]);
 
-  // Precarga progresiva de los 189 fotogramas ultra-nítidos
+  // Carga inteligente de fotogramas bajo demanda
+  const loadFrame = useCallback((idx: number) => {
+    if (idx < 1 || idx > TOTAL_FRAMES || imagesRef.current[idx]) return;
+    const padded = String(idx).padStart(3, '0');
+    const img = new Image();
+    img.src = `${FRAME_BASE_PATH}/frame_${padded}.webp`;
+    img.onload = () => {
+      loadedMapRef.current[idx] = true;
+    };
+    imagesRef.current[idx] = img;
+  }, []);
+
+  const bufferAround = useCallback((center: number, forward = 15, backward = 3) => {
+    const start = Math.max(1, Math.round(center) - backward);
+    const end = Math.min(TOTAL_FRAMES, Math.round(center) + forward);
+    for (let i = start; i <= end; i++) {
+      loadFrame(i);
+    }
+  }, [loadFrame]);
+
+  // Inicialización ligera: fotograma 1 inmediato + precarga ociosa no bloqueante
   useEffect(() => {
     let isMounted = true;
-    const images: HTMLImageElement[] = [];
-    const loadedMap: boolean[] = [];
 
-    // Pre-cargar el fotograma 1 de inmediato para visualización instantánea
+    // Fotograma 1 inmediato para visualización instantánea (FCP / LCP ultra rápido)
     const frame1 = new Image();
     frame1.src = `${FRAME_BASE_PATH}/frame_001.webp`;
     frame1.onload = () => {
       if (!isMounted) return;
-      loadedMap[1] = true;
+      loadedMapRef.current[1] = true;
       resizeCanvas();
       renderFrame(1);
     };
-    images[1] = frame1;
+    imagesRef.current[1] = frame1;
 
-    // Cargar los demás fotogramas en paralelo
-    for (let i = 2; i <= TOTAL_FRAMES; i++) {
-      const padded = String(i).padStart(3, '0');
-      const img = new Image();
-      img.src = `${FRAME_BASE_PATH}/frame_${padded}.webp`;
-      img.onload = () => {
-        if (!isMounted) return;
-        loadedMap[i] = true;
-      };
-      images[i] = img;
+    // Buffer inicial liviano (fotogramas 2 a 6) para respuesta instantánea al primer gesto
+    for (let i = 2; i <= Math.min(6, TOTAL_FRAMES); i++) {
+      loadFrame(i);
     }
-
-    imagesRef.current = images;
-    loadedMapRef.current = loadedMap;
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -150,7 +158,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       isMounted = false;
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [resizeCanvas, renderFrame]);
+  }, [resizeCanvas, renderFrame, loadFrame]);
 
   const handleSequenceComplete = useCallback(() => {
     if (completedRef.current) return;
@@ -176,6 +184,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       const calculatedProgress = Math.min(100, Math.max(0, Math.round((currentFrameRef.current / TOTAL_FRAMES) * 100)));
       setProgress(calculatedProgress);
 
+      bufferAround(currentFrameRef.current, 14, 2);
       renderFrame(currentFrameRef.current);
 
       // Si llegó al final de la secuencia de scroll (fotograma 189 o >= 99%)
@@ -194,7 +203,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
         cancelAnimationFrame(animFrameIdRef.current);
       }
     };
-  }, [stage, renderFrame, handleSequenceComplete]);
+  }, [stage, renderFrame, handleSequenceComplete, bufferAround]);
 
   // Manejo de scroll con la rueda del ratón (Wheel)
   useEffect(() => {
@@ -209,6 +218,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       const stepDelta = e.deltaY * 0.08;
       const nextTarget = Math.max(1, Math.min(TOTAL_FRAMES, targetFrameRef.current + stepDelta));
       targetFrameRef.current = nextTarget;
+      bufferAround(nextTarget, 16, 2);
     };
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -228,6 +238,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       const stepDelta = deltaY * 0.12;
       const nextTarget = Math.max(1, Math.min(TOTAL_FRAMES, targetFrameRef.current + stepDelta));
       targetFrameRef.current = nextTarget;
+      bufferAround(nextTarget, 16, 2);
     };
 
     const handleTouchEnd = () => {
@@ -375,6 +386,9 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
               <img
                 src="/assets/logo-emerald.jpeg"
                 alt="GeoSoft Logo"
+                width={160}
+                height={160}
+                decoding="async"
                 className="w-full h-full object-cover select-none pointer-events-none"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
@@ -391,9 +405,9 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
             </div>
 
             {/* Título de Marca con Efecto Cromático */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-display text-white">
+            <div className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-display text-white">
               GEO<span className="text-gradient-accent">SOFT</span>
-            </h1>
+            </div>
 
             {/* Subtítulo */}
             <p className="text-xs sm:text-sm md:text-base text-gray-300 font-light max-w-sm mx-auto leading-relaxed">

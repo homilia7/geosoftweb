@@ -66,9 +66,9 @@ export const ProcessTimeline: React.FC = () => {
 
                     {/* Title & Description */}
                     <div className="space-y-2">
-                      <h4 className="text-xl font-bold font-display text-white group-hover:text-[#DFF494] transition-colors">
+                      <h3 className="text-xl font-bold font-display text-white group-hover:text-[#DFF494] transition-colors">
                         {step.title}
-                      </h4>
+                      </h3>
                       <p className="text-sm text-gray-400 font-light leading-relaxed">
                         {step.desc}
                       </p>

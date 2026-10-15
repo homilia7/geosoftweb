@@ -1,0 +1,14 @@
+# GeoSoft
+
+> Desarrollo de software de alto impacto, páginas web ultrarrápidas, agentes de IA 24/7 y sistemas de automatización en Costa Rica.
+
+GeoSoft crea plataformas web modernas, SaaS a medida, integraciones de pagos (Sinpe Móvil, Stripe) y agentes inteligentes para optimizar las conversiones de empresas.
+
+## Enlaces Principales
+- [Inicio](https://geosoftweb.pages.dev/#inicio): Portal oficial de GeoSoft.
+- [Servicios](https://geosoftweb.pages.dev/#servicios): Soluciones de software, IA y desarrollo web.
+- [Proceso](https://geosoftweb.pages.dev/#metodologia): Metodología de desarrollo estructurada en 3 fases.
+- [Proyectos](https://geosoftweb.pages.dev/#proyectos): Casos de éxito y plataformas en producción.
+- [Equipo](https://geosoftweb.pages.dev/#equipo): Equipo de ingenieros y diseñadores.
+- [Cotizador](https://geosoftweb.pages.dev/#cotizador): Cotizador interactivo en tiempo real.
+- [Preguntas Frecuentes](https://geosoftweb.pages.dev/#faq): Respuestas sobre garantías, tiempos y soporte.

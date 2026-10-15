@@ -206,7 +206,7 @@ export const CostCalculator: React.FC = () => {
               <div className="blob-glow" />
 
               <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                <h4 className="font-display font-bold text-lg text-white">Resumen Estimado</h4>
+                <h3 className="font-display font-bold text-lg text-white">Resumen Estimado</h3>
                 <span className="text-xs font-mono text-[#A9F8B5] bg-[#A9F8B5]/10 px-2.5 py-1 rounded-full">
                   Tiempo Real
                 </span>

@@ -14,9 +14,9 @@ export const SalesHook: React.FC = () => {
               <HelpCircle className="w-6 h-6" />
             </div>
 
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-light text-white leading-relaxed italic max-w-2xl mx-auto">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-white leading-relaxed italic max-w-2xl mx-auto">
               "¿A quién le comprarías tú? ¿A un negocio que solo tiene un número de WhatsApp o a una empresa con una web profesional, rápida y con atención inteligente?"
-            </h3>
+            </h2>
 
             <div className="mt-6 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#DFF494]">
               <span>La primera impresión define el 80% de tus ventas</span>

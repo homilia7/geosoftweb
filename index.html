@@ -37,10 +37,15 @@
     <link rel="manifest" href="/manifest.json" />
 
     <link rel="icon" type="image/jpeg" href="/assets/logo-gold.jpeg" />
+    <link rel="preload" as="image" href="/assets/transition-sequence/frame_001.webp" fetchpriority="high" type="image/webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Syne (Display / Modern Agency) + Inter (Clean reading) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+    <!-- Syne (Display / Modern Agency) + Inter (Clean reading) - Carga asíncrona no bloqueante -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" />
+    </noscript>
 
     <!-- Schema.org JSON-LD (Google Rich Snippets) -->
     <script type="application/ld+json">

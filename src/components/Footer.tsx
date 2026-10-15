@@ -34,9 +34,9 @@ export const Footer: React.FC = () => {
           <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
         </div>
 
-        <div className="text-center md:text-right text-gray-500">
+        <div className="text-center md:text-right text-gray-400">
           <p>© 2026 GeoSoft. Todos los derechos reservados.</p>
-          <p className="text-[10px] mt-0.5">Desplegado en Cloudflare Pages • geosoftweb.pages.dev</p>
+          <p className="text-[10px] mt-0.5 text-gray-400">Desplegado en Cloudflare Pages • geosoftweb.pages.dev</p>
         </div>
       </div>
     </footer>

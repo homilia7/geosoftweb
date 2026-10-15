@@ -16,7 +16,7 @@ export const TechMarquee: React.FC = () => {
   return (
     <section className="py-8 bg-[#040404] border-b border-white/5 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 mb-3 text-center">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-400">
           Ecosistema Tecnológico & Integraciones Nativas
         </span>
       </div>

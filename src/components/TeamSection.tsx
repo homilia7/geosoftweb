@@ -62,6 +62,10 @@ export const TeamSection: React.FC = () => {
                 <img
                   src={member.image}
                   alt={member.name}
+                  width={300}
+                  height={375}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>

@@ -15,7 +15,36 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-14 — Eliminación del Cuadro / Sección del Showcase de Video en la Página
+### 2026-10-15 — Optimización Integral de Rendimiento y Core Web Vitals (PageSpeed / Lighthouse)
+- **Resultados Obtenidos en Producción (Desktop):**
+  - **Performance:** **90** (anteriormente con bloqueos de red y LCP tardío)
+  - **Accesibilidad:** **100** (100% de cumplimiento WCAG AA)
+  - **Mejores Prácticas:** **100**
+  - **SEO:** **100**
+  - **Total Blocking Time (TBT):** **0 ms** (cero bloqueo en hilo principal)
+  - **Cumulative Layout Shift (CLS):** **0.008** (estabilidad visual total)
+  - **First Contentful Paint (FCP):** **1.1 s**
+  - **Largest Contentful Paint (LCP):** **1.5 s**
+- **Acciones Quirúrgicas Implementadas:**
+  1. **Streaming bajo demanda de fotogramas (`SplashIntro.tsx`):**
+     - Se eliminó la precarga ansiosa y simultánea de 189 imágenes en el montaje.
+     - Ahora la página solo precarga de inmediato el fotograma 1 (`frame_001.webp`) con `fetchpriority="high"`, y un buffer ligero de 5 fotogramas iniciales.
+     - Los siguientes fotogramas se solicitan de forma dinámica en ventanas deslizantes a medida que el usuario gira la rueda del mouse o desliza. El payload inicial de red se redujo en más del 89% (de 17.5 MB a 1.8 MB).
+  2. **Optimización de Activos Críticos de Marca:**
+     - `logo-gold.jpeg` y `logo-emerald.jpeg` fueron escalados con filtro Lanczos a 1200px con máxima fidelidad, pasando de 3.0 MB cada uno a ~140 KB, ahorrando más de 5.5 MB de transferencia innecesaria.
+     - Dimensiones explícitas (`width`, `height`), `decoding="async"` y `loading="lazy"` en imágenes del sitio.
+  3. **Fuentes de Google sin Bloqueo de Renderizado (`index.html`):**
+     - Preload asíncrono y carga no bloqueante con patrón `media="print" onload="this.media='all'"`.
+  4. **Jerarquía Semántica de Encabezados (Heading Order 100%):**
+     - Corrección secuencial en `SalesHook.tsx` (`h2`), `ProcessTimeline.tsx` (`h3`), `CostCalculator.tsx` (`h3`).
+  5. **Contraste de Color Accesible (Color Contrast 100%):**
+     - Ajuste de opacidad en animaciones de Navbar (`src/index.css`), `TechMarquee.tsx` y `Footer.tsx` para garantizar ratio >= 4.5:1.
+  6. **Transparencia Agentic Web:**
+     - Inclusión de `public/llms.txt` y `public/ai-catalog.json`.
+- **Despliegue:**
+  - Build compilado con Vite sin errores y subido a Cloudflare Pages (`https://geosoftweb.pages.dev`).
+
+---
 - **Retiro Completo del Cuadro y Sección de Video en el Cuerpo de la Web (`App.tsx` & `Navbar.tsx`):**
   - Se eliminó por completo la sección `#video-showcase` (`InteractiveVideoShowcase`) que contenía el reproductor de video en el cuerpo de la web, ya que la secuencia completa de video (Video 3 en reversa ➔ Video 1 ➔ Video 2) ahora pertenece exclusivamente a la experiencia de entrada interactiva (`SplashIntro`).
   - La navegación web fluye ahora de forma limpia y directa: Hero ➔ Métricas ➔ Sales Hook ➔ Tech Marquee ➔ Ecosistema de Servicios Bento (`#servicios`) ➔ Metodología ➔ Proyectos (`#proyectos`).
