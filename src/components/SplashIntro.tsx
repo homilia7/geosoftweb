@@ -146,9 +146,17 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     };
     imagesRef.current[1] = frame1;
 
-    // Buffer inicial liviano (fotogramas 2 a 6) para respuesta instantánea al primer gesto
-    for (let i = 2; i <= Math.min(6, TOTAL_FRAMES); i++) {
-      loadFrame(i);
+    // Buffer inicial diferido a tiempo ocioso para no saturar la red 4G en carga inicial
+    const idlePreload = () => {
+      if (!isMounted) return;
+      for (let i = 2; i <= Math.min(5, TOTAL_FRAMES); i++) {
+        loadFrame(i);
+      }
+    };
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(idlePreload);
+    } else {
+      setTimeout(idlePreload, 3000);
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -171,7 +179,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
   useEffect(() => {
     if (stage !== 'cinematic') return;
 
-    let lastRenderedFrame = -1;
+    let lastRenderedFrame = 1;
 
     const animate = () => {
       const diff = targetFrameRef.current - currentFrameRef.current;
@@ -230,6 +238,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       if (e.touches.length > 0) {
         touchStartYRef.current = e.touches[0].clientY;
         tryPlayAudio();
+        bufferAround(targetFrameRef.current, 8, 2);
       }
     };
 
