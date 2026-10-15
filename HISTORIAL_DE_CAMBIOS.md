@@ -21,6 +21,7 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
   - **Accesibilidad:** **100** (100% de cumplimiento WCAG AA)
   - **Mejores Prácticas:** **100**
   - **SEO:** **100**
+  - **Navegación con Agentes (Agentic Browsing):** **4 de 4 (100%)**
   - **Total Blocking Time (TBT):** **0 ms** (cero bloqueo en hilo principal)
   - **Cumulative Layout Shift (CLS):** **0.008** (estabilidad visual total)
   - **First Contentful Paint (FCP):** **1.1 s**

@@ -1,7 +1,19 @@
 {
-  "name": "GeoSoft",
-  "description": "Desarrollo de software a medida, páginas web de alto impacto, agentes inteligentes 24/7 y sistemas de automatización que multiplican tus ventas.",
-  "url": "https://geosoftweb.pages.dev/",
-  "version": "1.0.0",
-  "tools": []
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "GeoSoft"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:geosoft:services:web-automation",
+      "displayName": "GeoSoft AI Automation & Web Development",
+      "type": "application/ai-catalog+json",
+      "url": "https://geosoftweb.pages.dev/assets/agent-card.json",
+      "representativeQueries": [
+        "desarrollo de software y paginas web",
+        "chatbots inteligentes e inteligencia artificial",
+        "automatizacion de ventas y sistemas de reservas"
+      ]
+    }
+  ]
 }
