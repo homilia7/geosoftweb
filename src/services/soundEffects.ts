@@ -51,7 +51,7 @@ class SoundEffectsService {
       this.audioElement = new Audio('/assets/audio/ambient-music.mp3');
       this.audioElement.loop = true;
       this.audioElement.volume = this.muted ? 0 : 0.001;
-      this.audioElement.preload = 'auto';
+      this.audioElement.preload = 'none';
     }
     return this.audioElement;
   }
@@ -64,7 +64,6 @@ class SoundEffectsService {
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
-        this.loadClickBuffer(this.ctx);
       }
     }
     if (this.ctx && this.ctx.state === 'suspended' && this.hasInteracted) {
@@ -81,8 +80,11 @@ class SoundEffectsService {
     const unlockAudio = () => {
       this.hasInteracted = true;
       const ctx = this.getContext();
-      if (ctx && ctx.state === 'suspended') {
-        ctx.resume().catch(() => {});
+      if (ctx) {
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        this.loadClickBuffer(ctx);
       }
 
       if (!this.muted) {
@@ -105,14 +107,9 @@ class SoundEffectsService {
 
     const isInteractive = (el: HTMLElement | null): HTMLElement | null => {
       if (!el) return null;
-      const match = el.closest<HTMLElement>(
+      return el.closest<HTMLElement>(
         'button, a, [role="button"], [role="tab"], [role="switch"], [role="checkbox"], [role="menuitem"], .cursor-pointer, input, select, textarea, label, summary, [data-clickable]'
       );
-      if (match) return match;
-      try {
-        if (window.getComputedStyle(el).cursor === 'pointer') return el;
-      } catch {}
-      return null;
     };
 
     document.addEventListener(

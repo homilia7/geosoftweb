@@ -25,6 +25,10 @@ export const SmokeCursorTrail: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    // Dispositivos táctiles puros (móviles/tablets): no tienen cursor de ratón suspendido
+    const isTouchOnly = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(pointer: fine)').matches;
+    if (isTouchOnly) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -33,6 +37,32 @@ export const SmokeCursorTrail: React.FC = () => {
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    let cachedHeroRect: { left: number; top: number; width: number; height: number; bottom: number } | null = null;
+    let cachedNavRect: { left: number; top: number; width: number; height: number; right: number } | null = null;
+    let lastRectQueryTime = 0;
+
+    const updateBoundingTargets = () => {
+      const now = Date.now();
+      if (now - lastRectQueryTime < 600 && cachedHeroRect) return;
+      lastRectQueryTime = now;
+
+      const logoEl = document.getElementById('hero-logo-box');
+      if (logoEl) {
+        const r = logoEl.getBoundingClientRect();
+        cachedHeroRect = { left: r.left, top: r.top, width: r.width, height: r.height, bottom: r.bottom };
+      } else {
+        cachedHeroRect = null;
+      }
+
+      const navEl = document.getElementById('main-nav-capsule');
+      if (navEl) {
+        const nr = navEl.getBoundingClientRect();
+        cachedNavRect = { left: nr.left, top: nr.top, width: nr.width, height: nr.height, right: nr.right };
+      } else {
+        cachedNavRect = null;
+      }
+    };
 
     const resize = () => {
       width = window.innerWidth;
@@ -44,10 +74,12 @@ export const SmokeCursorTrail: React.FC = () => {
       canvas.style.height = `${height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
+      updateBoundingTargets();
     };
 
     resize();
     window.addEventListener('resize', resize);
+    window.addEventListener('scroll', updateBoundingTargets, { passive: true });
 
     const particles: SmokeParticle[] = [];
     let lastX = -100;
@@ -170,16 +202,14 @@ export const SmokeCursorTrail: React.FC = () => {
 
       // ================= LÓGICA DE AUTOPILOT EN REPOSO =================
       if (isIdle) {
-        const logoEl = document.getElementById('hero-logo-box');
+        updateBoundingTargets();
         let inHeroView = false;
-        let logoRect: DOMRect | null = null;
+        const logoRect = cachedHeroRect;
 
-        if (logoEl) {
-          const r = logoEl.getBoundingClientRect();
+        if (logoRect) {
           // El cuadro del logo está en vista si está dentro del viewport visible
-          if (r.bottom > 80 && r.top < height - 80) {
+          if (logoRect.bottom > 80 && logoRect.top < height - 80) {
             inHeroView = true;
-            logoRect = r;
           }
         }
 
@@ -201,16 +231,14 @@ export const SmokeCursorTrail: React.FC = () => {
           targetY = cy + ry * Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.72);
         } else {
           // ESTADO 2: Abajo en otra sección de la web -> Recorre el menú superior de lado a lado
-          const navEl = document.getElementById('main-nav-capsule');
           let navLeft = 80;
           let navRight = width - 80;
           let navY = 32;
 
-          if (navEl) {
-            const nr = navEl.getBoundingClientRect();
-            navLeft = Math.max(30, nr.left + 24);
-            navRight = Math.min(width - 30, nr.right - 24);
-            navY = nr.top + nr.height / 2;
+          if (cachedNavRect) {
+            navLeft = Math.max(30, cachedNavRect.left + 24);
+            navRight = Math.min(width - 30, cachedNavRect.right - 24);
+            navY = cachedNavRect.top + cachedNavRect.height / 2;
           }
 
           sweepProgress += 0.009 * sweepDir;
@@ -218,7 +246,6 @@ export const SmokeCursorTrail: React.FC = () => {
             sweepProgress = 1;
             sweepDir = -1;
           } else if (sweepProgress <= 0) {
-            sweepProgress = 0;
             sweepDir = 1;
           }
 
@@ -305,6 +332,7 @@ export const SmokeCursorTrail: React.FC = () => {
 
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('scroll', updateBoundingTargets);
       window.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseleave', onMouseLeave);
       clearTimeout(moveTimeout);

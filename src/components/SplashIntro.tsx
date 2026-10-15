@@ -167,25 +167,30 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     setStage('brand');
   }, []);
 
-  // Bucle de animación suave con interpolación (lerp)
+  // Bucle de animación suave con interpolación (lerp) optimizado: cero renders parásitos en reposo
   useEffect(() => {
     if (stage !== 'cinematic') return;
 
+    let lastRenderedFrame = -1;
+
     const animate = () => {
       const diff = targetFrameRef.current - currentFrameRef.current;
-      if (Math.abs(diff) > 0.05) {
+      if (Math.abs(diff) > 0.01) {
         currentFrameRef.current += diff * 0.18;
       } else {
         currentFrameRef.current = targetFrameRef.current;
       }
 
       const frameRound = Math.round(currentFrameRef.current);
-      setCurrentFrameNum(frameRound);
-      const calculatedProgress = Math.min(100, Math.max(0, Math.round((currentFrameRef.current / TOTAL_FRAMES) * 100)));
-      setProgress(calculatedProgress);
 
-      bufferAround(currentFrameRef.current, 14, 2);
-      renderFrame(currentFrameRef.current);
+      if (frameRound !== lastRenderedFrame) {
+        lastRenderedFrame = frameRound;
+        setCurrentFrameNum(frameRound);
+        const calculatedProgress = Math.min(100, Math.max(0, Math.round((currentFrameRef.current / TOTAL_FRAMES) * 100)));
+        setProgress(calculatedProgress);
+        bufferAround(currentFrameRef.current, 14, 2);
+        renderFrame(currentFrameRef.current);
+      }
 
       // Si llegó al final de la secuencia de scroll (fotograma 189 o >= 99%)
       if (currentFrameRef.current >= TOTAL_FRAMES - 0.5 && targetFrameRef.current >= TOTAL_FRAMES) {

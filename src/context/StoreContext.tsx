@@ -150,14 +150,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Initial sync with remote Cloudflare D1 backend on mount
+  // Initial sync with remote Cloudflare D1 backend on idle (non-blocking)
   useEffect(() => {
-    api.getPricing().then(remotePricing => {
-      if (remotePricing) setPricing(remotePricing);
-    });
-    api.getAppointments().then(remoteApts => {
-      if (remoteApts) setAppointments(remoteApts);
-    });
+    const syncPricing = () => {
+      api.getPricing().then(remotePricing => {
+        if (remotePricing) setPricing(remotePricing);
+      });
+    };
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(syncPricing);
+    } else {
+      setTimeout(syncPricing, 2500);
+    }
   }, []);
 
   // Sync to localStorage as offline cache
@@ -248,6 +252,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       sessionStorage.setItem('geosoft_admin_auth', 'true');
       setIsLoginModalOpen(false);
       setIsAdminModalOpen(true);
+      api.getAppointments().then(remoteApts => {
+        if (remoteApts) setAppointments(remoteApts);
+      });
       return true;
     }
     return false;
@@ -262,6 +269,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const openAdminModal = () => {
     if (isAdminLoggedIn) {
       setIsAdminModalOpen(true);
+      api.getAppointments().then(remoteApts => {
+        if (remoteApts) setAppointments(remoteApts);
+      });
     } else {
       setIsLoginModalOpen(true);
     }

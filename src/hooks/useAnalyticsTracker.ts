@@ -32,14 +32,21 @@ export function useAnalyticsTracker() {
     const visitor_id = getOrCreateVisitorId();
     const session_id = getOrCreateSessionId();
 
-    // 1. Track initial Page View
-    api.trackEvent({
-      event_type: 'page_view',
-      visitor_id,
-      session_id,
-      page_path: window.location.pathname,
-      referrer: document.referrer
-    });
+    // 1. Track initial Page View (deferred to idle so it never competes with initial paint)
+    const trackPageView = () => {
+      api.trackEvent({
+        event_type: 'page_view',
+        visitor_id,
+        session_id,
+        page_path: window.location.pathname,
+        referrer: document.referrer
+      });
+    };
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(trackPageView);
+    } else {
+      setTimeout(trackPageView, 2500);
+    }
 
     // 2. Global Non-Intrusive Click & Heatmap Coordinate Listener
     const handleGlobalClick = (e: MouseEvent) => {

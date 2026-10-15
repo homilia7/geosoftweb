@@ -39,8 +39,9 @@ export const FloatingChat: React.FC = () => {
   const [appointmentClosed, setAppointmentClosed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Cargar saludo configurado desde Cloudflare D1
+  // Cargar saludo configurado desde Cloudflare D1 solo al abrir el chat
   useEffect(() => {
+    if (!isOpen) return;
     api.getBotConfig().then(cfg => {
       if (cfg && cfg.welcomeMessage) {
         setWelcomeMessage(cfg.welcomeMessage);
@@ -55,7 +56,7 @@ export const FloatingChat: React.FC = () => {
         });
       }
     });
-  }, []);
+  }, [isOpen]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

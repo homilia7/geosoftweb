@@ -10,13 +10,15 @@ import { SalesHook } from './components/SalesHook';
 import { TechMarquee } from './components/TechMarquee';
 import { ServicesBento } from './components/ServicesBento';
 import { ProcessTimeline } from './components/ProcessTimeline';
-import { ProjectsSection } from './components/ProjectsSection';
-import { TeamSection } from './components/TeamSection';
-import { CostCalculator } from './components/CostCalculator';
-import { FaqSection } from './components/FaqSection';
-import { FloatingChat } from './components/FloatingChat';
 import { Footer } from './components/Footer';
 import { useAnalyticsTracker } from './hooks/useAnalyticsTracker';
+
+// Code-splitting para secciones pesadas debajo del scroll
+const ProjectsSection = React.lazy(() => import('./components/ProjectsSection').then(m => ({ default: m.ProjectsSection })));
+const TeamSection = React.lazy(() => import('./components/TeamSection').then(m => ({ default: m.TeamSection })));
+const CostCalculator = React.lazy(() => import('./components/CostCalculator').then(m => ({ default: m.CostCalculator })));
+const FaqSection = React.lazy(() => import('./components/FaqSection').then(m => ({ default: m.FaqSection })));
+const FloatingChat = React.lazy(() => import('./components/FloatingChat').then(m => ({ default: m.FloatingChat })));
 
 // Code-splitting para modales y panel de administración
 const CalModal = React.lazy(() => import('./components/CalModal').then(m => ({ default: m.CalModal })));
@@ -32,7 +34,7 @@ function MainLayout() {
   const [isCubeViewerOpen, setIsCubeViewerOpen] = useState(false);
   const [introFinished, setIntroFinished] = useState(false);
   const [navAnimStarted, setNavAnimStarted] = useState(false);
-  const { openAdminModal } = useGeoSoftStore();
+  const { openAdminModal, isAdminModalOpen, isLoginModalOpen } = useGeoSoftStore();
 
   React.useEffect(() => {
     soundEffects.init();
@@ -94,24 +96,22 @@ function MainLayout() {
         {/* Step by Step Timeline */}
         <ProcessTimeline />
 
-        {/* Real Showcase / Case Studies */}
-        <ProjectsSection />
-
-        {/* Our Team Section */}
-        <TeamSection />
-
-        {/* Interactive Smart Cost Calculator */}
-        <CostCalculator />
-
-        {/* FAQs */}
-        <FaqSection />
+        {/* Below-the-fold Lazy Sections */}
+        <React.Suspense fallback={null}>
+          <ProjectsSection />
+          <TeamSection />
+          <CostCalculator />
+          <FaqSection />
+        </React.Suspense>
       </main>
 
       {/* Footer */}
       <Footer />
 
       {/* Floating AI Chat Trigger */}
-      <FloatingChat />
+      <React.Suspense fallback={null}>
+        <FloatingChat />
+      </React.Suspense>
 
       {/* Code-Split Lazy Modals & Admin */}
       <React.Suspense fallback={null}>
@@ -131,9 +131,9 @@ function MainLayout() {
           />
         )}
 
-        {/* Admin Panel and Login Modal */}
-        <AdminPanel />
-        <AdminLoginModal />
+        {/* Admin Panel and Login Modal (Cargados bajo demanda) */}
+        {isAdminModalOpen && <AdminPanel />}
+        {isLoginModalOpen && <AdminLoginModal />}
 
         {/* Visor 3D Interactivo del Cubo Holográfico */}
         {isCubeViewerOpen && (
