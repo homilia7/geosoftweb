@@ -107,7 +107,9 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      renderFrame(currentFrameRef.current);
+      if (currentFrameRef.current > 1) {
+        renderFrame(currentFrameRef.current);
+      }
     }
   }, [renderFrame]);
 
@@ -142,7 +144,6 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       if (!isMounted) return;
       loadedMapRef.current[1] = true;
       resizeCanvas();
-      renderFrame(1);
     };
     imagesRef.current[1] = frame1;
 
@@ -366,10 +367,10 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
               <div className="relative flex items-center justify-center">
                 <Mouse className="w-4 h-4 text-[#A9F8B5] animate-bounce" />
               </div>
-              <span className="hidden sm:inline text-white font-medium">
+              <span className="hidden sm:inline text-white font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                 Gira la rueda del mouse para avanzar
               </span>
-              <span className="sm:hidden text-white font-medium">
+              <span className="sm:hidden text-white font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                 Desliza para avanzar
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-[#A9F8B5] animate-pulse" />
