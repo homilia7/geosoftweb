@@ -5,13 +5,13 @@ import { Navbar } from './components/Navbar';
 import { SmokeCursorTrail } from './components/SmokeCursorTrail';
 import { soundEffects } from './services/soundEffects';
 import { Hero } from './components/Hero';
-import { StatsSection } from './components/StatsSection';
-import { SalesHook } from './components/SalesHook';
-import { TechMarquee } from './components/TechMarquee';
 import { Footer } from './components/Footer';
 import { useAnalyticsTracker } from './hooks/useAnalyticsTracker';
 
 // Code-splitting para secciones pesadas debajo del scroll
+const StatsSection = React.lazy(() => import('./components/StatsSection').then(m => ({ default: m.StatsSection })));
+const SalesHook = React.lazy(() => import('./components/SalesHook').then(m => ({ default: m.SalesHook })));
+const TechMarquee = React.lazy(() => import('./components/TechMarquee').then(m => ({ default: m.TechMarquee })));
 const ServicesBento = React.lazy(() => import('./components/ServicesBento').then(m => ({ default: m.ServicesBento })));
 const ProcessTimeline = React.lazy(() => import('./components/ProcessTimeline').then(m => ({ default: m.ProcessTimeline })));
 const ProjectsSection = React.lazy(() => import('./components/ProjectsSection').then(m => ({ default: m.ProjectsSection })));
@@ -81,33 +81,29 @@ function MainLayout() {
           onScrollToQuote={scrollToQuote}
         />
 
-        {/* Performance Metrics */}
-        <StatsSection />
-
-        {/* Psychological Sales Hook */}
-        <SalesHook />
-
-        {/* Infinite Tech Marquee */}
-        <TechMarquee />
-
-        {/* Below-the-fold Lazy Sections */}
-        <React.Suspense fallback={null}>
-          <ServicesBento onScrollToQuote={scrollToQuote} />
-          <ProcessTimeline />
-          <ProjectsSection />
-          <TeamSection />
-          <CostCalculator />
-          <FaqSection />
-        </React.Suspense>
+        {/* Below-the-fold Lazy Sections (cargados al completar la intro interactiva) */}
+        {introFinished && (
+          <React.Suspense fallback={null}>
+            <StatsSection />
+            <SalesHook />
+            <TechMarquee />
+            <ServicesBento onScrollToQuote={scrollToQuote} />
+            <ProcessTimeline />
+            <ProjectsSection />
+            <TeamSection />
+            <CostCalculator />
+            <FaqSection />
+            <Footer />
+          </React.Suspense>
+        )}
       </main>
 
-      {/* Footer */}
-      <Footer />
-
-      {/* Floating AI Chat Trigger */}
-      <React.Suspense fallback={null}>
-        <FloatingChat />
-      </React.Suspense>
+      {/* Floating AI Chat Trigger (iniciado al entrar a la web) */}
+      {introFinished && (
+        <React.Suspense fallback={null}>
+          <FloatingChat />
+        </React.Suspense>
+      )}
 
       {/* Code-Split Lazy Modals & Admin */}
       <React.Suspense fallback={null}>

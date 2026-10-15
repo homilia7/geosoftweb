@@ -170,7 +170,7 @@ export const FloatingChat: React.FC = () => {
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#17191d] shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 relative">
-                <img src="/assets/logo-gold.jpeg" alt="GeoSoft" className="w-full h-full object-cover" />
+                <img src="/assets/logo-gold-sm.webp" alt="GeoSoft" width={32} height={32} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#A9F8B5] ring-2 ring-black" />
               </div>
               <div>

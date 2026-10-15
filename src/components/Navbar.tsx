@@ -109,14 +109,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
   }, [introFinished]);
 
-  // Fallback de seguridad solo en caso de recarga directa sin splash
-  useEffect(() => {
-    const safety = setTimeout(() => {
-      setPairStage(prev => (prev === 0 ? 5 : prev));
-      setAnimPhase(prev => (prev === 'entrance' ? 'slow_wake_up' : prev));
-    }, 12500);
-    return () => clearTimeout(safety);
-  }, []);
 
   const getEntranceClass = (direction: 'left' | 'right', minPair: number) => {
     if (pairStage < minPair) return 'opacity-0 pointer-events-none';
@@ -218,8 +210,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border bg-black flex items-center justify-center shadow-sm transition-all duration-300 border-white/15">
             <img
-              src="/assets/logo-gold.jpeg"
+              src="/assets/logo-gold-sm.webp"
               alt="GeoSoft"
+              width={32}
+              height={32}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           </div>

@@ -33,20 +33,22 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="GeoSoft" />
-    <link rel="apple-touch-icon" href="/assets/logo-gold.jpeg" />
+    <link rel="apple-touch-icon" href="/assets/logo-gold-md.webp" />
     <link rel="manifest" href="/manifest.json" />
 
-    <link rel="icon" type="image/jpeg" href="/assets/logo-gold.jpeg" />
+    <link rel="icon" type="image/webp" href="/assets/logo-gold-sm.webp" />
     <link rel="ai-catalog" href="/.well-known/ai-catalog.json" />
     <link rel="preload" as="image" href="/assets/transition-sequence/frame_001.webp" fetchpriority="high" type="image/webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Syne (Display) + Inter (Clean reading) - Carga optimizada y no bloqueante -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=optional" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=optional" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=optional" />
-    </noscript>
+    <script>
+      window.addEventListener('load', function() {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap';
+        document.head.appendChild(l);
+      });
+    </script>
 
     <!-- Schema.org JSON-LD (Google Rich Snippets) -->
     <script type="application/ld+json">
@@ -84,11 +86,22 @@
     </script>
   </head>
   <body class="bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black antialiased overflow-x-hidden min-h-screen">
-    <div id="root">
-      <div style="position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9999;overflow:hidden;">
-        <img src="/assets/transition-sequence/frame_001.webp" alt="GeoSoft" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+    <!-- Estructura visual estática para FCP/LCP instantáneo sin esperar evaluación de JavaScript -->
+    <div id="splash-placeholder" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:10;pointer-events:none;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+      <img
+        src="/assets/transition-sequence/frame_001.webp"
+        alt="GeoSoft 3D"
+        fetchpriority="high"
+        decoding="sync"
+        width="1280"
+        height="720"
+        style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;"
+      />
+      <div style="position:relative;z-index:20;margin-bottom:24px;padding:8px 16px;border-radius:9999px;background:rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;gap:8px;backdrop-filter:blur(8px);">
+        <span style="color:#ffffff;font-family:system-ui,-apple-system,sans-serif;font-size:12px;font-weight:500;">Desliza para avanzar</span>
       </div>
     </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

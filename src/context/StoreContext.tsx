@@ -150,18 +150,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Initial sync with remote Cloudflare D1 backend on idle (non-blocking)
+  // Initial sync with remote Cloudflare D1 backend (deferred to 7s to prevent initial re-render)
   useEffect(() => {
-    const syncPricing = () => {
+    const timer = setTimeout(() => {
       api.getPricing().then(remotePricing => {
         if (remotePricing) setPricing(remotePricing);
       });
-    };
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(syncPricing);
-    } else {
-      setTimeout(syncPricing, 2500);
-    }
+    }, 7000);
+    return () => clearTimeout(timer);
   }, []);
 
   // Sync to localStorage as offline cache

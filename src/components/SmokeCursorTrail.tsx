@@ -25,9 +25,10 @@ export const SmokeCursorTrail: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    // Dispositivos táctiles puros (móviles/tablets): no tienen cursor de ratón suspendido
-    const isTouchOnly = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(pointer: fine)').matches;
-    if (isTouchOnly) return;
+    // En móviles, pantallas pequeñas (<768px) o dispositivos táctiles no existe cursor de ratón suspendido
+    if (typeof window === 'undefined') return;
+    const isMobile = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+    if (isMobile) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -88,8 +89,8 @@ export const SmokeCursorTrail: React.FC = () => {
     let moveTimeout: ReturnType<typeof setTimeout>;
     let animId: number | null = null;
 
-    // Autopilot en reposo: se activa a los 1.0 segundos (1000ms) de inactividad
-    const IDLE_DELAY_MS = 1000;
+    // Autopilot en reposo: se activa a los 3.5 segundos de inactividad
+    const IDLE_DELAY_MS = 3500;
     let lastUserMoveTime = Date.now();
     let isIdle = false;
     let autopilotPos = { x: -100, y: -100 };
@@ -163,8 +164,14 @@ export const SmokeCursorTrail: React.FC = () => {
       lastY = currY;
     };
 
+    let hasUserInteracted = false;
+
     const onMouseMove = (e: MouseEvent) => {
       lastUserMoveTime = Date.now();
+      if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        animId = requestAnimationFrame(render);
+      }
       if (isIdle) {
         isIdle = false;
         autopilotPos = { x: -100, y: -100 };
@@ -327,8 +334,6 @@ export const SmokeCursorTrail: React.FC = () => {
       animId = requestAnimationFrame(render);
     };
 
-    // Iniciar bucle continuo inmediatamente
-    animId = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', resize);

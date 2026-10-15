@@ -340,8 +340,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                         <div className="absolute inset-0 rounded-2xl bg-[#A9F8B5]/20 blur-xl animate-pulse" />
                         <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#A9F8B5] shadow-[0_0_25px_rgba(169,248,181,0.6)] bg-black animate-logo-check flex items-center justify-center">
                           <img
-                            src="/assets/logo-gold.jpeg"
+                            src="/assets/logo-gold-md.webp"
                             alt="GeoSoft"
+                            width={64}
+                            height={64}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                           />
                         </div>

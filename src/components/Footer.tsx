@@ -7,8 +7,12 @@ export const Footer: React.FC = () => {
         <div className="flex items-center gap-3.5 group">
           <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border border-white/15 bg-black footer-logo-glow flex items-center justify-center shadow-md">
             <img
-              src="/assets/logo-gold.jpeg"
+              src="/assets/logo-gold-md.webp"
               alt="GeoSoft"
+              width={40}
+              height={40}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             {/* Prismatic Moving Light Ray */}

@@ -30,10 +30,6 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     soundEffects.startAmbientMusic();
   }, []);
 
-  useEffect(() => {
-    // Intentar iniciar audio si la interacción previa lo permite
-    tryPlayAudio();
-  }, [tryPlayAudio]);
 
   // Dibujar un frame específico en el canvas con máxima nitidez
   const renderFrame = useCallback((frameIdx: number) => {
@@ -147,18 +143,6 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     };
     imagesRef.current[1] = frame1;
 
-    // Buffer inicial diferido a tiempo ocioso para no saturar la red 4G en carga inicial
-    const idlePreload = () => {
-      if (!isMounted) return;
-      for (let i = 2; i <= Math.min(5, TOTAL_FRAMES); i++) {
-        loadFrame(i);
-      }
-    };
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(idlePreload);
-    } else {
-      setTimeout(idlePreload, 3000);
-    }
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -176,11 +160,11 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     setStage('brand');
   }, []);
 
-  // Bucle de animación suave con interpolación (lerp) optimizado: cero renders parásitos en reposo
-  useEffect(() => {
-    if (stage !== 'cinematic') return;
+  // Bucle de animación suave a demanda: se activa estrictamente con la interacción y se apaga en reposo (0% CPU)
+  const tickAnimation = useCallback(() => {
+    if (animFrameIdRef.current !== null) return;
 
-    let lastRenderedFrame = 1;
+    let lastRenderedFrame = Math.round(currentFrameRef.current);
 
     const animate = () => {
       const diff = targetFrameRef.current - currentFrameRef.current;
@@ -204,20 +188,29 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       // Si llegó al final de la secuencia de scroll (fotograma 189 o >= 99%)
       if (currentFrameRef.current >= TOTAL_FRAMES - 0.5 && targetFrameRef.current >= TOTAL_FRAMES) {
         handleSequenceComplete();
+        animFrameIdRef.current = null;
         return;
       }
 
-      animFrameIdRef.current = requestAnimationFrame(animate);
+      // Si todavía hay distancia al objetivo, continuar interpolando; de lo contrario, apagar bucle
+      if (Math.abs(targetFrameRef.current - currentFrameRef.current) > 0.01) {
+        animFrameIdRef.current = requestAnimationFrame(animate);
+      } else {
+        animFrameIdRef.current = null;
+      }
     };
 
     animFrameIdRef.current = requestAnimationFrame(animate);
+  }, [renderFrame, handleSequenceComplete, bufferAround]);
 
+  useEffect(() => {
     return () => {
       if (animFrameIdRef.current) {
         cancelAnimationFrame(animFrameIdRef.current);
+        animFrameIdRef.current = null;
       }
     };
-  }, [stage, renderFrame, handleSequenceComplete, bufferAround]);
+  }, [stage]);
 
   // Manejo de scroll con la rueda del ratón (Wheel)
   useEffect(() => {
@@ -233,6 +226,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       const nextTarget = Math.max(1, Math.min(TOTAL_FRAMES, targetFrameRef.current + stepDelta));
       targetFrameRef.current = nextTarget;
       bufferAround(nextTarget, 16, 2);
+      tickAnimation();
     };
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -254,6 +248,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       const nextTarget = Math.max(1, Math.min(TOTAL_FRAMES, targetFrameRef.current + stepDelta));
       targetFrameRef.current = nextTarget;
       bufferAround(nextTarget, 16, 2);
+      tickAnimation();
     };
 
     const handleTouchEnd = () => {
@@ -271,7 +266,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [stage, tryPlayAudio]);
+  }, [stage, tryPlayAudio, tickAnimation]);
 
   // Bloqueo estricto del scroll del navegador mientras la intro está activa
   useEffect(() => {
@@ -293,6 +288,8 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
 
   const handleDismiss = () => {
     soundEffects.playIntroSound();
+    const placeholder = document.getElementById('splash-placeholder');
+    if (placeholder) placeholder.style.display = 'none';
     setStage('entering');
     setTimeout(() => {
       setVisible(false);
@@ -321,20 +318,24 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       {/* ================= ETAPA 1: VIDEO INTERACTIVO CON SCROLL DEL MOUSE ULTRA-NÍTIDO ================= */}
       {stage === 'cinematic' && (
         <div className="relative w-full h-full flex items-center justify-center bg-black">
-          {/* Fotograma 1 como imagen nativa para métrica LCP instantánea */}
-          <img
-            src="/assets/transition-sequence/frame_001.webp"
-            alt="GeoSoft 3D"
-            fetchPriority="high"
-            decoding="sync"
-            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-          />
-
           {/* Canvas con aceleración gráfica y máxima nitidez */}
           <canvas
             ref={canvasRef}
-            className="relative z-10 w-full h-full object-cover select-none pointer-events-none"
+            className="w-full h-full object-cover select-none pointer-events-none"
           />
+
+          {/* Fotograma 1 como imagen nativa visible en reposo inicial (LCP garantizado) */}
+          {currentFrameNum === 1 && (
+            <img
+              src="/assets/transition-sequence/frame_001.webp"
+              alt="GeoSoft 3D"
+              fetchPriority="high"
+              decoding="sync"
+              width={1280}
+              height={720}
+              className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none z-10"
+            />
+          )}
 
           {/* Barra Superior Flotante: Marca, Música Tecnológica y Botón Saltar */}
           <div className="absolute top-4 left-4 right-4 sm:top-6 sm:left-6 sm:right-6 z-30 flex items-center justify-between pointer-events-auto">
@@ -408,7 +409,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
             
             <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-3xl overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(169,248,181,0.3)] bg-[#111214] flex items-center justify-center">
               <img
-                src="/assets/logo-emerald.jpeg"
+                src="/assets/logo-emerald-md.webp"
                 alt="GeoSoft Logo"
                 width={160}
                 height={160}

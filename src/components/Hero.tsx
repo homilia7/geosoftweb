@@ -48,15 +48,6 @@ export const Hero: React.FC<HeroProps> = ({
     }
   }, [introFinished]);
 
-  // Fallback de seguridad amplio (8s) solo en caso de recarga directa sin splash
-  React.useEffect(() => {
-    const safety = setTimeout(() => {
-      setRightReady(true);
-      setLeftReady(true);
-      onLeftContentAppearedRef.current?.();
-    }, 8000);
-    return () => clearTimeout(safety);
-  }, []);
 
   return (
     <section id="inicio" className="relative pt-16 sm:pt-20 md:pt-20 lg:pt-24 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
@@ -134,11 +125,11 @@ export const Hero: React.FC<HeroProps> = ({
               >
                 <div className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 bg-black/60 shadow-inner flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                   <img
-                    src="/assets/logo-emerald.jpeg"
+                    src="/assets/logo-emerald-md.webp"
                     alt="GeoSoft 3D Cube Emblem"
                     width={400}
                     height={400}
-                    fetchPriority="high"
+                    loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:rotate-1"
                   />
