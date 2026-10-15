@@ -311,10 +311,19 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
       {/* ================= ETAPA 1: VIDEO INTERACTIVO CON SCROLL DEL MOUSE ULTRA-NÍTIDO ================= */}
       {stage === 'cinematic' && (
         <div className="relative w-full h-full flex items-center justify-center bg-black">
+          {/* Fotograma 1 como imagen nativa para métrica LCP instantánea */}
+          <img
+            src="/assets/transition-sequence/frame_001.webp"
+            alt="GeoSoft 3D"
+            fetchPriority="high"
+            decoding="sync"
+            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+          />
+
           {/* Canvas con aceleración gráfica y máxima nitidez */}
           <canvas
             ref={canvasRef}
-            className="w-full h-full object-cover select-none pointer-events-none"
+            className="relative z-10 w-full h-full object-cover select-none pointer-events-none"
           />
 
           {/* Barra Superior Flotante: Marca, Música Tecnológica y Botón Saltar */}
