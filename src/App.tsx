@@ -8,12 +8,12 @@ import { Hero } from './components/Hero';
 import { StatsSection } from './components/StatsSection';
 import { SalesHook } from './components/SalesHook';
 import { TechMarquee } from './components/TechMarquee';
-import { ServicesBento } from './components/ServicesBento';
-import { ProcessTimeline } from './components/ProcessTimeline';
 import { Footer } from './components/Footer';
 import { useAnalyticsTracker } from './hooks/useAnalyticsTracker';
 
 // Code-splitting para secciones pesadas debajo del scroll
+const ServicesBento = React.lazy(() => import('./components/ServicesBento').then(m => ({ default: m.ServicesBento })));
+const ProcessTimeline = React.lazy(() => import('./components/ProcessTimeline').then(m => ({ default: m.ProcessTimeline })));
 const ProjectsSection = React.lazy(() => import('./components/ProjectsSection').then(m => ({ default: m.ProjectsSection })));
 const TeamSection = React.lazy(() => import('./components/TeamSection').then(m => ({ default: m.TeamSection })));
 const CostCalculator = React.lazy(() => import('./components/CostCalculator').then(m => ({ default: m.CostCalculator })));
@@ -90,14 +90,10 @@ function MainLayout() {
         {/* Infinite Tech Marquee */}
         <TechMarquee />
 
-        {/* Bento Grid Solutions with Glowing Blobs */}
-        <ServicesBento onScrollToQuote={scrollToQuote} />
-
-        {/* Step by Step Timeline */}
-        <ProcessTimeline />
-
         {/* Below-the-fold Lazy Sections */}
         <React.Suspense fallback={null}>
+          <ServicesBento onScrollToQuote={scrollToQuote} />
+          <ProcessTimeline />
           <ProjectsSection />
           <TeamSection />
           <CostCalculator />
