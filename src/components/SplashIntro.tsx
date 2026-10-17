@@ -363,16 +363,16 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
 
           {/* Indicador Central Inferior: Guía de Scroll y Progreso */}
           <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none w-full max-w-sm px-4">
-            {/* Pill flotante con animación de mouse */}
+            {/* Pill flotante con guía de avance */}
             <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-black/80 backdrop-blur-md border border-white/20 shadow-2xl text-xs font-mono text-gray-200">
               <div className="relative flex items-center justify-center">
-                <Mouse className="w-4 h-4 text-[#A9F8B5] animate-bounce" />
+                <Mouse className="w-4 h-4 text-[#A9F8B5] animate-bounce hidden md:block" />
               </div>
-              <span className="hidden sm:inline text-white font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+              <span className="hidden md:inline text-white font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                 Gira la rueda del mouse para avanzar
               </span>
-              <span className="sm:hidden text-white font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-                Desliza para avanzar
+              <span className="md:hidden text-white font-medium" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                Hacer scroll
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-[#A9F8B5] animate-pulse" />
             </div>
@@ -385,8 +385,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="flex items-center justify-between text-[10px] font-mono text-gray-400 px-0.5">
-                <span>Fotograma {currentFrameNum} / {TOTAL_FRAMES}</span>
+              <div className="flex items-center justify-end text-[10px] font-mono text-gray-400 px-0.5">
                 <span className="text-[#A9F8B5] font-semibold">{progress}%</span>
               </div>
             </div>
