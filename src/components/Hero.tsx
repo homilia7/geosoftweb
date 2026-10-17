@@ -133,16 +133,7 @@ export const Hero: React.FC<HeroProps> = ({
                     decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:rotate-1"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  
-                  {/* Floating badge inside image */}
-                  <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-black/70 backdrop-blur-md border border-white/10">
-                    <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#A9F8B5] animate-pulse shrink-0" />
-                      <span className="text-[11px] sm:text-xs font-semibold text-white whitespace-nowrap">IA Conectada</span>
-                    </div>
-                    <span className="text-[10px] sm:text-[11px] font-mono text-[#DFF494] truncate max-w-[140px] sm:max-w-none">geosoftweb.pages.dev</span>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                 </div>
 
                 {/* Quick stats badge footer */}
