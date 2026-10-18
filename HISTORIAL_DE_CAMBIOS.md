@@ -21,7 +21,9 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
   - Se eliminó el logo en miniatura del encabezado junto a "GeoSoft • Asesor Inteligente" para un diseño más limpio, sobrio y minimalista.
   - Generación de activo optimizado de 96x96 con compresión WebP (2 KB) para carga instantánea.
 - **Espaciado y Burbujas Compactas:**
-  - Reducción quirúrgica del padding de mensajes del usuario a `px-3.5 py-1.5 sm:px-4 sm:py-2` y timestamp tucked `mt-0.5`, eliminando áreas vacías superiores e inferiores.
+  - Reducción del ancho máximo de las burbujas del bot a `max-w-[88%] sm:max-w-[65%] md:max-w-[52%]` para un formato más angosto y proporcionado sin estirarse en pantallas grandes.
+  - Integración del timestamp (`time`) en el **mismo renglón** al final del texto en párrafos, viñetas y llamadas de acción (`StructuredBotMessage.tsx`), eliminando el salto de línea y renglón vacío inferior.
+  - Reducción quirúrgica del padding de mensajes del usuario a `px-3.5 py-1.5 sm:px-4 sm:py-2` y hora inline para un diseño 100% libre de espacios muertos.
   - Compactación de la barra de entrada de texto inferior para máxima ergonomía visual.
 
 ### 2026-10-15 — Optimización Integral de Rendimiento y Core Web Vitals (PageSpeed / Lighthouse)
