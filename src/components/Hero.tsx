@@ -133,7 +133,7 @@ export const Hero: React.FC<HeroProps> = ({
                     decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:rotate-1"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent pointer-events-none" />
                 </div>
 
                 {/* Quick stats badge footer */}
