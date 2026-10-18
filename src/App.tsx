@@ -136,18 +136,6 @@ function MainLayout() {
         )}
       </React.Suspense>
 
-      {/* Botón Flotante para Probar el Cubo 3D en Vivo (Solo Desktop, oculto en celulares) */}
-      <button
-        onClick={() => {
-          soundEffects.playClick();
-          setIsCubeViewerOpen(true);
-        }}
-        className="hidden md:flex fixed bottom-6 left-6 z-30 px-3.5 py-2 rounded-full bg-[#0a0f18]/90 hover:bg-[#111a28] border border-[#A9F8B5]/40 text-[#A9F8B5] text-xs font-bold shadow-xl backdrop-blur-md items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer group"
-        title="Ver y Probar Cubo 3D Holográfico en Vivo"
-      >
-        <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping shrink-0" />
-        <span>💎 Probar Cubo 3D en Vivo</span>
-      </button>
     </div>
   );
 }
