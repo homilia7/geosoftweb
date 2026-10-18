@@ -253,7 +253,7 @@ export const FloatingChat: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 relative shadow-md">
                 <img
-                  src="/assets/logo-gold-sm.webp"
+                  src="/assets/logo-emerald-sm.webp"
                   alt="GeoSoft"
                   width={40}
                   height={40}
@@ -319,8 +319,16 @@ export const FloatingChat: React.FC = () => {
                   style={{ animationDelay: isLatest ? '0ms' : `${Math.min(idx * 30, 90)}ms` }}
                 >
                   {msg.role === 'assistant' && (
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-sm">
-                      <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 mt-0.5 shadow-sm relative">
+                      <img
+                        src="/assets/logo-emerald-sm.webp"
+                        alt="GeoSoft Asesor"
+                        width={32}
+                        height={32}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   )}
 
@@ -370,9 +378,17 @@ export const FloatingChat: React.FC = () => {
             })}
 
             {isTyping && (
-              <div className="flex gap-3 items-center animate-message-soft">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5 animate-spin" />
+              <div className="flex gap-2 sm:gap-2.5 items-center animate-message-soft">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 shadow-sm relative animate-pulse">
+                  <img
+                    src="/assets/logo-emerald-sm.webp"
+                    alt="GeoSoft Asesor"
+                    width={32}
+                    height={32}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="bg-white/10 border border-white/10 rounded-2xl px-4 py-2.5 text-gray-300 text-xs flex items-center gap-2 shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce" />
