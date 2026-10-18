@@ -331,6 +331,10 @@ class SoundEffectsService {
    * 4. SONIDO DE CLIC EN BOTONES (Micro-Tap Mecánico Táctil de Alta Gama)
    * =========================================================================
    */
+  public playClick() {
+    this.playClickSound();
+  }
+
   public playClickSound() {
     if (this.muted) return;
     const ctx = this.getContext();

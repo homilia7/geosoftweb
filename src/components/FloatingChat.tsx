@@ -86,13 +86,19 @@ export const FloatingChat: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  const handleOpen = () => {
-    soundEffects.playClick();
+  const handleOpen = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      soundEffects.playClick();
+    } catch {}
     setIsOpen(true);
   };
 
-  const handleClose = () => {
-    soundEffects.playClick();
+  const handleClose = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      soundEffects.playClick();
+    } catch {}
     setIsOpen(false);
   };
 
@@ -172,54 +178,51 @@ export const FloatingChat: React.FC = () => {
 
   return (
     <>
-      {/* Botón Pestaña Inferior Central con Curvas Abiertas en los Extremos */}
+      {/* Botón Pestaña Inferior Central con Curvas Abiertas en los Extremos (Compacto y Sutil) */}
       <div
-        className={`fixed bottom-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto select-none ${
+        className={`fixed bottom-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto select-none ${
           isOpen ? 'translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100 pointer-events-auto'
         }`}
       >
         <button
           type="button"
           onClick={handleOpen}
-          className="relative group flex items-center gap-2.5 px-6 sm:px-8 py-2.5 bg-[#0d0f13]/95 hover:bg-[#14171e] text-white border-t border-x border-[#A9F8B5]/40 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.7),0_-2px_12px_rgba(169,248,181,0.25)] backdrop-blur-xl transition-all duration-300 cursor-pointer"
+          className="relative group flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 bg-[#0d0f13]/95 hover:bg-[#14171e] text-white border-t border-x border-[#A9F8B5]/40 rounded-t-xl shadow-[0_-6px_20px_rgba(0,0,0,0.6),0_-1px_8px_rgba(169,248,181,0.2)] backdrop-blur-xl transition-all duration-200 cursor-pointer"
           title="Abrir Chat Online • Asesor IA GeoSoft"
         >
           {/* Curva abierta izquierda (inverted fillet hacia el borde de la pantalla) */}
           <svg
-            className="absolute -left-4 bottom-0 w-4 h-4 pointer-events-none overflow-visible fill-[#0d0f13] stroke-[#A9F8B5]/40"
-            viewBox="0 0 16 16"
+            className="absolute -left-3 bottom-0 w-3 h-3 pointer-events-none overflow-visible fill-[#0d0f13] stroke-[#A9F8B5]/40"
+            viewBox="0 0 12 12"
           >
-            <path d="M0 16 C8 16 16 8 16 0 V16 H0 Z" strokeWidth="0" />
-            <path d="M0 16 C8 16 16 8 16 0" fill="none" strokeWidth="1" />
+            <path d="M0 12 C6 12 12 6 12 0 V12 H0 Z" strokeWidth="0" />
+            <path d="M0 12 C6 12 12 6 12 0" fill="none" strokeWidth="1" />
           </svg>
 
           {/* Curva abierta derecha (inverted fillet hacia el borde de la pantalla) */}
           <svg
-            className="absolute -right-4 bottom-0 w-4 h-4 pointer-events-none overflow-visible fill-[#0d0f13] stroke-[#A9F8B5]/40"
-            viewBox="0 0 16 16"
+            className="absolute -right-3 bottom-0 w-3 h-3 pointer-events-none overflow-visible fill-[#0d0f13] stroke-[#A9F8B5]/40"
+            viewBox="0 0 12 12"
           >
-            <path d="M16 16 C8 16 0 8 0 0 V16 H16 Z" strokeWidth="0" />
-            <path d="M16 16 C8 16 0 8 0 0" fill="none" strokeWidth="1" />
+            <path d="M12 12 C6 12 0 6 0 0 V12 H12 Z" strokeWidth="0" />
+            <path d="M12 12 C6 12 0 6 0 0" fill="none" strokeWidth="1" />
           </svg>
 
           {/* Línea de luz superior sutil */}
           <div className="absolute top-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-[#A9F8B5]/80 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
 
           {/* Indicador luminoso pulsante */}
-          <span className="relative flex h-2 w-2">
+          <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A9F8B5] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#A9F8B5]" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#A9F8B5]" />
           </span>
 
           {/* Icono de Chat */}
-          <MessageSquare className="w-4 h-4 text-[#A9F8B5] group-hover:scale-110 transition-transform" />
+          <MessageSquare className="w-3.5 h-3.5 text-[#A9F8B5] group-hover:scale-110 transition-transform" />
 
           {/* Etiqueta del botón pestaña */}
-          <span className="text-xs sm:text-sm font-semibold tracking-wide text-white group-hover:text-[#A9F8B5] transition-colors flex items-center gap-2">
+          <span className="text-[11px] sm:text-xs font-medium tracking-wide text-white group-hover:text-[#A9F8B5] transition-colors">
             Chat Online
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] font-mono font-medium border border-[#A9F8B5]/25">
-              Asesor IA
-            </span>
           </span>
         </button>
       </div>
@@ -227,14 +230,14 @@ export const FloatingChat: React.FC = () => {
       {/* Capa de Fondo Oscuro con Desenfoque (Backdrop para elevar el chat sobre la web) */}
       <div
         onClick={handleClose}
-        className={`fixed inset-0 bg-black/65 backdrop-blur-md z-50 transition-opacity duration-500 ${
+        className={`fixed inset-0 bg-black/65 backdrop-blur-md z-[60] transition-opacity duration-500 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       />
 
       {/* Ventana de Chat Casi Completa (Desciende suavemente de arriba a abajo) */}
       <div
-        className={`fixed inset-x-0 mx-auto top-3 sm:top-6 z-50 w-[96vw] sm:w-[92vw] max-w-4xl h-[94vh] sm:h-[88vh] max-h-[860px] flex flex-col transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed inset-x-0 mx-auto top-3 sm:top-6 z-[70] w-[96vw] sm:w-[92vw] max-w-4xl h-[94vh] sm:h-[88vh] max-h-[860px] flex flex-col transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isOpen
             ? 'translate-y-0 opacity-100 pointer-events-auto'
             : '-translate-y-[120%] opacity-0 pointer-events-none'
