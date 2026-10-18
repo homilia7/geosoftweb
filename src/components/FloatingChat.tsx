@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Send, Sparkles, User, CalendarCheck, RefreshCw, MessageCircle } from 'lucide-react';
 import { api } from '../services/api';
+import { soundEffects } from '../services/soundEffects';
 import { StructuredBotMessage } from './StructuredBotMessage';
 
 interface ChatMessage {
@@ -73,6 +74,27 @@ export const FloatingChat: React.FC = () => {
       });
     }
   }, [isOpen, messages, isTyping]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        soundEffects.playClick();
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
+  const handleOpen = () => {
+    soundEffects.playClick();
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    soundEffects.playClick();
+    setIsOpen(false);
+  };
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend || inputText).trim();
@@ -149,82 +171,161 @@ export const FloatingChat: React.FC = () => {
   ];
 
   return (
-    <div className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2.5 sm:gap-3 pointer-events-auto max-w-[calc(100vw-1.5rem)]">
-      {/* Speech Bubble Tooltip when closed (Desktop/Tablet only para evitar colisión en móviles) */}
-      {!isOpen && (
-        <div
-          onClick={() => setIsOpen(true)}
-          className="hidden sm:flex card-accent p-3 sm:p-3.5 rounded-2xl border-[#A9F8B5]/40 shadow-2xl max-w-[250px] sm:max-w-[270px] cursor-pointer hover:scale-105 transition-all text-xs font-medium text-white items-center gap-2.5 animate-bounce select-none"
+    <>
+      {/* Botón Pestaña Inferior Central con Curvas Abiertas en los Extremos */}
+      <div
+        className={`fixed bottom-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto select-none ${
+          isOpen ? 'translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100 pointer-events-auto'
+        }`}
+      >
+        <button
+          type="button"
+          onClick={handleOpen}
+          className="relative group flex items-center gap-2.5 px-6 sm:px-8 py-2.5 bg-[#0d0f13]/95 hover:bg-[#14171e] text-white border-t border-x border-[#A9F8B5]/40 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.7),0_-2px_12px_rgba(169,248,181,0.25)] backdrop-blur-xl transition-all duration-300 cursor-pointer"
+          title="Abrir Chat Online • Asesor IA GeoSoft"
         >
-          <div className="leading-tight">
-            <p className="text-gray-100 font-semibold">¿Dudas o cotización rápida?</p>
-            <p className="text-gray-400 text-[10px]">Habla con nuestro asesor de IA 24/7</p>
-          </div>
-        </div>
-      )}
+          {/* Curva abierta izquierda (inverted fillet hacia el borde de la pantalla) */}
+          <svg
+            className="absolute -left-4 bottom-0 w-4 h-4 pointer-events-none overflow-visible fill-[#0d0f13] stroke-[#A9F8B5]/40"
+            viewBox="0 0 16 16"
+          >
+            <path d="M0 16 C8 16 16 8 16 0 V16 H0 Z" strokeWidth="0" />
+            <path d="M0 16 C8 16 16 8 16 0" fill="none" strokeWidth="1" />
+          </svg>
 
-      {/* Mini Chat Drawer when open */}
-      {isOpen && (
-        <div className="w-[calc(100vw-1.5rem)] sm:w-96 md:w-[410px] max-w-[420px] h-[520px] max-h-[80dvh] rounded-2xl sm:rounded-3xl bg-[#121316]/98 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#17191d] shrink-0">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 relative">
-                <img src="/assets/logo-gold-sm.webp" alt="GeoSoft" width={32} height={32} loading="lazy" decoding="async" className="w-full h-full object-cover" />
-                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#A9F8B5] ring-2 ring-black" />
+          {/* Curva abierta derecha (inverted fillet hacia el borde de la pantalla) */}
+          <svg
+            className="absolute -right-4 bottom-0 w-4 h-4 pointer-events-none overflow-visible fill-[#0d0f13] stroke-[#A9F8B5]/40"
+            viewBox="0 0 16 16"
+          >
+            <path d="M16 16 C8 16 0 8 0 0 V16 H16 Z" strokeWidth="0" />
+            <path d="M16 16 C8 16 0 8 0 0" fill="none" strokeWidth="1" />
+          </svg>
+
+          {/* Línea de luz superior sutil */}
+          <div className="absolute top-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-[#A9F8B5]/80 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+
+          {/* Indicador luminoso pulsante */}
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A9F8B5] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#A9F8B5]" />
+          </span>
+
+          {/* Icono de Chat */}
+          <MessageSquare className="w-4 h-4 text-[#A9F8B5] group-hover:scale-110 transition-transform" />
+
+          {/* Etiqueta del botón pestaña */}
+          <span className="text-xs sm:text-sm font-semibold tracking-wide text-white group-hover:text-[#A9F8B5] transition-colors flex items-center gap-2">
+            Chat Online
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] font-mono font-medium border border-[#A9F8B5]/25">
+              Asesor IA
+            </span>
+          </span>
+        </button>
+      </div>
+
+      {/* Capa de Fondo Oscuro con Desenfoque (Backdrop para elevar el chat sobre la web) */}
+      <div
+        onClick={handleClose}
+        className={`fixed inset-0 bg-black/65 backdrop-blur-md z-50 transition-opacity duration-500 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      />
+
+      {/* Ventana de Chat Casi Completa (Desciende suavemente de arriba a abajo) */}
+      <div
+        className={`fixed inset-x-0 mx-auto top-3 sm:top-6 z-50 w-[96vw] sm:w-[92vw] max-w-4xl h-[94vh] sm:h-[88vh] max-h-[860px] flex flex-col transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isOpen
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
+            : '-translate-y-[120%] opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Luz ambiental envolvente detrás de la ventana */}
+        <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-b from-[#A9F8B5]/20 via-[#38bdf8]/10 to-[#C1A35B]/10 blur-3xl opacity-70 pointer-events-none rounded-3xl" />
+
+        {/* Tarjeta Contenedora Principal */}
+        <div className="relative flex-1 flex flex-col rounded-2xl sm:rounded-3xl bg-[#0e1014]/95 backdrop-blur-2xl border border-white/20 shadow-[0_25px_80px_rgba(0,0,0,0.85),0_0_50px_rgba(169,248,181,0.18)] overflow-hidden">
+          {/* Header Superior */}
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-white/10 bg-[#14161b]/90 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 relative shadow-md">
+                <img
+                  src="/assets/logo-gold-sm.webp"
+                  alt="GeoSoft"
+                  width={40}
+                  height={40}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#A9F8B5] ring-2 ring-black" />
               </div>
               <div>
-                <div className="font-bold text-white text-xs flex items-center gap-1.5">
-                  GeoSoft IA Closer
-                  <span className="px-1.5 py-0.2 rounded bg-[#A9F8B5]/20 text-[#A9F8B5] text-[9px] font-mono uppercase">
-                    Ventas & Cierres
+                <div className="font-bold text-white text-xs sm:text-sm flex items-center gap-2">
+                  GeoSoft • Asesor Inteligente
+                  <span className="px-2 py-0.5 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] text-[10px] font-mono uppercase border border-[#A9F8B5]/20">
+                    Online 24/7
                   </span>
                 </div>
-                <div className="text-[10px] text-gray-400 flex items-center gap-1">
+                <div className="text-[11px] text-gray-400 flex items-center gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-pulse" />
-                  Asesor Activo • Respuesta Instantánea
+                  Especialista en Software, Webs y Automatización de Negocios
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            {/* Controles de Acción: WhatsApp, Reset y Cerrar */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <a
+                href="https://wa.me/50689999999?text=Hola%20GeoSoft,%20vengo%20del%20chat%20de%20la%20web"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Abrir chat en WhatsApp"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition-all cursor-pointer"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </a>
+
               <button
                 onClick={handleReset}
                 title="Reiniciar conversación"
-                className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-4 h-4" />
               </button>
+
               <button
-                onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                onClick={handleClose}
+                title="Cerrar chat (Esc)"
+                className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-400 border border-white/10 hover:border-red-500/30 transition-all cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Messages Body */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
+          {/* Cuerpo de Mensajes con Scroll Fluido */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
             {messages.map((msg, idx) => {
               const isLatest = idx === messages.length - 1;
               return (
                 <div
                   key={msg.id}
-                  className={`flex gap-2.5 animate-message-soft ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  style={{ animationDelay: isLatest ? '0ms' : `${Math.min(idx * 40, 120)}ms` }}
+                  className={`flex gap-3 animate-message-soft ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  style={{ animationDelay: isLatest ? '0ms' : `${Math.min(idx * 30, 90)}ms` }}
                 >
                   {msg.role === 'assistant' && (
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 shadow-sm">
-                      <Sparkles className="w-3 h-3" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-sm">
+                      <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   )}
 
                   <div
-                    className={`max-w-[88%] rounded-2xl p-3.5 leading-relaxed shadow-sm transition-all ${
+                    className={`max-w-[90%] sm:max-w-[78%] rounded-2xl p-4 leading-relaxed shadow-sm transition-all ${
                       msg.role === 'user'
                         ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-medium rounded-tr-sm shadow-md'
-                        : 'bg-[#181a1f] text-gray-100 border border-white/10 rounded-tl-sm shadow-lg'
+                        : 'bg-[#16181d] text-gray-100 border border-white/10 rounded-tl-sm shadow-lg'
                     }`}
                   >
                     {msg.role === 'assistant' ? (
@@ -236,16 +337,16 @@ export const FloatingChat: React.FC = () => {
                     ) : (
                       <p className="whitespace-pre-wrap animate-text-soft">{msg.text}</p>
                     )}
-                    
+
                     {msg.appointmentBooked && (
-                      <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-1.5 text-[11px] font-bold text-emerald-300 bg-emerald-500/15 p-2 rounded-xl border border-emerald-500/30 animate-text-soft">
-                        <CalendarCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center gap-2 text-xs font-bold text-emerald-300 bg-emerald-500/15 p-2.5 rounded-xl border border-emerald-500/30 animate-text-soft">
+                        <CalendarCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                         <span>¡Cita registrada con éxito! Te contactaremos.</span>
                       </div>
                     )}
 
                     <div
-                      className={`text-[9px] mt-1.5 text-right font-mono ${
+                      className={`text-[10px] mt-2 text-right font-mono ${
                         msg.role === 'user' ? 'text-black/60' : 'text-gray-400'
                       }`}
                     >
@@ -254,8 +355,8 @@ export const FloatingChat: React.FC = () => {
                   </div>
 
                   {msg.role === 'user' && (
-                    <div className="w-6 h-6 rounded-full bg-white/10 text-gray-300 flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-white/10">
-                      <User className="w-3 h-3" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/10 text-gray-300 flex items-center justify-center text-xs shrink-0 mt-0.5 border border-white/10">
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   )}
                 </div>
@@ -263,15 +364,15 @@ export const FloatingChat: React.FC = () => {
             })}
 
             {isTyping && (
-              <div className="flex gap-2.5 items-center animate-message-soft">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-[10px] shrink-0 shadow-sm">
-                  <Sparkles className="w-3 h-3 animate-spin" />
+              <div className="flex gap-3 items-center animate-message-soft">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 animate-spin" />
                 </div>
-                <div className="bg-white/10 border border-white/10 rounded-2xl px-3.5 py-2 text-gray-300 text-[11px] flex items-center gap-1.5 shadow-sm">
+                <div className="bg-white/10 border border-white/10 rounded-2xl px-4 py-2.5 text-gray-300 text-xs flex items-center gap-2 shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce" />
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce [animation-delay:0.2s]" />
                   <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-bounce [animation-delay:0.4s]" />
-                  <span className="text-[10px] text-gray-400 ml-1">Escribiendo respuesta...</span>
+                  <span className="text-[11px] text-gray-400 ml-1">Escribiendo respuesta...</span>
                 </div>
               </div>
             )}
@@ -279,74 +380,64 @@ export const FloatingChat: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Suggestions Chips */}
-          <div className="px-3 py-2 border-t border-white/5 bg-[#0e0f12] overflow-x-auto flex gap-1.5 no-scrollbar shrink-0">
+          {/* Chips de Consultas Rápidas */}
+          <div className="px-4 sm:px-6 py-2.5 border-t border-white/5 bg-[#0b0c0f] overflow-x-auto flex gap-2 no-scrollbar shrink-0">
             {quickQuestions.map((q, i) => (
               <button
                 key={i}
                 onClick={() => handleSendMessage(q)}
                 disabled={isTyping}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/15 text-[10px] text-gray-300 hover:text-white border border-white/10 transition-colors cursor-pointer shrink-0"
+                className="whitespace-nowrap px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 text-xs text-gray-300 hover:text-white border border-white/10 transition-colors cursor-pointer shrink-0"
               >
                 {q}
               </button>
             ))}
           </div>
 
-          {/* Input & WhatsApp Action Bar */}
-          <div className="p-3 border-t border-white/10 bg-[#15171b] shrink-0 space-y-2">
+          {/* Barra de Entrada y Acciones */}
+          <div className="p-3.5 sm:p-4 border-t border-white/10 bg-[#121418] shrink-0 space-y-2">
             <form
               onSubmit={e => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2.5"
             >
               <input
                 type="text"
                 value={inputText}
                 onChange={e => setInputText(e.target.value)}
-                placeholder="Escribe tu consulta o pide tu cita..."
+                placeholder="Escribe tu consulta o pide tu propuesta..."
                 disabled={isTyping}
-                className="flex-1 bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#A9F8B5] transition-colors"
+                className="flex-1 bg-black/40 border border-white/15 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#A9F8B5] transition-colors"
               />
               <button
                 type="submit"
                 disabled={!inputText.trim() || isTyping}
-                className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 cursor-pointer shrink-0"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 cursor-pointer shrink-0 shadow-md"
               >
-                <Send className="w-3.5 h-3.5 stroke-[2.5]" />
+                <Send className="w-4 h-4 stroke-[2.5]" />
               </button>
             </form>
 
-            <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1">
-              <span className="flex items-center gap-1 text-[9px]">
-                <Sparkles className="w-2.5 h-2.5 text-[#A9F8B5]" />
-                Potenciado con Google Gemini AI
+            <div className="flex items-center justify-between text-[11px] text-gray-400 pt-0.5">
+              <span className="flex items-center gap-1.5 text-[10px]">
+                <Sparkles className="w-3 h-3 text-[#A9F8B5]" />
+                Asesor oficial GeoSoft • Conexión en vivo
               </span>
               <a
                 href="https://wa.me/50689999999?text=Hola%20GeoSoft,%20vengo%20del%20chat%20de%20la%20web"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#A9F8B5] hover:underline flex items-center gap-1 font-semibold"
+                className="text-[#A9F8B5] hover:underline flex items-center gap-1 font-semibold text-[10px] sm:text-xs"
               >
-                <MessageCircle className="w-3 h-3" />
+                <MessageCircle className="w-3.5 h-3.5" />
                 WhatsApp Directo
               </a>
             </div>
           </div>
         </div>
-      )}
-
-      {/* Floating Circle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black shadow-[0_0_25px_rgba(169,248,181,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer border border-white/20 relative shrink-0"
-        aria-label="Abrir Asesor de IA"
-      >
-        <span className="absolute -top-1 -right-1 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-400 ring-2 ring-black animate-pulse" />
-        <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
-      </button>
-    </div>
+      </div>
+    </>
   );
 };
