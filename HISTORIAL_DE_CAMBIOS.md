@@ -16,8 +16,9 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 ## 📅 Entradas de Cambios Aprobados
 
 ### 2026-10-17 — Identidad de Marca en Chat: Logo del Cubo Verde Esmeralda de GeoSoft
-- **Logo de Encabezado y Asesor Inteligente:**
-  - Se configuró el logo del cubo 3D verde esmeralda de GeoSoft (`/assets/logo-emerald-sm.webp`) como la identidad visual tanto en el encabezado del chat como en el avatar de cada mensaje del agente y en el estado de tipeo ("Escribiendo respuesta...").
+- **Avatar del Asesor Inteligente:**
+  - Se configuró el logo del cubo 3D verde esmeralda de GeoSoft (`/assets/logo-emerald-sm.webp`) como la identidad visual exclusiva del agente en cada mensaje y en el estado de tipeo ("Escribiendo respuesta...").
+  - Se eliminó el logo en miniatura del encabezado junto a "GeoSoft • Asesor Inteligente" para un diseño más limpio, sobrio y minimalista.
   - Generación de activo optimizado de 96x96 con compresión WebP (2 KB) para carga instantánea.
 - **Espaciado y Burbujas Compactas:**
   - Reducción quirúrgica del padding de mensajes del usuario a `px-3.5 py-1.5 sm:px-4 sm:py-2` y timestamp tucked `mt-0.5`, eliminando áreas vacías superiores e inferiores.
