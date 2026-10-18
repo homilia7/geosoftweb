@@ -250,30 +250,16 @@ export const FloatingChat: React.FC = () => {
         <div className="relative flex-1 flex flex-col rounded-2xl sm:rounded-3xl bg-[#0e1014]/95 backdrop-blur-2xl border border-white/20 shadow-[0_25px_80px_rgba(0,0,0,0.85),0_0_50px_rgba(169,248,181,0.18)] overflow-hidden">
           {/* Header Superior */}
           <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-white/10 bg-[#14161b]/90 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border border-[#A9F8B5]/40 bg-black shrink-0 relative shadow-md">
-                <img
-                  src="/assets/logo-emerald-sm.webp"
-                  alt="GeoSoft"
-                  width={40}
-                  height={40}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#A9F8B5] ring-2 ring-black" />
+            <div>
+              <div className="font-bold text-white text-xs sm:text-sm flex items-center gap-2">
+                GeoSoft • Asesor Inteligente
+                <span className="px-2 py-0.5 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] text-[10px] font-mono uppercase border border-[#A9F8B5]/20">
+                  Online 24/7
+                </span>
               </div>
-              <div>
-                <div className="font-bold text-white text-xs sm:text-sm flex items-center gap-2">
-                  GeoSoft • Asesor Inteligente
-                  <span className="px-2 py-0.5 rounded-full bg-[#A9F8B5]/15 text-[#A9F8B5] text-[10px] font-mono uppercase border border-[#A9F8B5]/20">
-                    Online 24/7
-                  </span>
-                </div>
-                <div className="text-[11px] text-gray-400 flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-pulse" />
-                  Especialista en Software, Webs y Automatización de Negocios
-                </div>
+              <div className="text-[11px] text-gray-400 flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-pulse" />
+                Especialista en Software, Webs y Automatización de Negocios
               </div>
             </div>
 
