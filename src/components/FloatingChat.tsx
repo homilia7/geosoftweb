@@ -319,10 +319,10 @@ export const FloatingChat: React.FC = () => {
                   )}
 
                   <div
-                    className={`max-w-[90%] sm:max-w-[78%] rounded-2xl shadow-sm transition-all ${
+                    className={`rounded-2xl shadow-sm transition-all ${
                       msg.role === 'user'
-                        ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-medium rounded-tr-sm shadow-md px-3.5 py-1.5 sm:px-4 sm:py-2'
-                        : 'bg-[#16181d] text-gray-100 border border-white/10 rounded-tl-sm shadow-lg p-3 sm:p-3.5 leading-relaxed'
+                        ? 'max-w-[85%] sm:max-w-[65%] md:max-w-[50%] bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-medium rounded-tr-sm shadow-md px-3.5 py-1.5 sm:px-4 sm:py-2'
+                        : 'max-w-[88%] sm:max-w-[65%] md:max-w-[52%] bg-[#16181d] text-gray-100 border border-white/10 rounded-tl-sm shadow-lg px-3.5 py-2 sm:px-4 sm:py-2.5 leading-snug'
                     }`}
                   >
                     {msg.role === 'assistant' ? (
@@ -331,26 +331,28 @@ export const FloatingChat: React.FC = () => {
                           text={msg.text}
                           isLatest={isLatest}
                           onLineRendered={scrollToBottom}
+                          time={msg.appointmentBooked ? undefined : msg.time}
                         />
 
                         {msg.appointmentBooked && (
-                          <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-2 text-xs font-bold text-emerald-300 bg-emerald-500/15 p-2 rounded-xl border border-emerald-500/30 animate-text-soft">
-                            <CalendarCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                            <span>¡Cita registrada con éxito! Te contactaremos.</span>
+                          <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between gap-2 text-xs font-bold text-emerald-300 bg-emerald-500/15 p-2 rounded-xl border border-emerald-500/30 animate-text-soft">
+                            <div className="flex items-center gap-1.5">
+                              <CalendarCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                              <span>¡Cita registrada con éxito! Te contactaremos.</span>
+                            </div>
+                            <span className="text-[9.5px] font-mono text-emerald-400/80 shrink-0 select-none">
+                              {msg.time}
+                            </span>
                           </div>
                         )}
-
-                        <div className="text-[10px] mt-1.5 text-right font-mono text-gray-400">
-                          {msg.time}
-                        </div>
                       </>
                     ) : (
-                      <div className="flex flex-col">
-                        <p className="whitespace-pre-wrap leading-snug break-words">{msg.text}</p>
-                        <div className="text-[9px] mt-0.5 text-right font-mono text-black/65 leading-none">
+                      <p className="whitespace-pre-wrap leading-snug break-words">
+                        {msg.text}
+                        <span className="inline-block ml-2 text-[9px] font-mono text-black/60 align-baseline whitespace-nowrap select-none">
                           {msg.time}
-                        </div>
-                      </div>
+                        </span>
+                      </p>
                     )}
                   </div>
 

@@ -4,12 +4,14 @@ interface StructuredBotMessageProps {
   text: string;
   isLatest?: boolean;
   onLineRendered?: () => void;
+  time?: string;
 }
 
 export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({
   text,
   isLatest = true,
-  onLineRendered
+  onLineRendered,
+  time
 }) => {
   // Función para procesar negritas (**texto**) y precios ($XXX)
   const renderInlineFormatted = (rawText: string) => {
@@ -97,19 +99,26 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({
   return (
     <div
       onClick={() => setVisibleCount(blocks.length)}
-      className="space-y-2.5 text-xs leading-relaxed text-gray-200 cursor-pointer"
+      className="space-y-2 text-xs leading-snug text-gray-200 cursor-pointer"
       title="Toca para mostrar todo de inmediato"
     >
       {blocks.slice(0, visibleCount).map((block, i) => {
+        const isLastBlock = i === Math.min(visibleCount, blocks.length) - 1;
+
         if (block.type === 'bullet') {
           return (
             <div
               key={i}
-              className="flex items-start gap-2.5 pl-1.5 py-0.5 animate-line-flow"
+              className="flex items-start gap-2 pl-1 py-0.5 animate-line-flow"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] mt-1.5 shrink-0 shadow-[0_0_8px_rgba(169,248,181,0.9)]" />
-              <div className="flex-1 text-gray-200 leading-normal">
+              <div className="flex-1 text-gray-200 leading-snug">
                 {renderInlineFormatted(block.text)}
+                {isLastBlock && time && (
+                  <span className="inline-block ml-2 text-[9.5px] font-mono text-gray-400 align-baseline whitespace-nowrap select-none">
+                    {time}
+                  </span>
+                )}
               </div>
             </div>
           );
@@ -119,9 +128,14 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({
           return (
             <div
               key={i}
-              className="pt-2 border-t border-white/10 text-white font-medium flex items-center gap-1.5 text-[11.5px] text-[#A9F8B5] animate-line-flow"
+              className="pt-2 border-t border-white/10 text-white font-medium flex items-center justify-between gap-1.5 text-[11.5px] text-[#A9F8B5] animate-line-flow"
             >
               <span>{renderInlineFormatted(block.text)}</span>
+              {isLastBlock && time && (
+                <span className="inline-block ml-2 text-[9.5px] font-mono text-gray-400 align-baseline whitespace-nowrap select-none">
+                  {time}
+                </span>
+              )}
             </div>
           );
         }
@@ -129,9 +143,14 @@ export const StructuredBotMessage: React.FC<StructuredBotMessageProps> = ({
         return (
           <p
             key={i}
-            className="animate-line-flow text-gray-200 leading-relaxed"
+            className="animate-line-flow text-gray-200 leading-snug break-words"
           >
             {renderInlineFormatted(block.text)}
+            {isLastBlock && time && (
+              <span className="inline-block ml-2 text-[9.5px] font-mono text-gray-400 align-baseline whitespace-nowrap select-none">
+                {time}
+              </span>
+            )}
           </p>
         );
       })}
