@@ -189,14 +189,13 @@ div:focus-visible,
   background: #ffffff !important;
   border: 1px solid #ffffff !important;
   transform: translateY(-2px);
-  /* Foco de luz encendida con resplandor cálido inferior (Incandescent Underglow) */
+  /* Sombra limpia y relieve sin luz anaranjada que se desborde */
   box-shadow:
-    0 0 32px 4px rgba(255, 255, 255, 0.65),
-    0 8px 24px 2px rgba(255, 138, 45, 0.72),
-    0 14px 30px -4px rgba(245, 158, 11, 0.45),
-    0 18px 36px -8px rgba(0, 0, 0, 0.7),
+    0 0 18px 2px rgba(255, 255, 255, 0.5),
+    0 8px 24px -4px rgba(0, 0, 0, 0.45),
+    0 3px 8px -2px rgba(0, 0, 0, 0.25),
     inset 1px 1.5px 2px 0px #ffffff,
-    inset -1px -1px 2px 0px rgba(0, 0, 0, 0.1) !important;
+    inset -1px -1px 2px 0px rgba(0, 0, 0, 0.08) !important;
 }
 
 .liquid-glass-tab.is-active svg,
@@ -211,17 +210,26 @@ div:focus-visible,
   font-weight: 700 !important;
 }
 
-/* Foco de Luz Caliente Inferior (Underglow Flare Beam - idéntico al destello de la imagen) */
+/* Rayita de Iluminación Especular Difuminada con Alta Precisión */
 .nav-underglow-flare {
   position: absolute;
-  bottom: -4.5px;
+  bottom: 1px;
   left: 50%;
   transform: translateX(-50%);
-  width: 26px;
-  height: 6px;
+  width: 22px;
+  height: 1.5px;
   border-radius: 9999px;
-  background: radial-gradient(ellipse at center, rgba(255, 145, 50, 1) 0%, rgba(245, 158, 11, 0.8) 50%, rgba(245, 158, 11, 0) 100%);
-  filter: blur(2px);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 20%,
+    #ffffff 50%,
+    rgba(255, 255, 255, 0.7) 80%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 6px 1px rgba(255, 255, 255, 0.8),
+    0 0 10px 2px rgba(255, 255, 255, 0.35);
   pointer-events: none;
   z-index: 10;
   animation: flare-glow-pulse 2s ease-in-out infinite alternate;
@@ -230,11 +238,11 @@ div:focus-visible,
 @keyframes flare-glow-pulse {
   0% {
     opacity: 0.85;
-    transform: translateX(-50%) scale(0.9);
+    transform: translateX(-50%) scaleX(0.9);
   }
   100% {
     opacity: 1;
-    transform: translateX(-50%) scale(1.15);
+    transform: translateX(-50%) scaleX(1.1);
   }
 }
 
@@ -1599,14 +1607,13 @@ html.light .liquid-glass-tab-active {
   background: #ffffff !important;
   border: 1.5px solid #ffffff !important;
   transform: translateY(-2px);
-  /* Luz encendida con resplandor cálido e iluminación sutil inferior */
+  /* Sombra limpia de estudio y resplandor sutil sin luz anaranjada */
   box-shadow:
-    0 0 28px 3px rgba(255, 255, 255, 0.95),
-    0 8px 24px 2px rgba(255, 140, 45, 0.62),
-    0 14px 28px -4px rgba(245, 158, 11, 0.38),
-    0 16px 36px -8px rgba(100, 116, 139, 0.35),
+    0 0 16px 2px rgba(255, 255, 255, 0.9),
+    0 8px 18px -4px rgba(100, 116, 139, 0.25),
+    0 3px 8px -2px rgba(100, 116, 139, 0.15),
     inset 1px 1.5px 2px 0px #ffffff,
-    inset -1px -1px 2px 0px rgba(0, 0, 0, 0.08) !important;
+    inset -1px -1px 2px 0px rgba(0, 0, 0, 0.05) !important;
 }
 
 html.light .liquid-glass-tab.is-active svg,
