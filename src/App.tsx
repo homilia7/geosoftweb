@@ -53,7 +53,13 @@ function MainLayout() {
         setIsCubeViewerOpen(true);
       } else if (hash === '#propuesta' || hash === '#formulario' || hash === '#brief' || path === '/propuesta') {
         openProposalModal();
-      } else if (hash === '#admin' || hash === '#propuestas' || hash === '#admin-propuestas' || path === '/admin' || path === '/propuestas') {
+      } else if (
+        hash.startsWith('#admin') ||
+        hash === '#propuestas' ||
+        hash === '#admin-propuestas' ||
+        path === '/admin' ||
+        path === '/propuestas'
+      ) {
         openAdminModal();
       }
     };
@@ -61,7 +67,7 @@ function MainLayout() {
     checkHash();
     window.addEventListener('hashchange', checkHash);
     return () => window.removeEventListener('hashchange', checkHash);
-  }, [openProposalModal]);
+  }, [openProposalModal, openAdminModal]);
 
   const scrollToQuote = () => {
     const el = document.getElementById('cotizador');
@@ -72,6 +78,24 @@ function MainLayout() {
     const el = document.getElementById('servicios');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Espacio de Web Independiente para el Panel de Administración (No Popup)
+  if (isAdminModalOpen) {
+    return (
+      <React.Suspense fallback={<div className="min-h-screen bg-[#07080a] flex items-center justify-center text-white font-mono text-sm">Cargando Workspace de Administración...</div>}>
+        <AdminPanel />
+      </React.Suspense>
+    );
+  }
+
+  // Espacio de Web Independiente para el Acceso Seguro de Administración
+  if (isLoginModalOpen) {
+    return (
+      <React.Suspense fallback={<div className="min-h-screen bg-[#07080a] flex items-center justify-center text-white font-mono text-sm">Cargando Acceso Seguro...</div>}>
+        <AdminLoginModal />
+      </React.Suspense>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative">
@@ -142,10 +166,6 @@ function MainLayout() {
             onClose={() => setIsBookingOpen(false)}
           />
         )}
-
-        {/* Admin Panel and Login Modal (Cargados bajo demanda) */}
-        {isAdminModalOpen && <AdminPanel />}
-        {isLoginModalOpen && <AdminLoginModal />}
 
         {/* Visor 3D Interactivo del Cubo Holográfico */}
         {isCubeViewerOpen && (

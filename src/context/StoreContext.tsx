@@ -368,6 +368,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsAdminLoggedIn(false);
     sessionStorage.removeItem('geosoft_admin_auth');
     setIsAdminModalOpen(false);
+    setIsLoginModalOpen(false);
+    if (typeof window !== 'undefined' && (window.location.hash.includes('admin') || window.location.hash.includes('propuestas'))) {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
   };
 
   const openAdminModal = () => {
@@ -382,9 +386,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const closeAdminModal = () => setIsAdminModalOpen(false);
+  const closeAdminModal = () => {
+    setIsAdminModalOpen(false);
+    if (typeof window !== 'undefined' && (window.location.hash.includes('admin') || window.location.hash.includes('propuestas'))) {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
+  };
   const openLoginModal = () => setIsLoginModalOpen(true);
-  const closeLoginModal = () => setIsLoginModalOpen(false);
+  const closeLoginModal = () => {
+    setIsLoginModalOpen(false);
+    if (typeof window !== 'undefined' && (window.location.hash.includes('admin') || window.location.hash.includes('propuestas'))) {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
+  };
   const openProposalModal = () => setIsProposalModalOpen(true);
   const closeProposalModal = () => setIsProposalModalOpen(false);
 
