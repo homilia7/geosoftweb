@@ -166,7 +166,7 @@ div:focus-visible,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5px 12px;
+  padding: 2px 6.5px;
   border-radius: 9999px;
   border: 1px solid transparent;
   color: rgba(255, 255, 255, 0.75);
@@ -189,14 +189,14 @@ div:focus-visible,
   color: #040404 !important;
   background: #ffffff !important;
   border: 1px solid #ffffff !important;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   /* Sombra limpia y relieve sin luz anaranjada que se desborde */
   box-shadow:
-    0 0 18px 2px rgba(255, 255, 255, 0.5),
-    0 8px 24px -4px rgba(0, 0, 0, 0.45),
-    0 3px 8px -2px rgba(0, 0, 0, 0.25),
-    inset 1px 1.5px 2px 0px #ffffff,
-    inset -1px -1px 2px 0px rgba(0, 0, 0, 0.08) !important;
+    0 0 14px 1.5px rgba(255, 255, 255, 0.45),
+    0 6px 18px -3px rgba(0, 0, 0, 0.4),
+    0 2px 6px -1px rgba(0, 0, 0, 0.2),
+    inset 1px 1px 1.5px 0px #ffffff,
+    inset -1px -1px 1.5px 0px rgba(0, 0, 0, 0.08) !important;
 }
 
 .liquid-glass-tab.is-active svg,
@@ -214,10 +214,10 @@ div:focus-visible,
 /* Rayita de Iluminación Especular Difuminada con Alta Precisión */
 .nav-underglow-flare {
   position: absolute;
-  bottom: 1px;
+  bottom: 0.5px;
   left: 50%;
   transform: translateX(-50%);
-  width: 22px;
+  width: 16px;
   height: 1.5px;
   border-radius: 9999px;
   background: linear-gradient(
@@ -229,8 +229,8 @@ div:focus-visible,
     transparent 100%
   );
   box-shadow:
-    0 0 6px 1px rgba(255, 255, 255, 0.8),
-    0 0 10px 2px rgba(255, 255, 255, 0.35);
+    0 0 5px 1px rgba(255, 255, 255, 0.75),
+    0 0 8px 1px rgba(255, 255, 255, 0.3);
   pointer-events: none;
   z-index: 10;
   animation: flare-glow-pulse 2s ease-in-out infinite alternate;
@@ -1607,7 +1607,7 @@ html.light .liquid-glass-tab-active {
   color: #040404 !important;
   background: #ffffff !important;
   border: 1.5px solid #ffffff !important;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   /* Sombra limpia de estudio y resplandor sutil sin luz anaranjada */
   box-shadow:
     0 0 16px 2px rgba(255, 255, 255, 0.9),

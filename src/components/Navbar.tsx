@@ -241,12 +241,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2.5 sm:py-3 px-3 sm:px-4 pointer-events-none">
-      <div className="pointer-events-auto flex items-center gap-2 sm:gap-2.5 max-w-full">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2 sm:py-2.5 px-2.5 sm:px-4 pointer-events-none">
+      <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 max-w-full">
         {/* Cápsula de Cristal Líquido Principal (Estilo Fiel a la Referencia) */}
         <div
           id="main-nav-capsule"
-          className={`liquid-glass-capsule px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 flex items-center justify-between gap-2.5 sm:gap-4 md:gap-5 transition-opacity duration-300 ${
+          className={`liquid-glass-capsule px-2.5 sm:px-3 md:px-4 py-1 flex items-center justify-between gap-1.5 sm:gap-2.5 md:gap-3.5 transition-opacity duration-300 ${
             pairStage > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
@@ -254,21 +254,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           <a
             href="#"
             style={getNavSweepStyle(0)}
-            className={`flex items-center gap-2 sm:gap-2.5 group transition-all shrink-0 ${getEntranceClass('left', 1)} ${getNavItemClass(0, 'logo')}`}
+            className={`flex items-center gap-1.5 sm:gap-2 group transition-all shrink-0 ${getEntranceClass('left', 1)} ${getNavItemClass(0, 'logo')}`}
           >
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border bg-black flex items-center justify-center shadow-md border-white/20">
+            <div className="w-6 h-6 rounded-full overflow-hidden border bg-black flex items-center justify-center shadow-md border-white/20">
               <img
                 src="/assets/logo-gold-sm.webp"
                 alt="GeoSoft"
-                width={32}
-                height={32}
+                width={24}
+                height={24}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               />
             </div>
             <span
-              className={`font-display font-bold text-sm sm:text-base tracking-wider transition-all duration-300 ${
+              className={`font-display font-bold text-xs sm:text-[13px] tracking-wide transition-all duration-300 ${
                 animPhase === 'yellow_letters'
                   ? 'nav-phase-yellow-letters'
                   : 'text-white'
@@ -279,10 +279,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
 
           {/* Divisor vertical sutil de cristal */}
-          <div className="hidden lg:block w-[1px] h-6 bg-white/15 shrink-0" />
+          <div className="hidden lg:block w-[1px] h-3.5 sm:h-4 bg-white/15 shrink-0" />
 
           {/* Desktop Navigation Links (Icono arriba + Texto abajo estilo imagen de referencia) */}
-          <nav className="hidden md:flex items-center gap-1 sm:gap-1.5">
+          <nav className="hidden md:flex items-center gap-0.5 sm:gap-1">
             {/* Inicio */}
             <a
               href="#inicio"
@@ -290,8 +290,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={getNavSweepStyle(1)}
               className={`liquid-glass-tab ${activeSection === 'inicio' ? 'is-active' : ''} ${getEntranceClass('left', 2)} ${getNavItemClass(1, 'link')}`}
             >
-              <Home className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <Home className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Inicio
               </span>
               {activeSection === 'inicio' && <span className="nav-underglow-flare" />}
@@ -313,10 +313,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`liquid-glass-tab ${activeSection === 'servicios' ? 'is-active' : ''} cursor-pointer`}
               >
-                <Sparkles className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-                <span className={`text-[10px] font-semibold tracking-wide flex items-center gap-0.5 ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                <Sparkles className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+                <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight flex items-center gap-0.5 ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                   Servicios
-                  <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-2 h-2 transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
                 </span>
                 {activeSection === 'servicios' && <span className="nav-underglow-flare" />}
               </button>
@@ -372,8 +372,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={getNavSweepStyle(3)}
               className={`liquid-glass-tab ${activeSection === 'como-funciona' ? 'is-active' : ''} ${getEntranceClass('left', 4)} ${getNavItemClass(3, 'link')}`}
             >
-              <GitBranch className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <GitBranch className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Proceso
               </span>
               {activeSection === 'como-funciona' && <span className="nav-underglow-flare" />}
@@ -386,8 +386,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={getNavSweepStyle(4)}
               className={`liquid-glass-tab ${activeSection === 'proyectos' ? 'is-active' : ''} ${getEntranceClass('left', 5)} ${getNavItemClass(4, 'link')}`}
             >
-              <Layers className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <Layers className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Proyectos
               </span>
               {activeSection === 'proyectos' && <span className="nav-underglow-flare" />}
@@ -400,8 +400,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={getNavSweepStyle(5)}
               className={`liquid-glass-tab ${activeSection === 'equipo' ? 'is-active' : ''} ${getEntranceClass('right', 5)} ${getNavItemClass(5, 'link')}`}
             >
-              <Users className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <Users className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Equipo
               </span>
               {activeSection === 'equipo' && <span className="nav-underglow-flare" />}
@@ -417,8 +417,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={getNavSweepStyle(6)}
               className={`liquid-glass-tab ${activeSection === 'cotizador' ? 'is-active' : ''} ${getEntranceClass('right', 4)} ${getNavItemClass(6, 'link')}`}
             >
-              <Calculator className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <Calculator className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Cotizador
               </span>
               {activeSection === 'cotizador' && <span className="nav-underglow-flare" />}
@@ -431,8 +431,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={getNavSweepStyle(7)}
               className={`liquid-glass-tab ${activeSection === 'faq' ? 'is-active' : ''} ${getEntranceClass('right', 3)} ${getNavItemClass(7, 'link')}`}
             >
-              <HelpCircle className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <HelpCircle className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 FAQ
               </span>
               {activeSection === 'faq' && <span className="nav-underglow-flare" />}
@@ -440,15 +440,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Botones de Acción dentro de la Cápsula */}
-          <div className="hidden md:flex items-center gap-1.5 sm:gap-2">
+          <div className="hidden md:flex items-center gap-1 sm:gap-1.5">
             {/* Agendar Cita */}
             <button
               onClick={onOpenBooking}
               style={getNavSweepStyle(8)}
               className={`liquid-glass-tab cursor-pointer ${getEntranceClass('right', 2)} ${getNavItemClass(8, 'booking')}`}
             >
-              <Clock className={`w-4 h-4 mb-0.5 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
-              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+              <Clock className={`w-3 h-3 mb-0.5 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
+              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Agendar
               </span>
             </button>
@@ -457,9 +457,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onScrollToQuote}
               style={getNavSweepStyle(9)}
-              className={`liquid-glass-cta flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full font-bold text-[11px] uppercase tracking-wider cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavItemClass(9, 'primary')}`}
+              className={`liquid-glass-cta flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavItemClass(9, 'primary')}`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-2.5 h-2.5" />
               <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
                 Cotizar
               </span>
@@ -468,10 +468,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Candado Admin */}
             <button
               onClick={onOpenAdmin}
-              className={`p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+              className={`p-1 sm:p-1.5 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
               title="Panel de Administración"
             >
-              <Lock className="w-3.5 h-3.5" />
+              <Lock className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -483,31 +483,31 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           {/* Desktop & Tablet */}
           <div className="hidden sm:block">
-            <NeumorphicThemeToggle scale={0.29} idPrefix="navDeskTheme" />
+            <NeumorphicThemeToggle scale={0.21} idPrefix="navDeskTheme" />
           </div>
           {/* Mobile top bar */}
           <div className="block sm:hidden">
-            <NeumorphicThemeToggle scale={0.24} idPrefix="navMobTopTheme" />
+            <NeumorphicThemeToggle scale={0.18} idPrefix="navMobTopTheme" />
           </div>
         </div>
 
         {/* Orbe de Cristal Circular Separado 2 (Desktop): Audio */}
         <button
           onClick={() => soundEffects.toggleMute()}
-          className={`hidden lg:flex liquid-glass-orb w-11 h-11 sm:w-12 sm:h-12 shadow-lg transition-transform ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+          className={`hidden lg:flex liquid-glass-orb w-8 h-8 sm:w-8.5 sm:h-8.5 shadow-lg transition-transform ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
           title={isMuted ? 'Activar Efectos de Sonido' : 'Silenciar Efectos de Sonido'}
           aria-label={isMuted ? 'Activar Sonido' : 'Silenciar Sonido'}
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-gray-500" /> : <Volume2 className="w-4 h-4 text-[#A9F8B5]" />}
+          {isMuted ? <VolumeX className="w-3.5 h-3.5 text-gray-500" /> : <Volume2 className="w-3.5 h-3.5 text-[#A9F8B5]" />}
         </button>
 
         {/* Botón Hamburger en Móvil como Orbe de Cristal Separado */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Cerrar Menú' : 'Abrir Menú de Navegación'}
-          className={`md:hidden liquid-glass-orb w-11 h-11 rounded-full cursor-pointer active:scale-95 ${getEntranceClass('right', 1)}`}
+          className={`md:hidden liquid-glass-orb w-8.5 h-8.5 rounded-full cursor-pointer active:scale-95 ${getEntranceClass('right', 1)}`}
         >
-          {mobileOpen ? <X className="w-4 h-4 text-white" /> : <Menu className="w-4 h-4 text-white" />}
+          {mobileOpen ? <X className="w-3.5 h-3.5 text-white" /> : <Menu className="w-3.5 h-3.5 text-white" />}
         </button>
       </div>
 
