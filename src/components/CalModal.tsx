@@ -1,5 +1,7 @@
 import React from 'react';
-import { X, Calendar } from 'lucide-react';
+import { X } from 'lucide-react';
+import { useGeoSoftStore } from '../context/StoreContext';
+import { IslamicGeometricRibbon } from './IslamicGeometricRibbon';
 
 interface CalModalProps {
   isOpen: boolean;
@@ -7,6 +9,8 @@ interface CalModalProps {
 }
 
 export const CalModal: React.FC<CalModalProps> = ({ isOpen, onClose }) => {
+  const { theme } = useGeoSoftStore();
+  const isLight = theme === 'light';
   const [isClosing, setIsClosing] = React.useState(false);
 
   if (!isOpen) return null;
@@ -23,42 +27,61 @@ export const CalModal: React.FC<CalModalProps> = ({ isOpen, onClose }) => {
   return (
     <div
       onClick={handleClose}
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 ${
-        isClosing ? 'animate-backdrop-leave' : 'animate-backdrop-fade'
-      }`}
+      className={`fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 select-none ${
+        isLight ? 'bg-stone-900/40 backdrop-blur-md' : 'bg-black/85 backdrop-blur-md'
+      } ${isClosing ? 'animate-backdrop-leave' : 'animate-backdrop-fade'}`}
     >
       <div
         onClick={e => e.stopPropagation()}
-        className={`relative w-full max-w-4xl h-[90vh] md:h-[82vh] bg-[#121315] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/15 ${
+        data-theme={theme}
+        className={`islamic-glass-card relative w-full max-w-4xl h-[92vh] md:h-[86vh] rounded-[34px] sm:rounded-[38px] shadow-2xl flex flex-col overflow-hidden my-auto ${
           isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
         }`}
       >
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#16181b]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#A9F8B5]/15 border border-[#A9F8B5]/30 flex items-center justify-center text-[#A9F8B5]">
-              <Calendar className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="font-display font-bold text-white text-sm md:text-base">
-                Agendar Demostración (30 Min)
-              </h3>
-              <p className="text-xs text-gray-400">Elige fecha y hora directamente con el equipo de GeoSoft.</p>
-            </div>
-          </div>
-
+        {/* Header con botón cerrar, badge e insignia */}
+        <div className="relative pt-4 pb-2.5 px-6 sm:px-8 text-center shrink-0">
           <button
             onClick={handleClose}
-            className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
+            className={`absolute right-5 top-4 p-2 rounded-full backdrop-blur-md transition-all cursor-pointer flex items-center justify-center ${
+              isLight
+                ? 'bg-black/5 hover:bg-black/10 text-[#3d332a]'
+                : 'bg-white/10 hover:bg-white/15 text-gray-200'
+            }`}
+            title="Cerrar ventana"
+            aria-label="Cerrar"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
+
+          <div className="inline-flex items-center justify-center">
+            <span
+              className={`px-5 py-1 rounded-full text-[11px] font-semibold tracking-wider uppercase ${
+                isLight ? 'islamic-badge-light' : 'islamic-badge-dark'
+              }`}
+            >
+              Videollamada Directa 1 a 1
+            </span>
+          </div>
+
+          <h2
+            className={`font-display text-xl sm:text-2xl font-bold tracking-tight mt-1.5 transition-colors ${
+              isLight ? 'text-[#2c241c]' : 'text-white'
+            }`}
+          >
+            Agendar Demostración (30 Min)
+          </h2>
         </div>
 
+        {/* Franja con Patrón Geométrico */}
+        <IslamicGeometricRibbon
+          theme={theme}
+          badgeText="Cal.com • Sincronización en Tiempo Real"
+        />
+
         {/* Modal Body / Cal.com Iframe */}
-        <div className="w-full flex-grow bg-[#090a0b] overflow-hidden">
+        <div className="w-full flex-grow bg-transparent overflow-hidden">
           <iframe
-            src="https://cal.com/geosoft/30min?embed=true&theme=dark"
+            src={`https://cal.com/geosoft/30min?embed=true&theme=${theme}`}
             title="Agendar Cita GeoSoft"
             className="w-full h-full border-0"
           />
