@@ -15,6 +15,22 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-19 — Panel de Captura de Propuestas y Formulario Interactivo de Onboarding de Negocios
+- **Panel de Administración (`AdminPanel.tsx` y `AdminProposalsTab.tsx`):**
+  - Nueva pestaña "Propuestas de Negocios" con contador en vivo, indicador luminoso para nuevas fichas y filtros por estado (Todas, Nuevas, En Proceso, Completadas).
+  - Generador de Enlace Público con 1-clic de copiado (`/#propuesta`) y botón de prueba en vivo para enviar a clientes potenciales.
+  - Tarjetas de gestión de negocio con visor de requerimientos, galería de fotos con lightbox, botón de contacto directo por WhatsApp con mensaje pre-rellenado y botón **"Copiar Prompt IA"** para estructurar la web y el chatbot en LLMs al instante.
+- **Formulario Interactivo por Bloques (`ClientProposalModal.tsx`):**
+  - Wizard multi-paso interactivo y fluido con barra de progreso, validación en tiempo real y efectos de sonido.
+  - Bloque 1 (Negocio o Negocios): Nombre principal, marcas/sucursales adicionales, sector, contacto, WhatsApp, correo y ubicación.
+  - Bloque 2 (Propósito Web): Objetivos comerciales, cliente ideal, productos/servicios y páginas de referencia.
+  - Bloque 3 (Agente de IA 24/7): Rol (Vendedor, Agendador, Soporte), tono conversacional, preguntas frecuentes y canal de cierre.
+  - Bloque 4 (Identidad Visual & Multimedia): Zona interactiva de Drag-and-Drop y botón de carga de imágenes con compresión automática en canvas (WebP/JPEG), colores de marca y redes sociales.
+  - Bloque 5 (Revisión y Envío): Resumen y notas finales.
+  - Pantalla de confirmación con mensaje *"¡Datos Recibidos con Éxito!"* y el botón solicitado: **"¿Desea agregar otro negocio?"** que reinicia el formulario limpiamente para registrar otra empresa o sucursal.
+- **Backend & Almacenamiento:**
+  - Endpoint Cloudflare Pages D1 `functions/api/proposals.ts` con auto-inicialización de tabla `proposals`, CRUD completo y respaldo en caché local en `StoreContext.tsx`.
+
 ### 2026-10-17 — Identidad de Marca en Chat: Logo del Cubo Verde Esmeralda de GeoSoft
 - **Avatar del Asesor Inteligente:**
   - Se configuró el logo del cubo 3D verde esmeralda de GeoSoft (`/assets/logo-emerald-sm.webp`) como la identidad visual exclusiva del agente en cada mensaje y en el estado de tipeo ("Escribiendo respuesta...").

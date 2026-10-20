@@ -26,6 +26,7 @@ const BookingModal = React.lazy(() => import('./components/BookingModal').then(m
 const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
 const AdminLoginModal = React.lazy(() => import('./components/AdminLoginModal').then(m => ({ default: m.AdminLoginModal })));
 const HolographicCubeViewer = React.lazy(() => import('./components/HolographicCubeViewer').then(m => ({ default: m.HolographicCubeViewer })));
+const ClientProposalModal = React.lazy(() => import('./components/ClientProposalModal').then(m => ({ default: m.ClientProposalModal })));
 
 function MainLayout() {
   useAnalyticsTracker();
@@ -34,14 +35,30 @@ function MainLayout() {
   const [isCubeViewerOpen, setIsCubeViewerOpen] = useState(false);
   const [introFinished, setIntroFinished] = useState(false);
   const [navAnimStarted, setNavAnimStarted] = useState(false);
-  const { openAdminModal, isAdminModalOpen, isLoginModalOpen } = useGeoSoftStore();
+  const {
+    openAdminModal,
+    isAdminModalOpen,
+    isLoginModalOpen,
+    isProposalModalOpen,
+    openProposalModal,
+    closeProposalModal
+  } = useGeoSoftStore();
 
   React.useEffect(() => {
     soundEffects.init();
-    if (window.location.hash === '#cubo' || window.location.hash === '#cubo3d') {
-      setIsCubeViewerOpen(true);
-    }
-  }, []);
+    const checkHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#cubo' || hash === '#cubo3d') {
+        setIsCubeViewerOpen(true);
+      } else if (hash === '#propuesta' || hash === '#formulario' || hash === '#brief') {
+        openProposalModal();
+      }
+    };
+
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+    return () => window.removeEventListener('hashchange', checkHash);
+  }, [openProposalModal]);
 
   const scrollToQuote = () => {
     const el = document.getElementById('cotizador');
@@ -132,6 +149,19 @@ function MainLayout() {
           <HolographicCubeViewer
             isOpen={isCubeViewerOpen}
             onClose={() => setIsCubeViewerOpen(false)}
+          />
+        )}
+
+        {/* Formulario Interactivo de Propuestas / Ficha de Negocio */}
+        {isProposalModalOpen && (
+          <ClientProposalModal
+            isOpen={isProposalModalOpen}
+            onClose={() => {
+              closeProposalModal();
+              if (window.location.hash === '#propuesta' || window.location.hash === '#formulario' || window.location.hash === '#brief') {
+                history.pushState('', document.title, window.location.pathname + window.location.search);
+              }
+            }}
           />
         )}
       </React.Suspense>

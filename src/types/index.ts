@@ -136,5 +136,49 @@ export interface BotConfigData {
   selectedModel?: string;
 }
 
+export type ProposalStatus = 'nueva' | 'en_proceso' | 'completada' | 'archivada';
+
+export interface ProposalImage {
+  name: string;
+  type?: 'logo' | 'producto' | 'referencia' | 'otro';
+  dataUrl: string;
+}
+
+export interface BusinessProposal {
+  id: string;
+  // Identidad del negocio
+  businessName: string;
+  businessNamesAdditional?: string;
+  tagline?: string;
+  industry: string;
+  contactName: string;
+  whatsapp: string;
+  email: string;
+  location?: string;
+
+  // Propósito del sitio web
+  mainGoal: string;
+  targetAudience: string;
+  servicesOrProducts: string;
+  referenceWebsites?: string;
+  budgetOrTimeline?: string;
+
+  // Agente de IA
+  aiRole: string;
+  aiTone: string;
+  aiCommonFaqs: string;
+  aiDestination: string;
+
+  // Identidad visual y multimedia
+  brandColors?: string;
+  socialLinks?: string;
+  images: ProposalImage[];
+
+  notes?: string;
+  status: ProposalStatus;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 
 

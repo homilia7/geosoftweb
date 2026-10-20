@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PlatformOption, AddonService, Appointment, AppointmentStatus, PricingConfig, PlatformType } from '../types';
+import { PlatformOption, AddonService, Appointment, AppointmentStatus, PricingConfig, PlatformType, BusinessProposal, ProposalStatus } from '../types';
 import { api } from '../services/api';
 
 export const DEFAULT_PLATFORMS: PlatformOption[] = [
@@ -97,12 +97,41 @@ const DEFAULT_APPOINTMENTS: Appointment[] = [
   }
 ];
 
+const DEFAULT_PROPOSALS: BusinessProposal[] = [
+  {
+    id: 'prop-demo-1',
+    businessName: 'Clínica Dental Sonrisas',
+    businessNamesAdditional: 'Sonrisas Kids',
+    tagline: 'Odontología integral y diseño de sonrisa avanzado',
+    industry: 'Salud & Odontología',
+    contactName: 'Dra. Elena Vargas',
+    whatsapp: '+506 8877-6655',
+    email: 'dra.elena@sonrisasdental.cr',
+    location: 'San José, Escazú',
+    mainGoal: 'agendar_citas',
+    targetAudience: 'Familias y profesionales que buscan tratamientos dentales estéticos e implantes',
+    servicesOrProducts: 'Limpieza profunda ($50), Blanqueamiento láser ($180), Ortodoncia invisible ($1,200), Implantes dentales',
+    referenceWebsites: 'https://dentalcare.com, https://smiledesign.es',
+    aiRole: 'citas',
+    aiTone: 'amigable',
+    aiCommonFaqs: '¿Aceptan seguros médicos? Sí, Medismart y seguros privados. ¿Cuánto dura la consulta inicial? 45 minutos con radiografía incluida. ¿Hacen emergencias? Sí, atendemos de urgencia el mismo día.',
+    aiDestination: 'whatsapp',
+    brandColors: 'Azul cielo, Blanco perla y Verde menta',
+    socialLinks: '@sonrisasdental.cr en Instagram',
+    images: [],
+    status: 'nueva',
+    createdAt: new Date().toISOString()
+  }
+];
+
 interface StoreContextType {
   pricing: PricingConfig;
   appointments: Appointment[];
+  proposals: BusinessProposal[];
   isAdminLoggedIn: boolean;
   isAdminModalOpen: boolean;
   isLoginModalOpen: boolean;
+  isProposalModalOpen: boolean;
   updatePlatformPrice: (id: PlatformType, newPrice: number) => void;
   updateAddonPrice: (id: string, newPrice: number) => void;
   updateDiscount: (percent: number, active: boolean, banner?: string) => void;
@@ -110,10 +139,16 @@ interface StoreContextType {
   addAppointment: (data: Omit<Appointment, 'id' | 'createdAt' | 'status'>) => Appointment;
   updateAppointmentStatus: (id: string, status: AppointmentStatus) => void;
   deleteAppointment: (id: string) => void;
+  addProposal: (data: Omit<BusinessProposal, 'id' | 'createdAt' | 'status'> & { id?: string; status?: ProposalStatus }) => Promise<BusinessProposal>;
+  updateProposalStatus: (id: string, status: ProposalStatus) => void;
+  deleteProposal: (id: string) => void;
+  reloadProposals: () => Promise<void>;
   openAdminModal: () => void;
   closeAdminModal: () => void;
   openLoginModal: () => void;
   closeLoginModal: () => void;
+  openProposalModal: () => void;
+  closeProposalModal: () => void;
   loginAdmin: (pin: string) => boolean;
   logoutAdmin: () => void;
 }
@@ -143,12 +178,24 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return DEFAULT_APPOINTMENTS;
   });
 
+  // Load proposals from localStorage
+  const [proposals, setProposals] = useState<BusinessProposal[]>(() => {
+    try {
+      const saved = localStorage.getItem('geosoft_proposals');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error(e);
+    }
+    return DEFAULT_PROPOSALS;
+  });
+
   // Admin auth & modal state
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
     return sessionStorage.getItem('geosoft_admin_auth') === 'true';
   });
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
 
   // Initial sync with remote Cloudflare D1 backend (deferred to 7s to prevent initial re-render)
   useEffect(() => {
@@ -176,6 +223,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.error(e);
     }
   }, [appointments]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('geosoft_proposals', JSON.stringify(proposals));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [proposals]);
 
   const updatePlatformPrice = (id: PlatformType, newPrice: number) => {
     setPricing(prev => {
@@ -241,6 +296,45 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     api.deleteAppointment(id);
   };
 
+  const addProposal = async (data: Omit<BusinessProposal, 'id' | 'createdAt' | 'status'> & { id?: string; status?: ProposalStatus }): Promise<BusinessProposal> => {
+    const newProposal: BusinessProposal = {
+      ...data,
+      id: data.id || `prop-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      createdAt: new Date().toISOString(),
+      status: data.status || 'nueva'
+    };
+    setProposals(prev => [newProposal, ...prev]);
+    try {
+      await api.createProposal(newProposal);
+    } catch (e) {
+      console.error(e);
+    }
+    return newProposal;
+  };
+
+  const updateProposalStatus = (id: string, status: ProposalStatus) => {
+    setProposals(prev =>
+      prev.map(p => (p.id === id ? { ...p, status, updatedAt: new Date().toISOString() } : p))
+    );
+    api.updateProposalStatus(id, status);
+  };
+
+  const deleteProposal = (id: string) => {
+    setProposals(prev => prev.filter(p => p.id !== id));
+    api.deleteProposal(id);
+  };
+
+  const reloadProposals = async () => {
+    try {
+      const remote = await api.getProposals();
+      if (remote && Array.isArray(remote)) {
+        setProposals(remote);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const loginAdmin = (pin: string) => {
     // Default PIN: 2026 or admin2026
     if (pin.trim() === '2026' || pin.trim() === 'admin2026') {
@@ -251,6 +345,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       api.getAppointments().then(remoteApts => {
         if (remoteApts) setAppointments(remoteApts);
       });
+      reloadProposals();
       return true;
     }
     return false;
@@ -268,6 +363,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       api.getAppointments().then(remoteApts => {
         if (remoteApts) setAppointments(remoteApts);
       });
+      reloadProposals();
     } else {
       setIsLoginModalOpen(true);
     }
@@ -276,15 +372,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const closeAdminModal = () => setIsAdminModalOpen(false);
   const openLoginModal = () => setIsLoginModalOpen(true);
   const closeLoginModal = () => setIsLoginModalOpen(false);
+  const openProposalModal = () => setIsProposalModalOpen(true);
+  const closeProposalModal = () => setIsProposalModalOpen(false);
 
   return (
     <StoreContext.Provider
       value={{
         pricing,
         appointments,
+        proposals,
         isAdminLoggedIn,
         isAdminModalOpen,
         isLoginModalOpen,
+        isProposalModalOpen,
         updatePlatformPrice,
         updateAddonPrice,
         updateDiscount,
@@ -292,10 +392,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         addAppointment,
         updateAppointmentStatus,
         deleteAppointment,
+        addProposal,
+        updateProposalStatus,
+        deleteProposal,
+        reloadProposals,
         openAdminModal,
         closeAdminModal,
         openLoginModal,
         closeLoginModal,
+        openProposalModal,
+        closeProposalModal,
         loginAdmin,
         logoutAdmin
       }}

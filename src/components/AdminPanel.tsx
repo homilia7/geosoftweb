@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { X, DollarSign, Calendar, Tag, RotateCcw, Trash2, Send, CheckCircle2, Clock, AlertTriangle, ShieldCheck, BarChart3, Bot } from 'lucide-react';
+import { X, DollarSign, Calendar, Tag, RotateCcw, Trash2, Send, CheckCircle2, Clock, AlertTriangle, ShieldCheck, BarChart3, Bot, FileText } from 'lucide-react';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { AppointmentStatus, PlatformType } from '../types';
 import { AdminAnalyticsTab } from './AdminAnalyticsTab';
 import { AdminBotTab } from './AdminBotTab';
+import { AdminProposalsTab } from './AdminProposalsTab';
 
 export const AdminPanel: React.FC = () => {
   const {
     pricing,
     appointments,
+    proposals,
     isAdminModalOpen,
     closeAdminModal,
     logoutAdmin,
@@ -20,7 +22,7 @@ export const AdminPanel: React.FC = () => {
     deleteAppointment
   } = useGeoSoftStore();
 
-  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas' | 'bot'>('precios');
+  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas' | 'bot' | 'propuestas'>('precios');
 
   if (!isAdminModalOpen) return null;
 
@@ -120,6 +122,21 @@ export const AdminPanel: React.FC = () => {
             <Bot className="w-3.5 h-3.5" />
             <span>Bot de IA & Ventas</span>
             <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-pulse" />
+          </button>
+
+          <button
+            onClick={() => setActiveTab('propuestas')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap relative ${
+              activeTab === 'propuestas'
+                ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Propuestas de Negocios ({proposals.length})</span>
+            {proposals.some(p => p.status === 'nueva') && (
+              <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
+            )}
           </button>
         </div>
 
@@ -355,8 +372,10 @@ export const AdminPanel: React.FC = () => {
             </div>
           ) : activeTab === 'analiticas' ? (
             <AdminAnalyticsTab />
-          ) : (
+          ) : activeTab === 'bot' ? (
             <AdminBotTab />
+          ) : (
+            <AdminProposalsTab />
           )}
         </div>
       </div>

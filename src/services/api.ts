@@ -1,4 +1,4 @@
-import { Appointment, AppointmentStatus, PricingConfig } from '../types';
+import { Appointment, AppointmentStatus, PricingConfig, BusinessProposal, ProposalStatus } from '../types';
 
 export interface AnalyticsData {
   totals: {
@@ -109,6 +109,63 @@ export const api = {
   async deleteAppointment(id: string): Promise<boolean> {
     try {
       const res = await fetch(`/api/appointments?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE'
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  // Proposals / Briefs de Clientes
+  async getProposals(): Promise<BusinessProposal[] | null> {
+    try {
+      const res = await fetch('/api/proposals');
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (Array.isArray(data)) return data as BusinessProposal[];
+      return null;
+    } catch {
+      return null;
+    }
+  },
+
+  async createProposal(prop: Omit<BusinessProposal, 'id' | 'createdAt' | 'status'> & { id?: string; status?: ProposalStatus }): Promise<BusinessProposal | null> {
+    try {
+      const res = await fetch('/api/proposals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prop)
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return {
+        ...prop,
+        id: data.id || prop.id,
+        createdAt: data.createdAt || new Date().toISOString(),
+        status: data.status || prop.status || 'nueva'
+      } as BusinessProposal;
+    } catch {
+      return null;
+    }
+  },
+
+  async updateProposalStatus(id: string, status: ProposalStatus): Promise<boolean> {
+    try {
+      const res = await fetch('/api/proposals', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async deleteProposal(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/proposals?id=${encodeURIComponent(id)}`, {
         method: 'DELETE'
       });
       return res.ok;
