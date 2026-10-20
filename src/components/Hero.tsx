@@ -3,6 +3,7 @@ import { ArrowRight, Calendar, Sparkles, ShieldCheck, Zap } from 'lucide-react';
 import { RotatingHeadline } from './RotatingHeadline';
 import { Reveal } from './Reveal';
 import { SpotlightCard } from './SpotlightCard';
+import { soundEffects } from '../services/soundEffects';
 
 interface HeroProps {
   onOpenCal: () => void;
@@ -75,24 +76,36 @@ export const Hero: React.FC<HeroProps> = ({
               Desarrollamos páginas web que convierten, sistemas de reservas en tiempo real y agentes de IA que atienden a tus clientes 24/7 sin descanso.
             </p>
 
-            {/* CTAs Button Row (Recode pill style) */}
+            {/* CTAs Button Row: Water Bubble / Liquid Glass Style */}
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-2 sm:pt-3">
               <button
-                onClick={onScrollToQuote}
-                className="btn-accent-icon w-full sm:w-auto cursor-pointer"
+                onClick={() => {
+                  try { soundEffects.playClick(); } catch {}
+                  onScrollToQuote();
+                }}
+                className="btn-water-bubble-primary w-full sm:w-auto cursor-pointer group"
+                aria-label="Cotizar mi Proyecto"
               >
-                <span>Cotizar mi Proyecto</span>
-                <div className="icon-box">
-                  <ArrowRight className="w-5 h-5" />
+                <div className="water-bubble-gloss" />
+                <span className="relative z-10">Cotizar mi Proyecto</span>
+                <div className="water-bubble-icon">
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </button>
 
               <button
-                onClick={onOpenBooking}
-                className="flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-white/30 text-sm font-semibold text-white transition-all w-full sm:w-auto cursor-pointer"
+                onClick={() => {
+                  try { soundEffects.playClick(); } catch {}
+                  onOpenBooking();
+                }}
+                className="btn-water-bubble-secondary w-full sm:w-auto cursor-pointer group"
+                aria-label="Agendar Cita en Vivo"
               >
-                <Calendar className="w-4 h-4 text-[#DFF494]" />
-                <span>Agendar Cita en Vivo</span>
+                <div className="water-bubble-gloss" />
+                <div className="water-bubble-icon">
+                  <Calendar className="w-4 h-4 text-[#A9F8B5] dark:text-[#DFF494]" />
+                </div>
+                <span className="relative z-10">Agendar Cita en Vivo</span>
               </button>
             </div>
 
