@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { PlatformOption, AddonService, Appointment, AppointmentStatus, PricingConfig, PlatformType, BusinessProposal, ProposalStatus } from '../types';
 import { api } from '../services/api';
 
@@ -197,13 +197,26 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
 
+  const isReloadingProposalsRef = useRef(false);
+
+  const reloadProposals = useCallback(async () => {
+    if (isReloadingProposalsRef.current) return;
+    isReloadingProposalsRef.current = true;
+    try {
+      const remote = await api.getProposals();
+      if (remote && Array.isArray(remote)) {
+        setProposals(remote);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      isReloadingProposalsRef.current = false;
+    }
+  }, []);
+
   // Initial sync with remote Cloudflare D1 backend
   useEffect(() => {
-    api.getProposals().then(remoteProps => {
-      if (remoteProps && Array.isArray(remoteProps) && remoteProps.length > 0) {
-        setProposals(remoteProps);
-      }
-    });
+    reloadProposals();
 
     const timer = setTimeout(() => {
       api.getPricing().then(remotePricing => {
@@ -211,14 +224,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
     }, 7000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [reloadProposals]);
 
-  // Sync proposals whenever admin panel opens
+  // Sync proposals & appointments whenever admin panel opens
   useEffect(() => {
     if (isAdminModalOpen) {
       reloadProposals();
+      api.getAppointments().then(remoteApts => {
+        if (remoteApts) setAppointments(remoteApts);
+      });
     }
-  }, [isAdminModalOpen]);
+  }, [isAdminModalOpen, reloadProposals]);
 
   // Sync to localStorage as offline cache
   useEffect(() => {
@@ -337,34 +353,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     api.deleteProposal(id);
   };
 
-  const reloadProposals = async () => {
-    try {
-      const remote = await api.getProposals();
-      if (remote && Array.isArray(remote)) {
-        setProposals(remote);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const loginAdmin = (pin: string) => {
+  const loginAdmin = useCallback((pin: string) => {
     // Default PIN: 2026 or admin2026
     if (pin.trim() === '2026' || pin.trim() === 'admin2026') {
       setIsAdminLoggedIn(true);
       sessionStorage.setItem('geosoft_admin_auth', 'true');
       setIsLoginModalOpen(false);
       setIsAdminModalOpen(true);
-      api.getAppointments().then(remoteApts => {
-        if (remoteApts) setAppointments(remoteApts);
-      });
-      reloadProposals();
       return true;
     }
     return false;
-  };
+  }, []);
 
-  const logoutAdmin = () => {
+  const logoutAdmin = useCallback(() => {
     setIsAdminLoggedIn(false);
     sessionStorage.removeItem('geosoft_admin_auth');
     setIsAdminModalOpen(false);
@@ -372,35 +373,35 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (typeof window !== 'undefined' && (window.location.hash.includes('admin') || window.location.hash.includes('propuestas'))) {
       history.pushState('', document.title, window.location.pathname + window.location.search);
     }
-  };
+  }, []);
 
-  const openAdminModal = () => {
-    if (isAdminLoggedIn) {
+  const openAdminModal = useCallback(() => {
+    const isAuth = sessionStorage.getItem('geosoft_admin_auth') === 'true' || isAdminLoggedIn;
+    if (isAuth) {
       setIsAdminModalOpen(true);
-      api.getAppointments().then(remoteApts => {
-        if (remoteApts) setAppointments(remoteApts);
-      });
-      reloadProposals();
     } else {
       setIsLoginModalOpen(true);
     }
-  };
+  }, [isAdminLoggedIn]);
 
-  const closeAdminModal = () => {
+  const closeAdminModal = useCallback(() => {
     setIsAdminModalOpen(false);
     if (typeof window !== 'undefined' && (window.location.hash.includes('admin') || window.location.hash.includes('propuestas'))) {
       history.pushState('', document.title, window.location.pathname + window.location.search);
     }
-  };
-  const openLoginModal = () => setIsLoginModalOpen(true);
-  const closeLoginModal = () => {
+  }, []);
+
+  const openLoginModal = useCallback(() => setIsLoginModalOpen(true), []);
+
+  const closeLoginModal = useCallback(() => {
     setIsLoginModalOpen(false);
     if (typeof window !== 'undefined' && (window.location.hash.includes('admin') || window.location.hash.includes('propuestas'))) {
       history.pushState('', document.title, window.location.pathname + window.location.search);
     }
-  };
-  const openProposalModal = () => setIsProposalModalOpen(true);
-  const closeProposalModal = () => setIsProposalModalOpen(false);
+  }, []);
+
+  const openProposalModal = useCallback(() => setIsProposalModalOpen(true), []);
+  const closeProposalModal = useCallback(() => setIsProposalModalOpen(false), []);
 
   return (
     <StoreContext.Provider

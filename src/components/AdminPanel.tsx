@@ -65,10 +65,10 @@ export const AdminPanel: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Sync hash with active tab
+  // Sync hash with active tab cleanly without triggering extraneous hashchange loops
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.location.hash = `#admin-${activeTab}`;
+    if (typeof window !== 'undefined' && window.location.hash !== `#admin-${activeTab}`) {
+      history.replaceState(null, '', `#admin-${activeTab}`);
     }
   }, [activeTab]);
 

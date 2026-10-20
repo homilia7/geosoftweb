@@ -44,6 +44,13 @@ function MainLayout() {
     closeProposalModal
   } = useGeoSoftStore();
 
+  const openAdminModalRef = React.useRef(openAdminModal);
+  openAdminModalRef.current = openAdminModal;
+  const openProposalModalRef = React.useRef(openProposalModal);
+  openProposalModalRef.current = openProposalModal;
+  const isModalOpenRef = React.useRef({ isAdminModalOpen, isLoginModalOpen, isProposalModalOpen });
+  isModalOpenRef.current = { isAdminModalOpen, isLoginModalOpen, isProposalModalOpen };
+
   React.useEffect(() => {
     soundEffects.init();
     const checkHash = () => {
@@ -52,7 +59,9 @@ function MainLayout() {
       if (hash === '#cubo' || hash === '#cubo3d') {
         setIsCubeViewerOpen(true);
       } else if (hash === '#propuesta' || hash === '#formulario' || hash === '#brief' || path === '/propuesta') {
-        openProposalModal();
+        if (!isModalOpenRef.current.isProposalModalOpen) {
+          openProposalModalRef.current();
+        }
       } else if (
         hash.startsWith('#admin') ||
         hash === '#propuestas' ||
@@ -60,14 +69,16 @@ function MainLayout() {
         path === '/admin' ||
         path === '/propuestas'
       ) {
-        openAdminModal();
+        if (!isModalOpenRef.current.isAdminModalOpen && !isModalOpenRef.current.isLoginModalOpen) {
+          openAdminModalRef.current();
+        }
       }
     };
 
     checkHash();
     window.addEventListener('hashchange', checkHash);
     return () => window.removeEventListener('hashchange', checkHash);
-  }, [openProposalModal, openAdminModal]);
+  }, []);
 
   const scrollToQuote = () => {
     const el = document.getElementById('cotizador');
