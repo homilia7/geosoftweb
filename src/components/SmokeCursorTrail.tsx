@@ -276,7 +276,8 @@ export const SmokeCursorTrail: React.FC = () => {
 
       // Dibujar partículas activas
       if (particles.length > 0) {
-        ctx.globalCompositeOperation = 'screen';
+        const isLight = typeof document !== 'undefined' && document.documentElement.classList.contains('light');
+        ctx.globalCompositeOperation = isLight ? 'source-over' : 'screen';
 
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
@@ -301,15 +302,15 @@ export const SmokeCursorTrail: React.FC = () => {
 
           const radGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
 
-          let colorCore = `rgba(169, 248, 181, ${p.alpha * 0.95})`;
-          let colorMid = `rgba(169, 248, 181, ${p.alpha * 0.5})`;
+          let colorCore = isLight ? `rgba(5, 150, 105, ${p.alpha * 0.35})` : `rgba(169, 248, 181, ${p.alpha * 0.95})`;
+          let colorMid = isLight ? `rgba(100, 116, 139, ${p.alpha * 0.16})` : `rgba(169, 248, 181, ${p.alpha * 0.5})`;
 
           if (p.hueType === 'gold') {
-            colorCore = `rgba(223, 244, 148, ${p.alpha * 0.9})`;
-            colorMid = `rgba(193, 163, 91, ${p.alpha * 0.4})`;
+            colorCore = isLight ? `rgba(217, 119, 6, ${p.alpha * 0.3})` : `rgba(223, 244, 148, ${p.alpha * 0.9})`;
+            colorMid = isLight ? `rgba(180, 83, 9, ${p.alpha * 0.14})` : `rgba(193, 163, 91, ${p.alpha * 0.4})`;
           } else if (p.hueType === 'mist') {
-            colorCore = `rgba(235, 255, 242, ${p.alpha * 0.8})`;
-            colorMid = `rgba(169, 248, 181, ${p.alpha * 0.3})`;
+            colorCore = isLight ? `rgba(148, 163, 184, ${p.alpha * 0.28})` : `rgba(235, 255, 242, ${p.alpha * 0.8})`;
+            colorMid = isLight ? `rgba(71, 85, 105, ${p.alpha * 0.12})` : `rgba(169, 248, 181, ${p.alpha * 0.3})`;
           }
 
           radGrad.addColorStop(0, colorCore);

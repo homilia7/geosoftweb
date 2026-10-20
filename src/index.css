@@ -1057,4 +1057,414 @@ h1, h2, h3, h4, .font-display {
   will-change: transform;
 }
 
+/* ==========================================================================
+   TEMA CLARO PROFESIONAL (LIGHT THEME) — MÁXIMO CONTRASTE & LEGIBILIDAD
+   Diseño de ingeniería con fondo platinum/slate, tarjetas blancas con relieve,
+   tipografía deep ink slate y acentos esmeralda/ámbar de alto contraste (WCAG AAA).
+   ========================================================================== */
+
+html.light {
+  color-scheme: light;
+  --foreground: #090d16;
+}
+
+html.light body {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+html.light .min-h-screen {
+  background-color: #f8fafc !important;
+  color: #090d16 !important;
+}
+
+/* Tipografía y Encabezados */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light .font-display {
+  color: #090d16 !important;
+}
+
+html.light .text-white {
+  color: #090d16 !important;
+}
+
+/* Excepciones de texto que deben permanecer en alto contraste */
+html.light .btn-primary-gradient,
+html.light .bg-gradient-to-r.from-\[\#A9F8B5\].to-\[\#DFF494\],
+html.light .text-black,
+html.light .text-black * {
+  color: #040404 !important;
+}
+
+html.light .text-gray-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-gray-300 {
+  color: #334155 !important;
+}
+
+html.light .text-gray-400 {
+  color: #475569 !important;
+}
+
+html.light .text-gray-500 {
+  color: #64748b !important;
+}
+
+/* Acentos y Gradientes de Alto Contraste en Modo Claro */
+html.light .text-\[\#A9F8B5\] {
+  color: #047857 !important; /* Esmeralda oscuro de alta visibilidad (7.8:1) */
+}
+
+html.light .text-\[\#DFF494\] {
+  color: #b45309 !important; /* Ámbar oscuro de alta visibilidad (7.5:1) */
+}
+
+html.light .text-gradient-accent {
+  background: linear-gradient(78deg, #047857 0%, #0d9488 45%, #b45309 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.light .text-gradient-gold {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #92400e 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Bordes y Separadores */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/25,
+html.light .border-white\/30,
+html.light .border-white\/40 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Fondos y Superficies de Tarjetas */
+html.light .card-accent {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 25px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03) !important;
+}
+
+html.light .card-accent:hover {
+  border-color: rgba(5, 150, 105, 0.45) !important;
+  box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.1), 0 0 25px -5px rgba(5, 150, 105, 0.15) !important;
+}
+
+html.light .blob-glow {
+  background: linear-gradient(78deg, rgba(5, 150, 105, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%) !important;
+  opacity: 0.55 !important;
+}
+
+html.light .bg-white\/5,
+html.light .bg-white\/10 {
+  background-color: #f1f5f9 !important;
+}
+
+html.light .bg-white\/15 {
+  background-color: #e2e8f0 !important;
+}
+
+html.light .bg-\[\#070809\],
+html.light .bg-\[\#050607\],
+html.light .bg-\[\#07080a\],
+html.light .bg-\[\#040404\] {
+  background-color: #f8fafc !important;
+}
+
+html.light .bg-\[\#121316\],
+html.light .bg-\[\#0d0f14\],
+html.light .bg-\[\#0c0e14\],
+html.light .bg-\[\#14161b\],
+html.light .bg-\[\#16181d\],
+html.light .bg-\[\#16181e\],
+html.light .bg-\[\#111317\],
+html.light .bg-\[\#090b0e\],
+html.light .bg-\[\#090a0c\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-black\/40,
+html.light .bg-black\/50,
+html.light .bg-black\/60 {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Badges y Pastillas */
+html.light .bg-\[\#A9F8B5\]\/10,
+html.light .bg-\[\#A9F8B5\]\/15,
+html.light .bg-\[\#A9F8B5\]\/20 {
+  background-color: rgba(5, 150, 105, 0.1) !important;
+  border-color: rgba(5, 150, 105, 0.25) !important;
+  color: #047857 !important;
+}
+
+html.light .bg-\[\#DFF494\]\/10,
+html.light .bg-\[\#DFF494\]\/15,
+html.light .bg-\[\#DFF494\]\/20 {
+  background-color: rgba(217, 119, 6, 0.1) !important;
+  border-color: rgba(217, 119, 6, 0.25) !important;
+  color: #b45309 !important;
+}
+
+/* Botón de Acción Recode (Hero) */
+html.light .btn-accent-icon {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .btn-accent-icon:hover {
+  border-color: #059669 !important;
+  background: #f0fdf4 !important;
+  box-shadow: 0 0 25px rgba(5, 150, 105, 0.18) !important;
+}
+
+html.light .btn-accent-icon .icon-box {
+  background: linear-gradient(78deg, #10b981 0%, #34d399 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Botón Gradiente Primario */
+html.light .btn-primary-gradient {
+  background: linear-gradient(78deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 18px rgba(5, 150, 105, 0.25) !important;
+}
+
+html.light .btn-primary-gradient:hover {
+  filter: brightness(1.05) !important;
+  box-shadow: 0 6px 25px rgba(5, 150, 105, 0.35) !important;
+}
+
+/* Navbar en Modo Claro */
+html.light #main-nav-capsule {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 4px 30px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light #main-nav-capsule a,
+html.light #main-nav-capsule button {
+  color: #334155 !important;
+}
+
+html.light #main-nav-capsule a:hover,
+html.light #main-nav-capsule button:hover {
+  color: #047857 !important;
+  background-color: rgba(241, 245, 249, 0.9) !important;
+}
+
+html.light #main-nav-capsule .bg-gradient-to-r.from-\[\#A9F8B5\].to-\[\#DFF494\] {
+  color: #000000 !important;
+}
+
+/* Drawer Móvil */
+html.light .bg-\[\#121316\]\/98 {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15) !important;
+}
+
+html.light .bg-\[\#121316\]\/98 a,
+html.light .bg-\[\#121316\]\/98 button {
+  color: #1e293b !important;
+}
+
+/* Hero Section */
+html.light #hero-logo-box .SpotlightCard,
+html.light #hero-logo-box .rounded-3xl {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.1) !important;
+}
+
+html.light #hero-logo-box .bg-black\/60 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light #hero-logo-box .bg-white\/5 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Cotizador en Modo Claro */
+html.light #cotizador .p-4.rounded-2xl {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light #cotizador .p-4.rounded-xl.bg-black\/40 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Preguntas Frecuentes (FAQ) */
+html.light #faq {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light #faq .rounded-2xl {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* Footer en Modo Claro */
+html.light footer {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+html.light footer a {
+  color: #475569 !important;
+}
+
+html.light footer a:hover {
+  color: #047857 !important;
+}
+
+html.light footer .bg-black {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Chatbot Flotante en Modo Claro */
+html.light .fixed.bottom-0 button[title*="Chat"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .fixed.bottom-0 button[title*="Chat"] svg {
+  fill: #ffffff !important;
+  stroke: #cbd5e1 !important;
+}
+
+html.light .fixed.bottom-0 button[title*="Chat"] span {
+  color: #0f172a !important;
+}
+
+html.light .bg-\[\#0e1014\]\/95 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 25px 80px rgba(15, 23, 42, 0.15) !important;
+}
+
+html.light .bg-\[\#14161b\]\/90 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-\[\#16181d\] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-\[\#0b0c0f\] {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-\[\#0b0c0f\] button {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light .bg-\[\#0b0c0f\] button:hover {
+  background-color: #f1f5f9 !important;
+  color: #047857 !important;
+  border-color: #059669 !important;
+}
+
+html.light .bg-\[\#121418\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-\[\#121418\] input {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light .bg-\[\#121418\] input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Espacio de Administración en Modo Claro */
+html.light aside {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+html.light aside .border-b,
+html.light aside .border-t {
+  border-color: #e2e8f0 !important;
+}
+
+html.light aside .bg-\[\#090b0e\] {
+  background-color: #e2e8f0 !important;
+}
+
+html.light aside button {
+  color: #334155 !important;
+}
+
+html.light aside button:hover {
+  background-color: #e2e8f0 !important;
+  color: #090d16 !important;
+}
+
+html.light aside button.bg-gradient-to-r {
+  color: #000000 !important;
+}
+
+html.light main {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+html.light .sticky.top-0 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light select,
+html.light textarea,
+html.light input[type="text"],
+html.light input[type="number"],
+html.light input[type="password"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light select:focus,
+html.light textarea:focus,
+html.light input[type="text"]:focus,
+html.light input[type="number"]:focus,
+html.light input[type="password"]:focus {
+  border-color: #059669 !important;
+}
+
+
 

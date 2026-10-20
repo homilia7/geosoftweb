@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock, Layers, Search, Volume2, VolumeX } from 'lucide-react';
+import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock, Layers, Search, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
+import { useGeoSoftStore } from '../context/StoreContext';
 
 interface NavbarProps {
   onOpenCal: () => void;
@@ -26,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollToServices,
   introFinished,
 }) => {
+  const { theme, toggleTheme } = useGeoSoftStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -392,6 +394,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </button>
 
+          {/* Alternar Tema Claro / Oscuro */}
+          <button
+            onClick={() => {
+              try { soundEffects.playClick(); } catch {}
+              toggleTheme();
+            }}
+            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-[#A9F8B5] border border-white/10 transition-all cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+            title={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
+            aria-label={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-3.5 h-3.5 text-[#DFF494] transition-transform hover:rotate-45" />
+            ) : (
+              <Moon className="w-3.5 h-3.5 text-indigo-600 transition-transform hover:-rotate-12" />
+            )}
+          </button>
+
           {/* Alternar Efectos de Sonido */}
           <button
             onClick={() => soundEffects.toggleMute()}
@@ -480,6 +499,26 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="animate-mobile-item w-full btn-primary-gradient py-3 text-center justify-center text-sm font-bold active:scale-[0.98] transition-transform"
             >
               Cotizar Mi Proyecto
+            </button>
+            <button
+              style={{ animationDelay: `${(mobileNavItems.length + 3) * 45 + 90}ms` }}
+              onClick={() => {
+                try { soundEffects.playClick(); } catch {}
+                toggleTheme();
+              }}
+              className="animate-mobile-item w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 active:scale-[0.98] transition-transform"
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-[#DFF494]" />
+                  <span>Activar Tema Claro</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Activar Tema Oscuro</span>
+                </>
+              )}
             </button>
             <button
               style={{ animationDelay: `${(mobileNavItems.length + 4) * 45 + 90}ms` }}

@@ -109,7 +109,7 @@ function MainLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative">
+    <div className="min-h-screen bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black overflow-x-hidden w-full relative transition-colors duration-300">
       {/* High-End Fluid Smoke Trail */}
       <SmokeCursorTrail />
 
