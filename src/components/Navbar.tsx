@@ -1,5 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, Menu, X, ArrowUpRight, Sparkles, Lock, Clock, Layers, Search, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
+import {
+  Calendar,
+  ChevronDown,
+  Menu,
+  X,
+  ArrowUpRight,
+  Sparkles,
+  Lock,
+  Clock,
+  Layers,
+  Search,
+  Volume2,
+  VolumeX,
+  Sun,
+  Moon,
+  Home,
+  GitBranch,
+  Users,
+  Calculator,
+  HelpCircle
+} from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 import { useGeoSoftStore } from '../context/StoreContext';
 
@@ -30,8 +50,30 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { theme, toggleTheme } = useGeoSoftStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('inicio');
   const dropdownTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const dropdownContainerRef = React.useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const sectionIds = ['inicio', 'servicios', 'como-funciona', 'proyectos', 'equipo', 'cotizador', 'faq'];
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 220;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sectionIds[i]);
+        if (el) {
+          if (el.offsetTop <= scrollPosition) {
+            setActiveSection(sectionIds[i]);
+            return;
+          }
+        }
+      }
+      setActiveSection('inicio');
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleDropdownEnter = () => {
     if (dropdownTimeoutRef.current) {
@@ -200,248 +242,268 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2 sm:py-2.5 px-3 sm:px-4 pointer-events-none">
-      <div id="main-nav-capsule" className={`pointer-events-auto w-full max-w-5xl bg-[#121316]/30 backdrop-blur-2xl border border-white/10 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] flex items-center justify-between transition-opacity duration-300 ${
-        pairStage > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}>
-        {/* Par 1 Izquierda: Logo y Letras GeoSoft (de izquierda a derecha) */}
-        <a
-          href="#"
-          style={getNavSweepStyle(0)}
-          className={`flex items-center gap-2 sm:gap-2.5 group transition-all ${getEntranceClass('left', 1)} ${getNavItemClass(0, 'logo')}`}
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-2.5 sm:py-3 px-3 sm:px-4 pointer-events-none">
+      <div className="pointer-events-auto flex items-center gap-2 sm:gap-2.5 max-w-full">
+        {/* Cápsula de Cristal Líquido Principal (Estilo Fiel a la Referencia) */}
+        <div
+          id="main-nav-capsule"
+          className={`liquid-glass-capsule px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 flex items-center justify-between gap-2.5 sm:gap-4 md:gap-5 transition-opacity duration-300 ${
+            pairStage > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
         >
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border bg-black flex items-center justify-center shadow-sm transition-all duration-300 border-white/15">
-            <img
-              src="/assets/logo-gold-sm.webp"
-              alt="GeoSoft"
-              width={32}
-              height={32}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-          </div>
-          <span
-            className={`font-display font-bold text-sm sm:text-base tracking-wider transition-all duration-300 ${
-              animPhase === 'yellow_letters'
-                ? 'nav-phase-yellow-letters'
-                : 'text-white'
-            }`}
-          >
-            GEO<span className={animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-gradient-accent'}>SOFT</span>
-          </span>
-        </a>
-
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 text-[13px] font-medium text-gray-300">
-          {/* Par 2 Izquierda: Botón Inicio (de izquierda a derecha) */}
+          {/* Par 1 Izquierda: Logo y Letras GeoSoft */}
           <a
-            href="#inicio"
-            style={getNavSweepStyle(1)}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 2)} ${getNavItemClass(1, 'link')}`}
+            href="#"
+            style={getNavSweepStyle(0)}
+            className={`flex items-center gap-2 sm:gap-2.5 group transition-all shrink-0 ${getEntranceClass('left', 1)} ${getNavItemClass(0, 'logo')}`}
           >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Inicio
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border bg-black flex items-center justify-center shadow-md border-white/20">
+              <img
+                src="/assets/logo-gold-sm.webp"
+                alt="GeoSoft"
+                width={32}
+                height={32}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              />
+            </div>
+            <span
+              className={`font-display font-bold text-sm sm:text-base tracking-wider transition-all duration-300 ${
+                animPhase === 'yellow_letters'
+                  ? 'nav-phase-yellow-letters'
+                  : 'text-white'
+              }`}
+            >
+              GEO<span className={animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-gradient-accent'}>SOFT</span>
             </span>
           </a>
 
-          {/* Par 3 Izquierda: Botón Servicios (de izquierda a derecha) */}
-          <div
-            ref={dropdownContainerRef}
-            style={getNavSweepStyle(2)}
-            className={`relative ${getEntranceClass('left', 3)} ${getNavItemClass(2, 'link')}`}
-            onMouseEnter={handleDropdownEnter}
-            onMouseLeave={handleDropdownLeave}
-          >
-            <button
-              onClick={() => {
-                if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
-                setDropdownOpen((prev) => !prev);
-              }}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+          {/* Divisor vertical sutil de cristal */}
+          <div className="hidden lg:block w-[1px] h-6 bg-white/15 shrink-0" />
+
+          {/* Desktop Navigation Links (Icono arriba + Texto abajo estilo imagen de referencia) */}
+          <nav className="hidden md:flex items-center gap-1 sm:gap-1.5">
+            {/* Inicio */}
+            <a
+              href="#inicio"
+              onClick={() => setActiveSection('inicio')}
+              style={getNavSweepStyle(1)}
+              className={`liquid-glass-tab ${activeSection === 'inicio' ? 'is-active' : ''} ${getEntranceClass('left', 2)} ${getNavItemClass(1, 'link')}`}
             >
-              <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-                Servicios
+              <Home className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                Inicio
               </span>
-              <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${
-                dropdownOpen ? 'rotate-180 text-white' : animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-gray-400'
-              }`} />
+            </a>
+
+            {/* Servicios con Dropdown */}
+            <div
+              ref={dropdownContainerRef}
+              style={getNavSweepStyle(2)}
+              className={`relative ${getEntranceClass('left', 3)} ${getNavItemClass(2, 'link')}`}
+              onMouseEnter={handleDropdownEnter}
+              onMouseLeave={handleDropdownLeave}
+            >
+              <button
+                onClick={() => {
+                  if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+                  setDropdownOpen((prev) => !prev);
+                  setActiveSection('servicios');
+                }}
+                className={`liquid-glass-tab ${activeSection === 'servicios' ? 'is-active' : ''} cursor-pointer`}
+              >
+                <Sparkles className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+                <span className={`text-[10px] font-semibold tracking-wide flex items-center gap-0.5 ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                  Servicios
+                  <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                </span>
+              </button>
+
+              {dropdownOpen && (
+                <div
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 w-80 z-50 animate-dropdown-menu"
+                  onMouseEnter={handleDropdownEnter}
+                  onMouseLeave={handleDropdownLeave}
+                >
+                  <div className="absolute -top-2.5 left-0 right-0 h-4 pointer-events-auto" />
+                  <div className="liquid-glass-dropdown rounded-3xl p-3 shadow-2xl flex flex-col gap-1.5">
+                    {desktopServices.map((svc, sIdx) => {
+                      const Icon = svc.icon;
+                      return (
+                        <a
+                          key={svc.title}
+                          href="#servicios"
+                          style={{ animationDelay: `${sIdx * 60 + 50}ms` }}
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            onScrollToServices();
+                            setActiveSection('servicios');
+                          }}
+                          className="animate-mobile-item p-2.5 rounded-2xl hover:bg-white/10 transition-colors group flex items-start gap-3"
+                        >
+                          <div className={`w-8 h-8 rounded-xl ${svc.iconBg} border ${svc.iconBorder} flex items-center justify-center ${svc.iconColor} shrink-0 shadow-sm`}>
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-white text-xs flex items-center gap-1.5">
+                              <span>{svc.title}</span>
+                              {svc.badge && (
+                                <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 py-0.2 rounded-full font-mono">
+                                  {svc.badge}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-gray-400 mt-0.5 truncate">{svc.desc}</div>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Metodología / Proceso */}
+            <a
+              href="#como-funciona"
+              onClick={() => setActiveSection('como-funciona')}
+              style={getNavSweepStyle(3)}
+              className={`liquid-glass-tab ${activeSection === 'como-funciona' ? 'is-active' : ''} ${getEntranceClass('left', 4)} ${getNavItemClass(3, 'link')}`}
+            >
+              <GitBranch className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                Proceso
+              </span>
+            </a>
+
+            {/* Proyectos */}
+            <a
+              href="#proyectos"
+              onClick={() => setActiveSection('proyectos')}
+              style={getNavSweepStyle(4)}
+              className={`liquid-glass-tab ${activeSection === 'proyectos' ? 'is-active' : ''} ${getEntranceClass('left', 5)} ${getNavItemClass(4, 'link')}`}
+            >
+              <Layers className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                Proyectos
+              </span>
+            </a>
+
+            {/* Equipo */}
+            <a
+              href="#equipo"
+              onClick={() => setActiveSection('equipo')}
+              style={getNavSweepStyle(5)}
+              className={`liquid-glass-tab ${activeSection === 'equipo' ? 'is-active' : ''} ${getEntranceClass('right', 5)} ${getNavItemClass(5, 'link')}`}
+            >
+              <Users className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                Equipo
+              </span>
+            </a>
+
+            {/* Cotizador */}
+            <a
+              href="#cotizador"
+              onClick={() => {
+                onScrollToQuote();
+                setActiveSection('cotizador');
+              }}
+              style={getNavSweepStyle(6)}
+              className={`liquid-glass-tab ${activeSection === 'cotizador' ? 'is-active' : ''} ${getEntranceClass('right', 4)} ${getNavItemClass(6, 'link')}`}
+            >
+              <Calculator className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                Cotizador
+              </span>
+            </a>
+
+            {/* FAQ */}
+            <a
+              href="#faq"
+              onClick={() => setActiveSection('faq')}
+              style={getNavSweepStyle(7)}
+              className={`liquid-glass-tab ${activeSection === 'faq' ? 'is-active' : ''} ${getEntranceClass('right', 3)} ${getNavItemClass(7, 'link')}`}
+            >
+              <HelpCircle className={`w-4 h-4 mb-0.5 stroke-[1.8] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                FAQ
+              </span>
+            </a>
+          </nav>
+
+          {/* Botones de Acción dentro de la Cápsula */}
+          <div className="hidden md:flex items-center gap-1.5 sm:gap-2">
+            {/* Agendar Cita */}
+            <button
+              onClick={onOpenBooking}
+              style={getNavSweepStyle(8)}
+              className={`liquid-glass-tab cursor-pointer ${getEntranceClass('right', 2)} ${getNavItemClass(8, 'booking')}`}
+            >
+              <Clock className={`w-4 h-4 mb-0.5 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
+              <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
+                Agendar
+              </span>
             </button>
 
-            {dropdownOpen && (
-              <div
-                className="absolute top-full left-0 pt-2 w-80 z-50 animate-dropdown-menu"
-                onMouseEnter={handleDropdownEnter}
-                onMouseLeave={handleDropdownLeave}
-              >
-                {/* Puente seguro invisible para evitar que el ratón pierda el contacto al bajar */}
-                <div className="absolute -top-2 left-0 right-0 h-4 pointer-events-auto" />
-                <div className="bg-[#141518]/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-2.5 shadow-2xl flex flex-col gap-1.5">
-                  {desktopServices.map((svc, sIdx) => {
-                    const Icon = svc.icon;
-                    return (
-                      <a
-                        key={svc.title}
-                        href="#servicios"
-                        style={{ animationDelay: `${sIdx * 60 + 50}ms` }}
-                        onClick={() => {
-                          setDropdownOpen(false);
-                          onScrollToServices();
-                        }}
-                        className="animate-mobile-item p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-3"
-                      >
-                        <div className={`w-8 h-8 rounded-lg ${svc.iconBg} border ${svc.iconBorder} flex items-center justify-center ${svc.iconColor} shrink-0`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-white text-xs flex items-center gap-1.5">
-                            <span>{svc.title}</span>
-                            {svc.badge && (
-                              <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] px-1.5 py-0.2 rounded-full font-mono">
-                                {svc.badge}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-gray-400 mt-0.5 truncate">{svc.desc}</div>
-                        </div>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+            {/* Cotizar Ahora */}
+            <button
+              onClick={onScrollToQuote}
+              style={getNavSweepStyle(9)}
+              className={`liquid-glass-cta flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full font-bold text-[11px] uppercase tracking-wider cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavItemClass(9, 'primary')}`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
+                Cotizar
+              </span>
+            </button>
+
+            {/* Candado Admin */}
+            <button
+              onClick={onOpenAdmin}
+              className={`p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+              title="Panel de Administración"
+            >
+              <Lock className="w-3.5 h-3.5" />
+            </button>
           </div>
-
-          {/* Par 4 Izquierda: Botón Metodología (de izquierda a derecha) */}
-          <a
-            href="#como-funciona"
-            style={getNavSweepStyle(3)}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 4)} ${getNavItemClass(3, 'link')}`}
-          >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Metodología
-            </span>
-          </a>
-
-          {/* Par 5 Izquierda: Botón Proyectos (de izquierda a derecha) */}
-          <a
-            href="#proyectos"
-            style={getNavSweepStyle(4)}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('left', 5)} ${getNavItemClass(4, 'link')}`}
-          >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Proyectos
-            </span>
-          </a>
-
-          {/* Par 5 Derecha: Botón Equipo (de derecha a izquierda) */}
-          <a
-            href="#equipo"
-            style={getNavSweepStyle(5)}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 5)} ${getNavItemClass(5, 'link')}`}
-          >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Equipo
-            </span>
-          </a>
-
-          {/* Par 4 Derecha: Botón Cotizador (de derecha a izquierda) */}
-          <a
-            href="#cotizador"
-            onClick={onScrollToQuote}
-            style={getNavSweepStyle(6)}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 4)} ${getNavItemClass(6, 'link')}`}
-          >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Cotizador
-            </span>
-          </a>
-
-          {/* Par 3 Derecha: Botón FAQ (de derecha a izquierda) */}
-          <a
-            href="#faq"
-            style={getNavSweepStyle(7)}
-            className={`px-2.5 py-1 rounded-full hover:text-white hover:bg-white/5 transition-colors ${getEntranceClass('right', 3)} ${getNavItemClass(7, 'link')}`}
-          >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              FAQ
-            </span>
-          </a>
-        </nav>
-
-        {/* Desktop Action CTAs */}
-        <div className="hidden md:flex items-center gap-2">
-          {/* Par 2 Derecha: Botón Agendar Cita (de derecha a izquierda) */}
-          <button
-            onClick={onOpenBooking}
-            style={getNavSweepStyle(8)}
-            className={`flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[#A9F8B5] hover:border-[#A9F8B5]/40 transition-colors cursor-pointer whitespace-nowrap ${getEntranceClass('right', 2)} ${getNavItemClass(8, 'booking')}`}
-          >
-            <Clock className={`w-3 h-3 transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : 'text-[#DFF494]'}`} />
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Agendar Cita
-            </span>
-          </button>
-
-          {/* Par 1 Derecha: Botón Cotizar Ahora (de derecha a izquierda) */}
-          <button
-            onClick={onScrollToQuote}
-            style={getNavSweepStyle(9)}
-            className={`px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black font-bold text-[11px] uppercase tracking-wider hover:opacity-90 shadow-sm transition-all cursor-pointer whitespace-nowrap ${getEntranceClass('right', 1)} ${getNavItemClass(9, 'primary')}`}
-          >
-            <span className={animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}>
-              Cotizar Ahora
-            </span>
-          </button>
-
-          {/* Alternar Tema Claro / Oscuro */}
-          <button
-            onClick={() => {
-              try { soundEffects.playClick(); } catch {}
-              toggleTheme();
-            }}
-            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-[#A9F8B5] border border-white/10 transition-all cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
-            title={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
-            aria-label={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-3.5 h-3.5 text-[#DFF494] transition-transform hover:rotate-45" />
-            ) : (
-              <Moon className="w-3.5 h-3.5 text-indigo-600 transition-transform hover:-rotate-12" />
-            )}
-          </button>
-
-          {/* Alternar Efectos de Sonido */}
-          <button
-            onClick={() => soundEffects.toggleMute()}
-            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-[#A9F8B5] border border-white/10 transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
-            title={isMuted ? 'Activar Efectos de Sonido' : 'Silenciar Efectos de Sonido'}
-            aria-label={isMuted ? 'Activar Sonido' : 'Silenciar Sonido'}
-          >
-            {isMuted ? <VolumeX className="w-3 h-3 text-gray-500" /> : <Volume2 className="w-3 h-3 text-[#A9F8B5]" />}
-          </button>
-
-          {/* Candado Admin (Par 1 Derecha) */}
-          <button
-            onClick={onOpenAdmin}
-            className={`p-1.5 rounded-full bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white border border-white/10 transition-colors cursor-pointer ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
-            title="Panel de Administración"
-          >
-            <Lock className="w-3 h-3" />
-          </button>
         </div>
 
-        {/* Mobile Hamburger Button (Par 1 Derecha) */}
+        {/* Orbe de Cristal Circular Separado 1: Alternar Tema Claro / Oscuro (Exacto al orbe de la referencia) */}
+        <button
+          onClick={() => {
+            try { soundEffects.playClick(); } catch {}
+            toggleTheme();
+          }}
+          className={`liquid-glass-orb w-11 h-11 sm:w-12 sm:h-12 shadow-lg transition-transform ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+          title={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
+          aria-label={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-[#DFF494] transition-transform hover:rotate-45" />
+          ) : (
+            <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-800 transition-transform hover:-rotate-12" />
+          )}
+        </button>
+
+        {/* Orbe de Cristal Circular Separado 2 (Desktop): Audio */}
+        <button
+          onClick={() => soundEffects.toggleMute()}
+          className={`hidden lg:flex liquid-glass-orb w-11 h-11 sm:w-12 sm:h-12 shadow-lg transition-transform ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+          title={isMuted ? 'Activar Efectos de Sonido' : 'Silenciar Efectos de Sonido'}
+          aria-label={isMuted ? 'Activar Sonido' : 'Silenciar Sonido'}
+        >
+          {isMuted ? <VolumeX className="w-4 h-4 text-gray-500" /> : <Volume2 className="w-4 h-4 text-[#A9F8B5]" />}
+        </button>
+
+        {/* Botón Hamburger en Móvil como Orbe de Cristal Separado */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Cerrar Menú' : 'Abrir Menú de Navegación'}
-          className={`md:hidden min-w-[36px] min-h-[36px] p-2 rounded-full border transition-all flex items-center justify-center cursor-pointer active:scale-95 ${getEntranceClass('right', 1)} ${getNavAuxClass()} ${
-            animPhase === 'yellow_letters'
-              ? 'border-yellow-400 text-yellow-300 bg-yellow-400/20'
-              : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
-          }`}
+          className={`md:hidden liquid-glass-orb w-11 h-11 rounded-full cursor-pointer active:scale-95 ${getEntranceClass('right', 1)}`}
         >
-          {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          {mobileOpen ? <X className="w-4 h-4 text-white" /> : <Menu className="w-4 h-4 text-white" />}
         </button>
       </div>
 

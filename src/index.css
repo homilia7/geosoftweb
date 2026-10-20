@@ -99,12 +99,127 @@ div:focus-visible,
     0 1px 1.5px rgba(255, 255, 255, 0.03);
 }
 
-/* Cápsula de Navegación Flotante con Borde Biselado Táctil */
-#main-nav-capsule {
+/* ==========================================================================
+   LIQUID GLASS FROSTED PILL NAVBAR (ESTILO ULTRA-LÍQUIDO ACRÍLICO 3D)
+   Fiel a la referencia: Cápsula de vidrio esmerilado translúcido, pestañas con
+   icono superior + texto, pestaña activa esculpida en relieve y orbe de cristal.
+   ========================================================================== */
+#main-nav-capsule,
+.liquid-glass-capsule {
+  position: relative;
+  border-radius: 9999px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.16) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
   box-shadow:
-    0 16px 36px -6px rgba(0, 0, 0, 0.75),
-    inset 1.5px 1.5px 1.5px 0px rgba(255, 255, 255, 0.22),
-    inset -1.5px -1.5px 2px 0px rgba(0, 0, 0, 0.7) !important;
+    0 20px 48px -8px rgba(0, 0, 0, 0.55),
+    0 6px 16px -2px rgba(0, 0, 0, 0.35),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 0.85),
+    inset 0px 0px 14px 0px rgba(255, 255, 255, 0.12),
+    inset -1.5px -2.5px 3.5px 0px rgba(0, 0, 0, 0.35) !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Orbe de Cristal Circular Separado (Floating Circular Glass Orb) */
+.liquid-glass-orb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.16) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  box-shadow:
+    0 18px 42px -6px rgba(0, 0, 0, 0.55),
+    0 6px 14px -2px rgba(0, 0, 0, 0.35),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 0.85),
+    inset 0px 0px 10px 0px rgba(255, 255, 255, 0.12),
+    inset -1.5px -2.5px 3.5px 0px rgba(0, 0, 0, 0.35) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.liquid-glass-orb:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 22px 48px -6px rgba(0, 0, 0, 0.65),
+    0 0 25px rgba(255, 255, 255, 0.35),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 0.95),
+    inset -1.5px -2.5px 3.5px 0px rgba(0, 0, 0, 0.35) !important;
+}
+
+.liquid-glass-orb:active {
+  transform: translateY(0px) scale(0.96);
+}
+
+/* Pestaña de Navegación Vertical (Icono Arriba, Texto Abajo) */
+.liquid-glass-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.75);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+}
+
+.liquid-glass-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.45);
+}
+
+/* Pestaña Activa Flotante Esculpida (Fiel a la pestaña "Tasks" de la referencia) */
+.liquid-glass-tab.is-active,
+.liquid-glass-tab-active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.18) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow:
+    0 4px 18px -2px rgba(0, 0, 0, 0.25),
+    inset 1px 1.5px 2px 0px rgba(255, 255, 255, 0.95),
+    inset 0px 0px 8px 0px rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Dropdown de Servicios en Cristal */
+.liquid-glass-dropdown {
+  background: linear-gradient(135deg, rgba(20, 22, 26, 0.92) 0%, rgba(12, 14, 18, 0.96) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  box-shadow:
+    0 25px 60px -10px rgba(0, 0, 0, 0.75),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 0.6),
+    inset -1.5px -2.5px 3.5px 0px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Botón CTA "Cotizar Ahora" en Estilo Cápsula */
+.liquid-glass-cta {
+  background: linear-gradient(78deg, #A9F8B5 0%, #DFF494 100%) !important;
+  color: #040404 !important;
+  box-shadow:
+    0 4px 15px rgba(169, 248, 181, 0.35),
+    inset 1px 1px 1.5px rgba(255, 255, 255, 0.8),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-cta:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 6px 20px rgba(169, 248, 181, 0.5),
+    inset 1px 1px 1.5px rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Tarjetas de Administración y Paneles */
@@ -1398,26 +1513,63 @@ html.light .btn-primary-gradient:hover {
   box-shadow: 0 6px 25px rgba(5, 150, 105, 0.35) !important;
 }
 
-/* Navbar en Modo Claro */
-html.light #main-nav-capsule {
-  background: rgba(255, 255, 255, 0.94) !important;
-  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+/* Navbar Liquid Glass en Modo Claro */
+html.light #main-nav-capsule,
+html.light .liquid-glass-capsule {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.8) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
   box-shadow:
-    0 16px 36px -8px rgba(148, 163, 184, 0.35),
-    inset 1.5px 1.5px 2px 0px rgba(255, 255, 255, 1),
-    inset -1.5px -1.5px 3px 0px rgba(203, 213, 225, 0.75),
-    inset 3px 3px 8px 0px rgba(255, 255, 255, 0.95) !important;
+    0 18px 45px -8px rgba(100, 116, 139, 0.3),
+    0 6px 16px -2px rgba(100, 116, 139, 0.16),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 1),
+    inset 0px 0px 14px 0px rgba(255, 255, 255, 0.6),
+    inset -1.5px -2.5px 3.5px 0px rgba(148, 163, 184, 0.35) !important;
+}
+
+html.light .liquid-glass-orb {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.8) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+  box-shadow:
+    0 16px 40px -6px rgba(100, 116, 139, 0.28),
+    0 4px 12px -2px rgba(100, 116, 139, 0.14),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 1),
+    inset 0px 0px 10px 0px rgba(255, 255, 255, 0.5),
+    inset -1.5px -2.5px 3.5px 0px rgba(148, 163, 184, 0.35) !important;
+}
+
+html.light .liquid-glass-tab {
+  color: #475569 !important;
+}
+
+html.light .liquid-glass-tab:hover {
+  color: #090d16 !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light .liquid-glass-tab.is-active,
+html.light .liquid-glass-tab-active {
+  color: #090d16 !important;
+  background: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 1) !important;
+  box-shadow:
+    0 6px 20px -3px rgba(100, 116, 139, 0.25),
+    inset 1px 1.5px 2px 0px #ffffff,
+    inset -1px -1.5px 2.5px 0px rgba(203, 213, 225, 0.45) !important;
+}
+
+html.light .liquid-glass-dropdown {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 252, 0.98) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 1) !important;
+  box-shadow:
+    0 25px 60px -10px rgba(100, 116, 139, 0.22),
+    inset 1.5px 2px 2px 0px rgba(255, 255, 255, 1),
+    inset -1.5px -2.5px 3.5px 0px rgba(148, 163, 184, 0.3) !important;
 }
 
 html.light #main-nav-capsule a,
 html.light #main-nav-capsule button {
   color: #334155 !important;
-}
-
-html.light #main-nav-capsule a:hover,
-html.light #main-nav-capsule button:hover {
-  color: #047857 !important;
-  background-color: rgba(241, 245, 249, 0.9) !important;
 }
 
 html.light #main-nav-capsule .bg-gradient-to-r.from-\[\#A9F8B5\].to-\[\#DFF494\] {
