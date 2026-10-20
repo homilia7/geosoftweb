@@ -183,7 +183,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
     >
       <div
         onClick={e => e.stopPropagation()}
-        className={`relative w-full max-w-lg bg-[#111317] rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 overflow-hidden my-auto flex flex-col min-h-[460px] max-h-[90dvh] ${
+        className={`tactile-card relative w-full max-w-lg bg-[#111317] rounded-2xl sm:rounded-3xl border border-white/15 overflow-hidden my-auto flex flex-col min-h-[460px] max-h-[90dvh] ${
           isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
         }`}
       >

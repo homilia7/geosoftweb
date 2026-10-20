@@ -27,21 +27,70 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
 }
 
-/* Recode-inspired Card with Glowing Moving Blob */
-.card-accent {
+/* ==========================================================================
+   TARJETAS CON BORDE TÁCTIL BISELADO 3D (NEUMORPHIC / EMBOSSED BEVEL RIM)
+   Efecto de borde esculpido con reflejo especular en bisel superior-izquierdo
+   y oclusión de profundidad en bisel inferior-derecho.
+   ========================================================================== */
+.card-accent,
+.tactile-card {
   position: relative;
-  background: rgba(18, 19, 21, 0.7);
-  border: 1px solid #25272a;
-  border-radius: 24px;
+  background: rgba(18, 20, 24, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
   overflow: hidden;
-  backdrop-filter: blur(16px);
-  transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 20px 48px -12px rgba(0, 0, 0, 0.85),
+    0 6px 14px -3px rgba(0, 0, 0, 0.5),
+    inset 1.5px 1.5px 1.5px 0px rgba(255, 255, 255, 0.22),
+    inset -1.5px -1.5px 2px 0px rgba(0, 0, 0, 0.7),
+    inset 3px 3px 8px 0px rgba(169, 248, 181, 0.05);
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card-accent:hover {
-  border-color: rgba(169, 248, 181, 0.4);
+.card-accent:hover,
+.tactile-card:hover {
+  border-color: rgba(169, 248, 181, 0.45);
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(169, 248, 181, 0.15);
+  box-shadow:
+    0 26px 55px -15px rgba(0, 0, 0, 0.95),
+    0 0 32px -4px rgba(169, 248, 181, 0.2),
+    inset 1.5px 1.5px 2px 0px rgba(169, 248, 181, 0.45),
+    inset -1.5px -1.5px 2.5px 0px rgba(0, 0, 0, 0.75),
+    inset 3px 3px 10px 0px rgba(169, 248, 181, 0.1);
+}
+
+/* Elementos interiores hundidos / bajo relieve (Debossed Wells / Sunken Insets) */
+.tactile-inset,
+.card-accent .bg-white\/5,
+.card-accent .bg-black\/40 {
+  background: rgba(8, 10, 13, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px;
+  box-shadow:
+    inset 2.5px 2.5px 6px 0px rgba(0, 0, 0, 0.7),
+    inset -1.5px -1.5px 2.5px 0px rgba(255, 255, 255, 0.05),
+    0 1px 1.5px rgba(255, 255, 255, 0.03);
+}
+
+/* Cápsula de Navegación Flotante con Borde Biselado Táctil */
+#main-nav-capsule {
+  box-shadow:
+    0 16px 36px -6px rgba(0, 0, 0, 0.75),
+    inset 1.5px 1.5px 1.5px 0px rgba(255, 255, 255, 0.22),
+    inset -1.5px -1.5px 2px 0px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Tarjetas de Administración y Paneles */
+.bg-\[\#0d0f14\].rounded-2xl,
+.bg-\[\#14161b\].rounded-2xl,
+.bg-\[\#15171b\].rounded-2xl,
+.bg-\[\#16181e\].rounded-2xl {
+  box-shadow:
+    0 12px 28px -6px rgba(0, 0, 0, 0.65),
+    inset 1px 1px 1px 0px rgba(255, 255, 255, 0.12),
+    inset -1px -1px 1.5px 0px rgba(0, 0, 0, 0.65);
 }
 
 .blob-glow {
@@ -1069,12 +1118,12 @@ html.light {
 }
 
 html.light body {
-  background-color: #f8fafc !important;
+  background-color: #edf2f7 !important;
   color: #1e293b !important;
 }
 
 html.light .min-h-screen {
-  background-color: #f8fafc !important;
+  background-color: #edf2f7 !important;
   color: #090d16 !important;
 }
 
@@ -1147,16 +1196,49 @@ html.light .border-white\/40 {
   border-color: #e2e8f0 !important;
 }
 
-/* Fondos y Superficies de Tarjetas */
-html.light .card-accent {
+/* Fondos y Superficies de Tarjetas con Borde Táctil Biselado 3D (Tema Claro) */
+html.light .card-accent,
+html.light .tactile-card {
   background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 25px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  border-radius: 28px !important;
+  /* Bisel táctil 3D neumórfico: Reflejo especular blanco superior-izquierdo + sombra de bisel inferior-derecha */
+  box-shadow:
+    0 18px 40px -8px rgba(148, 163, 184, 0.38),
+    0 6px 14px -3px rgba(148, 163, 184, 0.22),
+    inset 1.5px 1.5px 2px 0px rgba(255, 255, 255, 1),
+    inset -1.5px -1.5px 3px 0px rgba(203, 213, 225, 0.7),
+    inset 3px 3px 8px 0px rgba(255, 255, 255, 0.95),
+    inset -3px -3px 8px 0px rgba(203, 213, 225, 0.35) !important;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-html.light .card-accent:hover {
+html.light .card-accent:hover,
+html.light .tactile-card:hover {
   border-color: rgba(5, 150, 105, 0.45) !important;
-  box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.1), 0 0 25px -5px rgba(5, 150, 105, 0.15) !important;
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 50px -10px rgba(15, 23, 42, 0.12),
+    0 8px 20px -4px rgba(5, 150, 105, 0.15),
+    inset 1.5px 1.5px 2px 0px rgba(255, 255, 255, 1),
+    inset -1.5px -1.5px 3px 0px rgba(16, 185, 129, 0.3),
+    inset 3px 3px 8px 0px rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Elementos interiores hundidos / bajo relieve en Modo Claro (Debossed Wells) */
+html.light .tactile-inset,
+html.light .card-accent .bg-white\/5,
+html.light .card-accent .bg-black\/40,
+html.light #hero-logo-box .bg-black\/60,
+html.light #hero-logo-box .bg-white\/5,
+html.light #cotizador .bg-black\/40 {
+  background: #edf2f7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    inset 2.5px 2.5px 5px 0px rgba(148, 163, 184, 0.35),
+    inset -2px -2px 5px 0px rgba(255, 255, 255, 0.95),
+    0 1px 2px rgba(255, 255, 255, 0.9) !important;
 }
 
 html.light .blob-glow {
@@ -1177,7 +1259,7 @@ html.light .bg-\[\#070809\],
 html.light .bg-\[\#050607\],
 html.light .bg-\[\#07080a\],
 html.light .bg-\[\#040404\] {
-  background-color: #f8fafc !important;
+  background-color: #edf2f7 !important;
 }
 
 html.light .bg-\[\#121316\],
@@ -1191,6 +1273,20 @@ html.light .bg-\[\#090b0e\],
 html.light .bg-\[\#090a0c\] {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
+}
+
+/* Tarjetas y Contenedores Elevados en Modo Claro */
+html.light .bg-\[\#0d0f14\].rounded-2xl,
+html.light .bg-\[\#14161b\].rounded-2xl,
+html.light .bg-\[\#15171b\].rounded-2xl,
+html.light .bg-\[\#16181e\].rounded-2xl {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow:
+    0 14px 30px -6px rgba(148, 163, 184, 0.35),
+    inset 1.5px 1.5px 2px 0px rgba(255, 255, 255, 1),
+    inset -1.5px -1.5px 2.5px 0px rgba(203, 213, 225, 0.65),
+    inset 3px 3px 8px 0px rgba(255, 255, 255, 0.95) !important;
 }
 
 html.light .bg-black\/40,
@@ -1250,9 +1346,13 @@ html.light .btn-primary-gradient:hover {
 
 /* Navbar en Modo Claro */
 html.light #main-nav-capsule {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border-color: rgba(226, 232, 240, 0.95) !important;
-  box-shadow: 0 4px 30px rgba(15, 23, 42, 0.08) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow:
+    0 16px 36px -8px rgba(148, 163, 184, 0.35),
+    inset 1.5px 1.5px 2px 0px rgba(255, 255, 255, 1),
+    inset -1.5px -1.5px 3px 0px rgba(203, 213, 225, 0.75),
+    inset 3px 3px 8px 0px rgba(255, 255, 255, 0.95) !important;
 }
 
 html.light #main-nav-capsule a,
@@ -1286,8 +1386,7 @@ html.light .bg-\[\#121316\]\/98 button {
 html.light #hero-logo-box .SpotlightCard,
 html.light #hero-logo-box .rounded-3xl {
   background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 html.light #hero-logo-box .bg-black\/60 {
@@ -1313,14 +1412,8 @@ html.light #cotizador .p-4.rounded-xl.bg-black\/40 {
 
 /* Preguntas Frecuentes (FAQ) */
 html.light #faq {
-  background-color: #f8fafc !important;
+  background-color: #edf2f7 !important;
   border-color: #e2e8f0 !important;
-}
-
-html.light #faq .rounded-2xl {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04) !important;
 }
 
 /* Footer en Modo Claro */
@@ -1439,7 +1532,7 @@ html.light aside button.bg-gradient-to-r {
 }
 
 html.light main {
-  background-color: #f8fafc !important;
+  background-color: #edf2f7 !important;
   color: #1e293b !important;
 }
 

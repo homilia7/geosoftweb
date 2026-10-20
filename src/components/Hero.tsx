@@ -121,7 +121,7 @@ export const Hero: React.FC<HeroProps> = ({
               <SpotlightCard
                 spotlightColor="rgba(169, 248, 181, 0.22)"
                 size={400}
-                className="rounded-3xl bg-[#121316]/90 border border-white/15 p-4 sm:p-6 shadow-2xl backdrop-blur-xl"
+                className="card-accent rounded-3xl p-4 sm:p-6 shadow-2xl backdrop-blur-xl"
               >
                 <div className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 bg-black/60 shadow-inner flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                   <img

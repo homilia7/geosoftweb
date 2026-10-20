@@ -254,7 +254,7 @@ export const FloatingChat: React.FC = () => {
         <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-b from-[#A9F8B5]/20 via-[#38bdf8]/10 to-[#C1A35B]/10 blur-3xl opacity-70 pointer-events-none rounded-3xl" />
 
         {/* Tarjeta Contenedora Principal */}
-        <div className="relative flex-1 flex flex-col rounded-2xl sm:rounded-3xl bg-[#0e1014]/95 backdrop-blur-2xl border border-white/20 shadow-[0_25px_80px_rgba(0,0,0,0.85),0_0_50px_rgba(169,248,181,0.18)] overflow-hidden">
+        <div className="tactile-card relative flex-1 flex flex-col rounded-2xl sm:rounded-3xl bg-[#0e1014]/95 backdrop-blur-2xl border border-white/20 overflow-hidden">
           {/* Header Superior */}
           <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-white/10 bg-[#14161b]/90 shrink-0">
             <div>

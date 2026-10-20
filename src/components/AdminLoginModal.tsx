@@ -37,7 +37,7 @@ export const AdminLoginModal: React.FC = () => {
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#A9F8B5]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#DFF494]/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative w-full max-w-md bg-[#0d0f14]/90 backdrop-blur-2xl rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(169,248,181,0.12)] border border-white/15 p-6 sm:p-8 space-y-6">
+      <div className="tactile-card relative w-full max-w-md bg-[#0d0f14]/90 backdrop-blur-2xl rounded-3xl border border-white/15 p-6 sm:p-8 space-y-6">
         {/* Header */}
         <div className="text-center space-y-3 pb-2 border-b border-white/10">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-extrabold flex items-center justify-center text-xl mx-auto shadow-[0_0_25px_rgba(169,248,181,0.35)]">

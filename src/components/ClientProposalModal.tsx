@@ -301,7 +301,7 @@ export const ClientProposalModal: React.FC<ClientProposalModalProps> = ({ isOpen
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/90 backdrop-blur-xl p-2 sm:p-4 overflow-y-auto">
       {/* Contenedor Flotante Estilo GeoSoft */}
-      <div className="relative w-full max-w-3xl bg-[#0f1115] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(169,248,181,0.15)] border border-white/15 overflow-hidden my-auto max-h-[96vh] flex flex-col animate-message-soft">
+      <div className="tactile-card relative w-full max-w-3xl bg-[#0f1115] rounded-3xl border border-white/15 overflow-hidden my-auto max-h-[96vh] flex flex-col animate-message-soft">
         {/* Luz ambiental envolvente */}
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#A9F8B5]/15 blur-3xl pointer-events-none rounded-full" />
         <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[#DFF494]/10 blur-3xl pointer-events-none rounded-full" />
