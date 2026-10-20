@@ -176,6 +176,7 @@ export interface BusinessProposal {
 
   notes?: string;
   status: ProposalStatus;
+  source?: 'web' | 'bot';
   createdAt: string;
   updatedAt?: string;
 }

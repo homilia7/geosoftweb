@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Sparkles, User, CalendarCheck, RefreshCw, MessageCircle } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, User, CalendarCheck, RefreshCw, MessageCircle, FileText, Image as ImageIcon } from 'lucide-react';
 import { api } from '../services/api';
 import { soundEffects } from '../services/soundEffects';
 import { StructuredBotMessage } from './StructuredBotMessage';
+import { useGeoSoftStore } from '../context/StoreContext';
 
 interface ChatMessage {
   id: string;
@@ -11,9 +12,12 @@ interface ChatMessage {
   time: string;
   isObjection?: boolean;
   appointmentBooked?: boolean;
+  proposalSaved?: boolean;
+  proposalBusinessName?: string;
 }
 
 export const FloatingChat: React.FC = () => {
+  const { openProposalModal } = useGeoSoftStore();
   const [isOpen, setIsOpen] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState('¡Hola! 👋 Bienvenido a GeoSoft. Soy tu Asesor de Soluciones Digitales y Software. Cuéntame, ¿qué proyecto o reto tienes en mente para tu negocio?');
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
@@ -131,7 +135,9 @@ export const FloatingChat: React.FC = () => {
         text: response.reply,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isObjection: Boolean(response.objection?.detected),
-        appointmentBooked: Boolean(response.appointmentBooked)
+        appointmentBooked: Boolean(response.appointmentBooked),
+        proposalSaved: Boolean(response.proposalSaved),
+        proposalBusinessName: response.proposalData?.businessName
       };
 
       setMessages(prev => [...prev, botMsg]);
@@ -170,6 +176,7 @@ export const FloatingChat: React.FC = () => {
   };
 
   const quickQuestions = [
+    '📋 Quiero enviar los datos de mi negocio',
     '¿Cuánto cuesta una web o tienda?',
     '¿Qué tiempo tarda la entrega?',
     '¿Por qué me conviene GeoSoft?',
@@ -343,6 +350,39 @@ export const FloatingChat: React.FC = () => {
                             <span className="text-[9.5px] font-mono text-emerald-400/80 shrink-0 select-none">
                               {msg.time}
                             </span>
+                          </div>
+                        )}
+
+                        {msg.proposalSaved && (
+                          <div className="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-emerald-500/15 via-[#A9F8B5]/10 to-emerald-500/10 border border-[#A9F8B5]/30 space-y-2 animate-text-soft">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-[#A9F8B5]">
+                                <FileText className="w-4 h-4 text-[#A9F8B5] shrink-0" />
+                                <span>¡Ficha de tu negocio guardada con éxito!</span>
+                              </div>
+                              <span className="text-[9.5px] font-mono text-[#A9F8B5]/80 shrink-0 select-none">
+                                {msg.time}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-gray-300 leading-snug">
+                              Los ingenieros de GeoSoft ya tienen los datos en el panel para preparar la propuesta para{' '}
+                              <strong className="text-white font-semibold">
+                                {msg.proposalBusinessName || 'tu negocio'}
+                              </strong>.
+                            </p>
+                            <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  soundEffects.playClick();
+                                  openProposalModal();
+                                }}
+                                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black text-[11px] font-bold flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-sm"
+                              >
+                                <ImageIcon className="w-3.5 h-3.5 text-black" />
+                                <span>¿Deseas adjuntar tu logo o fotos? Abrir Ficha</span>
+                              </button>
+                            </div>
                           </div>
                         )}
                       </>

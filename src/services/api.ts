@@ -230,6 +230,8 @@ export const api = {
     objection?: any;
     isUnanswered?: boolean;
     appointmentBooked?: boolean;
+    proposalSaved?: boolean;
+    proposalData?: any;
     conversationId?: string;
   }> {
     try {

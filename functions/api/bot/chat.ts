@@ -238,7 +238,22 @@ Cuando el usuario demuestre interés o acepte coordinar una videollamada o demo:
 - Si ya tienes su nombre y WhatsApp/contacto, activa "should_book": true en el JSON con los datos recopilados.
 - Si aún no tienes su contacto, invítalo amablemente a dejar su nombre, WhatsApp y fecha/hora preferida para apartar su espacio.
 
-5. PREGUNTAS NO DISPONIBLES EN EL CONOCIMIENTO:
+5. PROTOCOLO CONSULTIVO DE PROPUESTAS DE NEGOCIOS Y SITIOS WEB (ESPECIALIDAD):
+Cuando el usuario exprese que desea cotizar, crear su sitio web, plataforma o bot de IA, o envíe datos de su negocio:
+- Actúa como un asesor y consultor digital senior de GeoSoft. Tu objetivo es guiarlo de forma fluida y profesional para entender la información valiosa de su proyecto:
+  1. Nombre del negocio o empresa (y marcas o sucursales adicionales si las tiene).
+  2. Rubro o industria y qué productos o servicios ofrece.
+  3. Objetivo principal del sitio web (vender online, captar leads por WhatsApp, branding corporativo, catálogo, etc.).
+  4. Qué espera que haga su agente de IA (rol: ventas, soporte, citas; tono: amigable o formal; canal de cierre: WhatsApp).
+  5. Nombre de contacto y WhatsApp o Email para enviarle la propuesta detallada.
+- FLUIDEZ Y EMPATÍA:
+  - Si el usuario te comparte varios o todos los datos en un solo mensaje: felicítalo por su proyecto, dale feedback de valor sobre cómo GeoSoft potenciará su negocio, confírmale con entusiasmo que su ficha ha quedado guardada en nuestro sistema de ingeniería y solicítale solo el dato faltante (como su WhatsApp) si hiciera falta.
+  - Si el usuario conversa paso a paso: no lo satures. Valida cordialmente lo que te dice y pregúntale 1 o 2 datos a la vez de forma natural y amena.
+- EXTRACCIÓN ESTRUCTURADA EN EL JSON:
+  - Cada vez que el usuario mencione datos de su negocio o proyecto, extráelos en el objeto "proposal" con "detected": true.
+  - Llena los campos conocidos a partir del contexto total de la conversación.
+
+6. PREGUNTAS NO DISPONIBLES EN EL CONOCIMIENTO:
 Si el usuario pregunta algo técnico o comercial muy específico que NO esté en las FAQs ni en el Conocimiento:
 - Responde de manera constructiva y alternativa ("Con gusto podemos evaluar esa funcionalidad personalizada en tu proyecto...").
 - Marca "is_unanswered": true y resume la pregunta y solución alternativa en el JSON.
@@ -246,7 +261,7 @@ Si el usuario pregunta algo técnico o comercial muy específico que NO esté en
 RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
 {
   "reply": "Texto de respuesta estructurado según el modo activo (${lengthMode}), con párrafos separados, viñetas si aplica y negritas estratégicas.",
-  "intent": "pregunta" | "objecion" | "agendar" | "saludo" | "otro",
+  "intent": "pregunta" | "objecion" | "agendar" | "propuesta" | "saludo" | "otro",
   "objection": {
     "detected": true | false,
     "type": "precio" | "tiempo" | "confianza" | "tecnologia" | "garantia" | "otro",
@@ -264,6 +279,27 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
     "date": "YYYY-MM-DD o vacío",
     "time": "HH:MM o vacío",
     "notes": "detalles relevantes"
+  },
+  "proposal": {
+    "detected": true | false,
+    "businessName": "nombre de la empresa o negocio",
+    "businessNamesAdditional": "marcas o sucursales adicionales o vacío",
+    "tagline": "eslogan o lema comercial si lo dio",
+    "industry": "rubro o sector",
+    "contactName": "nombre de la persona de contacto",
+    "whatsapp": "teléfono o whatsapp de contacto",
+    "email": "email si lo proporcionó",
+    "location": "ciudad o ubicación si la mencionó",
+    "mainGoal": "meta o propósito principal del sitio web",
+    "targetAudience": "público o clientes ideales",
+    "servicesOrProducts": "resumen de productos o servicios que vende",
+    "referenceWebsites": "páginas de referencia o inspiración",
+    "aiRole": "rol del agente IA deseado",
+    "aiTone": "tono del bot (amigable, formal, etc.)",
+    "aiCommonFaqs": "preguntas frecuentes que debe responder el bot",
+    "aiDestination": "canal de cierre (WhatsApp, llamada, etc.)",
+    "brandColors": "colores o estilo visual si lo mencionó",
+    "notes": "notas o especificaciones clave"
   }
 }`;
 
@@ -384,6 +420,111 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
       ).run();
     }
 
+    // 6. Si detectó datos valiosos de propuesta de negocio, guardar en proposals con source = 'bot'
+    const proposalData = aiResponse.proposal || { detected: false };
+    let proposalSaved = false;
+    let savedProposalRecord: any = null;
+
+    const hasValuableInfo = Boolean(
+      proposalData.detected && (
+        proposalData.businessName ||
+        proposalData.servicesOrProducts ||
+        proposalData.industry ||
+        proposalData.mainGoal ||
+        proposalData.contactName ||
+        proposalData.whatsapp
+      )
+    );
+
+    if (hasValuableInfo) {
+      try {
+        await context.env.DB.prepare(`
+          CREATE TABLE IF NOT EXISTS proposals (
+            id TEXT PRIMARY KEY,
+            businessName TEXT,
+            contactName TEXT,
+            whatsapp TEXT,
+            email TEXT,
+            status TEXT,
+            data TEXT,
+            createdAt TEXT
+          )
+        `).run();
+
+        const stablePropId = `bot-prop-${conversationId.replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 32)}`;
+
+        let existingData: any = {};
+        let existingCreatedAt = new Date().toISOString();
+        try {
+          const existingRow = await context.env.DB.prepare(
+            "SELECT data, createdAt FROM proposals WHERE id = ?"
+          ).bind(stablePropId).first();
+          if (existingRow) {
+            if (existingRow.createdAt) existingCreatedAt = existingRow.createdAt;
+            if (existingRow.data) existingData = JSON.parse(existingRow.data);
+          }
+        } catch (_) {}
+
+        const bName = proposalData.businessName || existingData.businessName || userName || 'Negocio Interesado (Bot)';
+        const cName = proposalData.contactName || existingData.contactName || userName || '';
+        const wApp = proposalData.whatsapp || existingData.whatsapp || userContact || '';
+        const emailAddr = proposalData.email || existingData.email || '';
+
+        savedProposalRecord = {
+          ...existingData,
+          id: stablePropId,
+          businessName: bName,
+          businessNamesAdditional: proposalData.businessNamesAdditional || existingData.businessNamesAdditional || '',
+          tagline: proposalData.tagline || existingData.tagline || '',
+          industry: proposalData.industry || existingData.industry || 'General',
+          contactName: cName,
+          whatsapp: wApp,
+          email: emailAddr,
+          location: proposalData.location || existingData.location || '',
+          mainGoal: proposalData.mainGoal || existingData.mainGoal || 'Diseño de sitio web profesional y agente de IA',
+          targetAudience: proposalData.targetAudience || existingData.targetAudience || 'Clientes potenciales',
+          servicesOrProducts: proposalData.servicesOrProducts || existingData.servicesOrProducts || '',
+          referenceWebsites: proposalData.referenceWebsites || existingData.referenceWebsites || '',
+          budgetOrTimeline: proposalData.budgetOrTimeline || existingData.budgetOrTimeline || '',
+          aiRole: proposalData.aiRole || existingData.aiRole || 'Asesor de ventas y atención 24/7',
+          aiTone: proposalData.aiTone || existingData.aiTone || 'Amigable y persuasivo',
+          aiCommonFaqs: proposalData.aiCommonFaqs || existingData.aiCommonFaqs || '',
+          aiDestination: proposalData.aiDestination || existingData.aiDestination || 'WhatsApp',
+          brandColors: proposalData.brandColors || existingData.brandColors || '',
+          socialLinks: proposalData.socialLinks || existingData.socialLinks || '',
+          images: existingData.images || [],
+          notes: proposalData.notes || existingData.notes || `Capturada de forma fluida por el Bot de IA en conversación ${conversationId}`,
+          status: existingData.status || 'nueva',
+          source: 'bot',
+          createdAt: existingCreatedAt,
+          updatedAt: new Date().toISOString()
+        };
+
+        await context.env.DB.prepare(`
+          INSERT INTO proposals (id, businessName, contactName, whatsapp, email, status, data, createdAt)
+          VALUES (?, ?, ?, ?, ?, 'nueva', ?, ?)
+          ON CONFLICT(id) DO UPDATE SET
+            businessName = excluded.businessName,
+            contactName = excluded.contactName,
+            whatsapp = excluded.whatsapp,
+            email = excluded.email,
+            data = excluded.data
+        `).bind(
+          stablePropId,
+          savedProposalRecord.businessName,
+          savedProposalRecord.contactName,
+          savedProposalRecord.whatsapp,
+          savedProposalRecord.email,
+          JSON.stringify(savedProposalRecord),
+          savedProposalRecord.createdAt
+        ).run();
+
+        proposalSaved = true;
+      } catch (propErr) {
+        console.error('Error auto-saving proposal from bot:', propErr);
+      }
+    }
+
     return new Response(JSON.stringify({
       success: true,
       conversationId,
@@ -393,6 +534,8 @@ RESPONDE OBLIGATORIAMENTE EN FORMATO JSON ESTRICTO CON ESTE ESQUEMA:
       isUnanswered,
       appointmentBooked: appointmentClosed === 1,
       appointmentId: createdAppointmentId,
+      proposalSaved,
+      proposalData: proposalSaved ? savedProposalRecord : null,
       modelUsed,
       tokensUsed: totalTokens
     }), {

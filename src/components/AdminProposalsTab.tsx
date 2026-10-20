@@ -139,7 +139,12 @@ ${prop.notes || 'Sin notas adicionales'}
       addNames.includes(q);
 
     const status = p.status || 'nueva';
-    const matchesStatus = statusFilter === 'todas' ? true : status === statusFilter;
+    const matchesStatus =
+      statusFilter === 'todas'
+        ? true
+        : statusFilter === 'bot'
+        ? p.source === 'bot'
+        : status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
@@ -228,6 +233,7 @@ ${prop.notes || 'Sin notas adicionales'}
           {[
             { id: 'todas', label: 'Todas', count: safeProposals.length },
             { id: 'nueva', label: 'Nuevas', count: safeProposals.filter(p => (p.status || 'nueva') === 'nueva').length },
+            { id: 'bot', label: '🤖 Bot IA', count: safeProposals.filter(p => p.source === 'bot').length },
             { id: 'en_proceso', label: 'En Proceso', count: safeProposals.filter(p => p.status === 'en_proceso').length },
             { id: 'completada', label: 'Completadas', count: safeProposals.filter(p => p.status === 'completada').length }
           ].map(f => (
@@ -302,6 +308,17 @@ ${prop.notes || 'Sin notas adicionales'}
                         <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full border ${getStatusBadge(status)}`}>
                           {status.replace('_', ' ')}
                         </span>
+                        {prop.source === 'bot' ? (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1 font-mono">
+                            <Bot className="w-3 h-3 text-cyan-400" />
+                            Capturada por Bot IA
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 flex items-center gap-1 font-mono">
+                            <Globe className="w-3 h-3 text-purple-400" />
+                            Formulario Web
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mt-1">
@@ -385,6 +402,12 @@ ${prop.notes || 'Sin notas adicionales'}
                 {/* Vista Detallada Desplegable */}
                 {isExpanded && (
                   <div className="p-4 sm:p-5 border-t border-white/10 space-y-4 bg-[#111317] text-xs animate-message-soft">
+                    {prop.source === 'bot' && (
+                      <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-cyan-200 text-xs flex items-center gap-2 font-medium">
+                        <Bot className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>Ficha recopilada interactivamente por el Asistente de IA en el chat web de GeoSoft.</span>
+                      </div>
+                    )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Columna 1: Requerimientos Web */}
                       <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-2.5">
