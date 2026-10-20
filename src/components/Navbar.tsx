@@ -295,6 +295,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Inicio
               </span>
+              {activeSection === 'inicio' && <span className="nav-underglow-flare" />}
             </a>
 
             {/* Servicios con Dropdown */}
@@ -318,6 +319,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Servicios
                   <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
                 </span>
+                {activeSection === 'servicios' && <span className="nav-underglow-flare" />}
               </button>
 
               {dropdownOpen && (
@@ -375,6 +377,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Proceso
               </span>
+              {activeSection === 'como-funciona' && <span className="nav-underglow-flare" />}
             </a>
 
             {/* Proyectos */}
@@ -388,6 +391,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Proyectos
               </span>
+              {activeSection === 'proyectos' && <span className="nav-underglow-flare" />}
             </a>
 
             {/* Equipo */}
@@ -401,6 +405,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Equipo
               </span>
+              {activeSection === 'equipo' && <span className="nav-underglow-flare" />}
             </a>
 
             {/* Cotizador */}
@@ -417,6 +422,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 Cotizador
               </span>
+              {activeSection === 'cotizador' && <span className="nav-underglow-flare" />}
             </a>
 
             {/* FAQ */}
@@ -430,6 +436,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className={`text-[10px] font-semibold tracking-wide ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
                 FAQ
               </span>
+              {activeSection === 'faq' && <span className="nav-underglow-flare" />}
             </a>
           </nav>
 
