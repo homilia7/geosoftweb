@@ -197,8 +197,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
 
-  // Initial sync with remote Cloudflare D1 backend (deferred to 7s to prevent initial re-render)
+  // Initial sync with remote Cloudflare D1 backend
   useEffect(() => {
+    api.getProposals().then(remoteProps => {
+      if (remoteProps && Array.isArray(remoteProps) && remoteProps.length > 0) {
+        setProposals(remoteProps);
+      }
+    });
+
     const timer = setTimeout(() => {
       api.getPricing().then(remotePricing => {
         if (remotePricing) setPricing(remotePricing);
@@ -206,6 +212,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 7000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Sync proposals whenever admin panel opens
+  useEffect(() => {
+    if (isAdminModalOpen) {
+      reloadProposals();
+    }
+  }, [isAdminModalOpen]);
 
   // Sync to localStorage as offline cache
   useEffect(() => {

@@ -48,10 +48,13 @@ function MainLayout() {
     soundEffects.init();
     const checkHash = () => {
       const hash = window.location.hash.toLowerCase();
+      const path = window.location.pathname.toLowerCase();
       if (hash === '#cubo' || hash === '#cubo3d') {
         setIsCubeViewerOpen(true);
-      } else if (hash === '#propuesta' || hash === '#formulario' || hash === '#brief') {
+      } else if (hash === '#propuesta' || hash === '#formulario' || hash === '#brief' || path === '/propuesta') {
         openProposalModal();
+      } else if (hash === '#admin' || hash === '#propuestas' || hash === '#admin-propuestas' || path === '/admin' || path === '/propuestas') {
+        openAdminModal();
       }
     };
 

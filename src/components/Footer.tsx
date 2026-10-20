@@ -1,4 +1,5 @@
 import React from 'react';
+import { Lock } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -36,6 +37,10 @@ export const Footer: React.FC = () => {
           <a href="#equipo" className="hover:text-white transition-colors">Equipo</a>
           <a href="#cotizador" className="hover:text-white transition-colors">Cotizador</a>
           <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+          <a href="#admin" className="text-gray-400 hover:text-[#A9F8B5] transition-colors flex items-center gap-1">
+            <Lock className="w-3 h-3 text-[#A9F8B5]" />
+            <span>Panel Admin / Propuestas</span>
+          </a>
         </div>
 
         <div className="text-center md:text-right text-gray-400">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FileText,
   Copy,
@@ -7,8 +7,6 @@ import {
   Search,
   MessageCircle,
   Trash2,
-  Eye,
-  X,
   Sparkles,
   Bot,
   Globe,
@@ -17,21 +15,35 @@ import {
   Image as ImageIcon,
   ChevronDown,
   ChevronUp,
-  Download,
-  Filter
+  RotateCcw,
+  RefreshCw,
+  X
 } from 'lucide-react';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { BusinessProposal, ProposalStatus } from '../types';
 import { soundEffects } from '../services/soundEffects';
 
 export const AdminProposalsTab: React.FC = () => {
-  const { proposals, updateProposalStatus, deleteProposal, openProposalModal } = useGeoSoftStore();
+  const { proposals, updateProposalStatus, deleteProposal, openProposalModal, reloadProposals } = useGeoSoftStore();
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('todas');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Recargar propuestas automáticamente al montar el componente
+  useEffect(() => {
+    reloadProposals();
+  }, []);
+
+  const handleManualRefresh = async () => {
+    soundEffects.playClick();
+    setIsRefreshing(true);
+    await reloadProposals();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
 
   // Generar URL pública para clientes
   const getPublicLink = () => {
@@ -55,11 +67,17 @@ export const AdminProposalsTab: React.FC = () => {
   };
 
   const handleWhatsAppClient = (prop: BusinessProposal) => {
+    const bName = prop.businessName || 'tu negocio';
+    const cName = prop.contactName || 'estimado cliente';
     const text = encodeURIComponent(
-      `¡Hola ${prop.contactName}! Te saludamos de GeoSoft con relación a la información que nos compartiste de tu negocio "${prop.businessName}".\n\n` +
+      `¡Hola ${cName}! Te saludamos de GeoSoft con relación a la información que nos compartiste de tu negocio "${bName}".\n\n` +
       `Ya estamos revisando los requerimientos de tu sitio web y tu agente de IA. ¿Tienes disponibilidad para coordinar los primeros detalles de diseño?`
     );
-    const cleanPhone = prop.whatsapp.replace(/[^0-9]/g, '');
+    const cleanPhone = (prop.whatsapp || '').replace(/[^0-9]/g, '');
+    if (!cleanPhone) {
+      alert('Esta propuesta no tiene un número de WhatsApp registrado.');
+      return;
+    }
     window.open(`https://wa.me/${cleanPhone}?text=${text}`, '_blank');
   };
 
@@ -67,28 +85,28 @@ export const AdminProposalsTab: React.FC = () => {
   const handleCopyAIPrompt = (prop: BusinessProposal) => {
     soundEffects.playClick();
     const prompt = `### ESPECIFICACIÓN MAESTRA DE PROYECTO WEB & AGENTE DE IA
-**Cliente:** ${prop.contactName} (${prop.businessName})
-**WhatsApp:** ${prop.whatsapp} | **Email:** ${prop.email || 'N/A'}
+**Cliente:** ${prop.contactName || 'N/A'} (${prop.businessName || 'Sin nombre'})
+**WhatsApp:** ${prop.whatsapp || 'N/A'} | **Email:** ${prop.email || 'N/A'}
 **Ubicación:** ${prop.location || 'N/A'}
-**Sector / Industria:** ${prop.industry}
+**Sector / Industria:** ${prop.industry || 'General'}
 **Marcas o Sucursales Adicionales:** ${prop.businessNamesAdditional || 'Ninguna'}
 **Lema Comercial:** ${prop.tagline || 'N/A'}
 
 ---
 #### 1. REQUERIMIENTOS DEL SITIO WEB
-- **Objetivo Principal:** ${prop.mainGoal}
-- **Público Objetivo:** ${prop.targetAudience}
+- **Objetivo Principal:** ${prop.mainGoal || 'Presencia de marca y captación de clientes'}
+- **Público Objetivo:** ${prop.targetAudience || 'Público general'}
 - **Servicios / Productos Ofrecidos:**
-${prop.servicesOrProducts}
+${prop.servicesOrProducts || 'Servicios estándar del rubro'}
 - **Páginas de Referencia / Inspiración:** ${prop.referenceWebsites || 'Ninguna indicada'}
 - **Colores Corporativos:** ${prop.brandColors || 'Por definir según identidad'}
 - **Redes Sociales:** ${prop.socialLinks || 'N/A'}
 
 ---
 #### 2. ESPECIFICACIÓN DEL AGENTE DE INTELIGENCIA ARTIFICIAL (24/7)
-- **Rol del Agente:** ${prop.aiRole.toUpperCase()}
-- **Tono Conversacional:** ${prop.aiTone.toUpperCase()}
-- **Acción / Canal de Cierre:** ${prop.aiDestination}
+- **Rol del Agente:** ${(prop.aiRole || 'ventas').toUpperCase()}
+- **Tono Conversacional:** ${(prop.aiTone || 'amigable').toUpperCase()}
+- **Acción / Canal de Cierre:** ${prop.aiDestination || 'whatsapp'}
 - **Preguntas Frecuentes y Respuestas Clave:**
 ${prop.aiCommonFaqs || 'Información general de servicios y cotizaciones'}
 
@@ -102,20 +120,31 @@ ${prop.notes || 'Sin notas adicionales'}
     setTimeout(() => setCopiedPromptId(null), 3000);
   };
 
-  // Filtrado de propuestas
-  const filteredProposals = proposals.filter(p => {
-    const matchesSearch =
-      p.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.contactName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.businessNamesAdditional && p.businessNamesAdditional.toLowerCase().includes(searchQuery.toLowerCase()));
+  const safeProposals = Array.isArray(proposals) ? proposals : [];
 
-    const matchesStatus = statusFilter === 'todas' ? true : p.status === statusFilter;
+  // Filtrado de propuestas
+  const filteredProposals = safeProposals.filter(p => {
+    if (!p) return false;
+    const bName = (p.businessName || '').toLowerCase();
+    const cName = (p.contactName || '').toLowerCase();
+    const ind = (p.industry || '').toLowerCase();
+    const addNames = (p.businessNamesAdditional || '').toLowerCase();
+    const q = searchQuery.toLowerCase().trim();
+
+    const matchesSearch =
+      !q ||
+      bName.includes(q) ||
+      cName.includes(q) ||
+      ind.includes(q) ||
+      addNames.includes(q);
+
+    const status = p.status || 'nueva';
+    const matchesStatus = statusFilter === 'todas' ? true : status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusBadge = (status: ProposalStatus) => {
+  const getStatusBadge = (status?: string) => {
     switch (status) {
       case 'nueva':
         return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
@@ -126,7 +155,7 @@ ${prop.notes || 'Sin notas adicionales'}
       case 'archivada':
         return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
       default:
-        return 'bg-white/10 text-white';
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
     }
   };
 
@@ -154,6 +183,15 @@ ${prop.notes || 'Sin notas adicionales'}
 
           <div className="flex items-center gap-2 shrink-0">
             <button
+              onClick={handleManualRefresh}
+              title="Actualizar listado de propuestas"
+              className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#A9F8B5]' : ''}`} />
+              <span className="hidden sm:inline">Actualizar</span>
+            </button>
+
+            <button
               onClick={handleOpenLiveForm}
               className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
@@ -174,10 +212,10 @@ ${prop.notes || 'Sin notas adicionales'}
         {/* Input con URL pública para visualizar */}
         <div className="flex items-center gap-2 bg-black/50 border border-white/10 rounded-xl px-3.5 py-2 text-xs">
           <Globe className="w-3.5 h-3.5 text-[#A9F8B5] shrink-0" />
-          <span className="text-gray-400 select-all font-mono truncate flex-1">
+          <span className="text-gray-300 select-all font-mono truncate flex-1">
             {getPublicLink()}
           </span>
-          <span className="text-[10px] text-gray-500 font-mono shrink-0 hidden sm:inline">
+          <span className="text-[10px] text-[#A9F8B5] font-mono shrink-0 hidden sm:inline">
             Formulario Interactivo de 5 Pasos
           </span>
         </div>
@@ -188,10 +226,10 @@ ${prop.notes || 'Sin notas adicionales'}
         {/* Filtros de Estado */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
           {[
-            { id: 'todas', label: 'Todas', count: proposals.length },
-            { id: 'nueva', label: 'Nuevas', count: proposals.filter(p => p.status === 'nueva').length },
-            { id: 'en_proceso', label: 'En Proceso', count: proposals.filter(p => p.status === 'en_proceso').length },
-            { id: 'completada', label: 'Completadas', count: proposals.filter(p => p.status === 'completada').length }
+            { id: 'todas', label: 'Todas', count: safeProposals.length },
+            { id: 'nueva', label: 'Nuevas', count: safeProposals.filter(p => (p.status || 'nueva') === 'nueva').length },
+            { id: 'en_proceso', label: 'En Proceso', count: safeProposals.filter(p => p.status === 'en_proceso').length },
+            { id: 'completada', label: 'Completadas', count: safeProposals.filter(p => p.status === 'completada').length }
           ].map(f => (
             <button
               key={f.id}
@@ -239,6 +277,7 @@ ${prop.notes || 'Sin notas adicionales'}
           {filteredProposals.map(prop => {
             const isExpanded = expandedId === prop.id;
             const isCopied = copiedPromptId === prop.id;
+            const status = prop.status || 'nueva';
 
             return (
               <div
@@ -254,32 +293,32 @@ ${prop.notes || 'Sin notas adicionales'}
 
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="font-bold text-white text-base">{prop.businessName}</h4>
+                        <h4 className="font-bold text-white text-base">{prop.businessName || 'Sin Nombre de Negocio'}</h4>
                         {prop.businessNamesAdditional && (
                           <span className="text-[11px] text-gray-400 bg-white/5 px-2 py-0.5 rounded-md border border-white/10">
                             +{prop.businessNamesAdditional}
                           </span>
                         )}
-                        <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full border ${getStatusBadge(prop.status)}`}>
-                          {prop.status.replace('_', ' ')}
+                        <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full border ${getStatusBadge(status)}`}>
+                          {status.replace('_', ' ')}
                         </span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mt-1">
                         <span className="flex items-center gap-1 text-white">
-                          <User className="w-3 h-3 text-gray-500" />
-                          {prop.contactName}
+                          <span>👤</span>
+                          {prop.contactName || 'Sin Contacto'}
                         </span>
                         <span>•</span>
-                        <span className="text-gray-300">{prop.industry}</span>
+                        <span className="text-gray-300">{prop.industry || 'General'}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1 font-mono text-[11px]">
                           <Calendar className="w-3 h-3 text-gray-500" />
-                          {new Date(prop.createdAt).toLocaleDateString([], {
+                          {prop.createdAt ? new Date(prop.createdAt).toLocaleDateString([], {
                             day: '2-digit',
                             month: 'short',
                             year: 'numeric'
-                          })}
+                          }) : 'Reciente'}
                         </span>
                       </div>
                     </div>
@@ -309,7 +348,7 @@ ${prop.notes || 'Sin notas adicionales'}
 
                     {/* Cambiar Estado */}
                     <select
-                      value={prop.status}
+                      value={status}
                       onChange={e => updateProposalStatus(prop.id, e.target.value as ProposalStatus)}
                       className="bg-black/40 border border-white/10 rounded-xl text-xs text-gray-300 px-2.5 py-1.5 focus:outline-none focus:border-[#A9F8B5] cursor-pointer"
                     >
@@ -331,7 +370,7 @@ ${prop.notes || 'Sin notas adicionales'}
                     {/* Eliminar */}
                     <button
                       onClick={() => {
-                        if (confirm(`¿Eliminar la ficha de ${prop.businessName}?`)) {
+                        if (confirm(`¿Eliminar la ficha de ${prop.businessName || 'este negocio'}?`)) {
                           deleteProposal(prop.id);
                         }
                       }}
@@ -356,25 +395,25 @@ ${prop.notes || 'Sin notas adicionales'}
 
                         <div>
                           <span className="text-gray-400">Objetivo comercial: </span>
-                          <span className="text-gray-200 font-medium">{prop.mainGoal}</span>
+                          <span className="text-gray-200 font-medium">{prop.mainGoal || 'Captación'}</span>
                         </div>
 
                         <div>
                           <span className="text-gray-400">Público meta: </span>
-                          <span className="text-gray-200">{prop.targetAudience}</span>
+                          <span className="text-gray-200">{prop.targetAudience || 'General'}</span>
                         </div>
 
                         <div>
                           <span className="text-gray-400 block mb-1">Servicios / Productos:</span>
                           <p className="text-gray-300 bg-white/5 p-2 rounded-lg whitespace-pre-wrap font-mono text-[11px]">
-                            {prop.servicesOrProducts}
+                            {prop.servicesOrProducts || 'No especificado'}
                           </p>
                         </div>
 
                         {prop.referenceWebsites && (
                           <div>
                             <span className="text-gray-400">Webs de referencia: </span>
-                            <span className="text-[#A9F8B5] underline">{prop.referenceWebsites}</span>
+                            <span className="text-[#A9F8B5] underline break-all">{prop.referenceWebsites}</span>
                           </div>
                         )}
                       </div>
@@ -389,15 +428,15 @@ ${prop.notes || 'Sin notas adicionales'}
                         <div className="flex items-center gap-3">
                           <div>
                             <span className="text-gray-400">Rol: </span>
-                            <span className="text-[#A9F8B5] font-semibold uppercase">{prop.aiRole}</span>
+                            <span className="text-[#A9F8B5] font-semibold uppercase">{prop.aiRole || 'ventas'}</span>
                           </div>
                           <div>
                             <span className="text-gray-400">Tono: </span>
-                            <span className="text-[#DFF494] font-semibold uppercase">{prop.aiTone}</span>
+                            <span className="text-[#DFF494] font-semibold uppercase">{prop.aiTone || 'amigable'}</span>
                           </div>
                           <div>
                             <span className="text-gray-400">Destino: </span>
-                            <span className="text-white font-mono">{prop.aiDestination}</span>
+                            <span className="text-white font-mono">{prop.aiDestination || 'whatsapp'}</span>
                           </div>
                         </div>
 
@@ -454,8 +493,20 @@ ${prop.notes || 'Sin notas adicionales'}
                     )}
 
                     {/* Notas y Enlaces Adicionales */}
-                    {(prop.notes || prop.brandColors || prop.socialLinks) && (
+                    {(prop.notes || prop.brandColors || prop.socialLinks || prop.email || prop.location) && (
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-xl bg-white/5 border border-white/5 text-[11px]">
+                        {prop.email && (
+                          <div>
+                            <span className="text-gray-400 font-semibold block">Email:</span>
+                            <span className="text-white">{prop.email}</span>
+                          </div>
+                        )}
+                        {prop.location && (
+                          <div>
+                            <span className="text-gray-400 font-semibold block">Ubicación:</span>
+                            <span className="text-white">{prop.location}</span>
+                          </div>
+                        )}
                         {prop.brandColors && (
                           <div>
                             <span className="text-gray-400 font-semibold block">Colores de marca:</span>

@@ -22,7 +22,7 @@ export const AdminPanel: React.FC = () => {
     deleteAppointment
   } = useGeoSoftStore();
 
-  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas' | 'bot' | 'propuestas'>('precios');
+  const [activeTab, setActiveTab] = useState<'precios' | 'citas' | 'analiticas' | 'bot' | 'propuestas'>('propuestas');
 
   if (!isAdminModalOpen) return null;
 
@@ -73,15 +73,18 @@ export const AdminPanel: React.FC = () => {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border-b border-white/10 bg-[#0d0e10] shrink-0 overflow-x-auto">
           <button
-            onClick={() => setActiveTab('precios')}
-            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'precios'
+            onClick={() => setActiveTab('propuestas')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap relative ${
+              activeTab === 'propuestas'
                 ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <DollarSign className="w-3.5 h-3.5" />
-            <span>Precios & Descuentos</span>
+            <FileText className="w-3.5 h-3.5" />
+            <span>Propuestas de Negocios ({(proposals || []).length})</span>
+            {(proposals || []).some(p => p && p.status === 'nueva') && (
+              <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
+            )}
           </button>
 
           <button
@@ -93,22 +96,22 @@ export const AdminPanel: React.FC = () => {
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
-            <span>Citas Agendadas ({appointments.length})</span>
-            {appointments.some(a => a.status === 'pendiente') && (
+            <span>Citas Agendadas ({(appointments || []).length})</span>
+            {(appointments || []).some(a => a && a.status === 'pendiente') && (
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
             )}
           </button>
 
           <button
-            onClick={() => setActiveTab('analiticas')}
+            onClick={() => setActiveTab('precios')}
             className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'analiticas'
+              activeTab === 'precios'
                 ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>Métricas & Mapa de Calor</span>
+            <DollarSign className="w-3.5 h-3.5" />
+            <span>Precios & Descuentos</span>
           </button>
 
           <button
@@ -125,24 +128,23 @@ export const AdminPanel: React.FC = () => {
           </button>
 
           <button
-            onClick={() => setActiveTab('propuestas')}
-            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap relative ${
-              activeTab === 'propuestas'
+            onClick={() => setActiveTab('analiticas')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'analiticas'
                 ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Propuestas de Negocios ({proposals.length})</span>
-            {proposals.some(p => p.status === 'nueva') && (
-              <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
-            )}
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>Métricas & Mapa de Calor</span>
           </button>
         </div>
 
         {/* Tab Body */}
         <div className="p-4 sm:p-6 overflow-y-auto flex-grow space-y-6 sm:space-y-8">
-          {activeTab === 'precios' ? (
+          {activeTab === 'propuestas' ? (
+            <AdminProposalsTab />
+          ) : activeTab === 'precios' ? (
             <div className="space-y-8">
               {/* Promo Discount Module */}
               <div className="card-accent p-6 border-[#DFF494]/30 space-y-4">
@@ -372,10 +374,8 @@ export const AdminPanel: React.FC = () => {
             </div>
           ) : activeTab === 'analiticas' ? (
             <AdminAnalyticsTab />
-          ) : activeTab === 'bot' ? (
-            <AdminBotTab />
           ) : (
-            <AdminProposalsTab />
+            <AdminBotTab />
           )}
         </div>
       </div>
