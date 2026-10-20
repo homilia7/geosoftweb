@@ -12,8 +12,6 @@ import {
   Search,
   Volume2,
   VolumeX,
-  Sun,
-  Moon,
   Home,
   GitBranch,
   Users,
@@ -22,6 +20,7 @@ import {
 } from 'lucide-react';
 import { soundEffects } from '../services/soundEffects';
 import { useGeoSoftStore } from '../context/StoreContext';
+import { NeumorphicThemeToggle } from './NeumorphicThemeToggle';
 
 interface NavbarProps {
   onOpenCal: () => void;
@@ -477,22 +476,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Orbe de Cristal Circular Separado 1: Alternar Tema Claro / Oscuro (Exacto al orbe de la referencia) */}
-        <button
-          onClick={() => {
-            try { soundEffects.playClick(); } catch {}
-            toggleTheme();
-          }}
-          className={`liquid-glass-orb w-11 h-11 sm:w-12 sm:h-12 shadow-lg transition-transform ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
+        {/* Interruptor Neumórfico 3D Día / Noche (Octane Studio Render) */}
+        <div
+          className={`flex items-center transition-transform ${getEntranceClass('right', 1)} ${getNavAuxClass()}`}
           title={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
-          aria-label={theme === 'dark' ? 'Cambiar a Tema Claro' : 'Cambiar a Tema Oscuro'}
         >
-          {theme === 'dark' ? (
-            <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-[#DFF494] transition-transform hover:rotate-45" />
-          ) : (
-            <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-800 transition-transform hover:-rotate-12" />
-          )}
-        </button>
+          {/* Desktop & Tablet */}
+          <div className="hidden sm:block">
+            <NeumorphicThemeToggle scale={0.29} idPrefix="navDeskTheme" />
+          </div>
+          {/* Mobile top bar */}
+          <div className="block sm:hidden">
+            <NeumorphicThemeToggle scale={0.24} idPrefix="navMobTopTheme" />
+          </div>
+        </div>
 
         {/* Orbe de Cristal Circular Separado 2 (Desktop): Audio */}
         <button
@@ -569,26 +566,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               Cotizar Mi Proyecto
             </button>
-            <button
+            {/* Selector de Tema Neumórfico 3D en Drawer Móvil */}
+            <div
               style={{ animationDelay: `${(mobileNavItems.length + 3) * 45 + 90}ms` }}
-              onClick={() => {
-                try { soundEffects.playClick(); } catch {}
-                toggleTheme();
-              }}
-              className="animate-mobile-item w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 active:scale-[0.98] transition-transform"
+              className="animate-mobile-item flex flex-col items-center justify-center py-3.5 px-3 rounded-2xl bg-white/5 border border-white/10"
             >
-              {theme === 'dark' ? (
-                <>
-                  <Sun className="w-3.5 h-3.5 text-[#DFF494]" />
-                  <span>Activar Tema Claro</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Activar Tema Oscuro</span>
-                </>
-              )}
-            </button>
+              <span className="text-[10px] font-semibold tracking-wider uppercase text-gray-400 mb-2 font-mono">
+                Selector de Tema Neumórfico 3D
+              </span>
+              <NeumorphicThemeToggle scale={0.62} showLabel idPrefix="navDrawerTheme" />
+            </div>
             <button
               style={{ animationDelay: `${(mobileNavItems.length + 4) * 45 + 90}ms` }}
               onClick={() => soundEffects.toggleMute()}
