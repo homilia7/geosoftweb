@@ -58,7 +58,7 @@ export const TeamSection: React.FC = () => {
               delay={idx * 120}
               className="group cursor-pointer"
             >
-              <div className="aspect-[4/5] rounded-3xl overflow-hidden card-accent shadow-lg group-hover:border-[#A9F8B5]/40 transition-all duration-500">
+              <div className="aspect-[4/5] rounded-3xl overflow-hidden card-accent shadow-lg transition-all duration-500">
                 <img
                   src={member.image}
                   alt={member.name}

@@ -108,8 +108,8 @@ export const CostCalculator: React.FC = () => {
                       onClick={() => setSelectedPlatformId(p.id)}
                       className={`tactile-card p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer relative ${
                         isSelected
-                          ? 'border-[#A9F8B5] shadow-[0_0_25px_rgba(169,248,181,0.2)]'
-                          : 'hover:border-white/25'
+                          ? 'is-selected border-white/20'
+                          : 'border-white/10 hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -166,8 +166,8 @@ export const CostCalculator: React.FC = () => {
                       onClick={() => toggleAddon(addon.id)}
                       className={`tactile-card p-3.5 sm:p-4 rounded-xl border flex items-center justify-between gap-3 transition-all cursor-pointer ${
                         isChecked
-                          ? 'border-[#DFF494] shadow-[0_0_20px_rgba(223,244,148,0.15)]'
-                          : 'hover:border-white/20'
+                          ? 'is-selected border-white/20'
+                          : 'border-white/10 hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center gap-3">
