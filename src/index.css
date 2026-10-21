@@ -533,6 +533,101 @@ div:focus-visible,
   animation-play-state: paused;
 }
 
+/* Ecosistema Tecnológico Smooth Feathered Edge Fades */
+.marquee-fade-left {
+  background: linear-gradient(
+    90deg,
+    #040404 0%,
+    rgba(4, 4, 4, 0.95) 15%,
+    rgba(4, 4, 4, 0.75) 35%,
+    rgba(4, 4, 4, 0.42) 60%,
+    rgba(4, 4, 4, 0.12) 82%,
+    transparent 100%
+  );
+}
+
+.marquee-fade-right {
+  background: linear-gradient(
+    270deg,
+    #040404 0%,
+    rgba(4, 4, 4, 0.95) 15%,
+    rgba(4, 4, 4, 0.75) 35%,
+    rgba(4, 4, 4, 0.42) 60%,
+    rgba(4, 4, 4, 0.12) 82%,
+    transparent 100%
+  );
+}
+
+/* Modo Claro: difuminado suave del mismo color del fondo (#edf2f7) */
+html.light .marquee-fade-left {
+  background: linear-gradient(
+    90deg,
+    #edf2f7 0%,
+    rgba(237, 242, 247, 0.96) 15%,
+    rgba(237, 242, 247, 0.78) 35%,
+    rgba(237, 242, 247, 0.45) 60%,
+    rgba(237, 242, 247, 0.15) 82%,
+    transparent 100%
+  ) !important;
+}
+
+html.light .marquee-fade-right {
+  background: linear-gradient(
+    270deg,
+    #edf2f7 0%,
+    rgba(237, 242, 247, 0.96) 15%,
+    rgba(237, 242, 247, 0.78) 35%,
+    rgba(237, 242, 247, 0.45) 60%,
+    rgba(237, 242, 247, 0.15) 82%,
+    transparent 100%
+  ) !important;
+}
+
+/* Marquee track mask for ultra-smooth edge feathering across all elements */
+.marquee-mask-container {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.4) 3%,
+    #000000 8%,
+    #000000 92%,
+    rgba(0, 0, 0, 0.4) 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.4) 3%,
+    #000000 8%,
+    #000000 92%,
+    rgba(0, 0, 0, 0.4) 97%,
+    transparent 100%
+  );
+}
+
+.tech-marquee-pill {
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+html.light .tech-marquee-pill {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px -1px rgba(100, 116, 139, 0.12), 0 1px 3px rgba(100, 116, 139, 0.06) !important;
+}
+
+html.light .tech-marquee-pill:hover {
+  background: #f8fafc !important;
+  border-color: #10b981 !important;
+  color: #047857 !important;
+}
+
+html.light .bg-\[\#A9F8B5\] {
+  background-color: #059669 !important;
+}
+
 /* Footer Holographic Logo Beam & Blink */
 .footer-logo-glow {
   position: relative;
