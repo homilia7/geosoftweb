@@ -30,16 +30,16 @@ export const Hero: React.FC<HeroProps> = ({
 
   React.useEffect(() => {
     if (introFinished) {
-      // 1. Primero aparece el contenedor derecho (cuadro 3D de arriba hacia abajo)
-      const tRight = setTimeout(() => setRightReady(true), 80);
+      // 1. Primero aparece el contenedor derecho (cuadro 3D instantáneo)
+      const tRight = setTimeout(() => setRightReady(true), 20);
 
-      // 2. El contenedor izquierdo completo aparece de forma ágil y fluida
-      const tLeft = setTimeout(() => setLeftReady(true), 750);
+      // 2. El contenedor izquierdo completo aparece de inmediato de forma ágil y fluida
+      const tLeft = setTimeout(() => setLeftReady(true), 100);
 
-      // 3. El menú de arriba inicia su aparición de forma más rápida y natural
+      // 3. El menú de arriba inicia su aparición de forma ultrarrápida
       const tNav = setTimeout(() => {
         onLeftContentAppearedRef.current?.();
-      }, 1450);
+      }, 220);
 
       return () => {
         clearTimeout(tRight);
@@ -142,7 +142,7 @@ export const Hero: React.FC<HeroProps> = ({
                     alt="GeoSoft 3D Cube Emblem"
                     width={400}
                     height={400}
-                    loading="lazy"
+                    fetchPriority="high"
                     decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:rotate-1"
                   />

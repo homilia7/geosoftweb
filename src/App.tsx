@@ -135,33 +135,29 @@ function MainLayout() {
           onScrollToQuote={scrollToQuote}
         />
 
-        {/* Below-the-fold Lazy Sections (cargados al completar la intro interactiva) */}
-        {introFinished && (
-          <React.Suspense fallback={null}>
-            <StatsSection />
-            <SalesHook />
-            <TechMarquee />
-            <ServicesBento onScrollToQuote={scrollToQuote} />
-            <ProcessTimeline />
-            <ProjectsSection />
-            <SalesHook
-              quote="Mientras tu competencia sigue respondiendo cotizaciones manualmente una por una, tu negocio podría estar agendando, cobrando y operando con software inteligente."
-              badge="La velocidad de respuesta y automatización define quién gana la venta"
-              icon="zap"
-            />
-            <CostCalculator />
-            <FaqSection />
-            <Footer />
-          </React.Suspense>
-        )}
+        {/* Below-the-fold Lazy Sections (Precargados en paralelo para scroll instantáneo y fluido) */}
+        <React.Suspense fallback={null}>
+          <StatsSection />
+          <SalesHook />
+          <TechMarquee />
+          <ServicesBento onScrollToQuote={scrollToQuote} />
+          <ProcessTimeline />
+          <ProjectsSection />
+          <SalesHook
+            quote="Mientras tu competencia sigue respondiendo cotizaciones manualmente una por una, tu negocio podría estar agendando, cobrando y operando con software inteligente."
+            badge="La velocidad de respuesta y automatización define quién gana la venta"
+            icon="zap"
+          />
+          <CostCalculator />
+          <FaqSection />
+          <Footer />
+        </React.Suspense>
       </main>
 
       {/* Floating AI Chat Trigger (iniciado al entrar a la web) */}
-      {introFinished && (
-        <React.Suspense fallback={null}>
-          <FloatingChat />
-        </React.Suspense>
-      )}
+      <React.Suspense fallback={null}>
+        <FloatingChat />
+      </React.Suspense>
 
       {/* Code-Split Lazy Modals & Admin */}
       <React.Suspense fallback={null}>

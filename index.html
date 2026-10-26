@@ -84,6 +84,13 @@
       "description": "GeoSoft desarrolla software a medida, páginas web de alto impacto, agentes de IA 24/7 y sistemas de automatización con pasarelas de pago y reservas."
     }
     </script>
+    <script>
+      try {
+        if (sessionStorage.getItem('geosoft_intro_completed') === 'true') {
+          document.write('<style>#splash-placeholder{display:none!important;}</style>');
+        }
+      } catch(e) {}
+    </script>
   </head>
   <body class="bg-[#040404] text-white selection:bg-[#A9F8B5] selection:text-black antialiased overflow-x-hidden min-h-screen">
     <!-- Estructura visual estática para FCP/LCP instantáneo sin esperar evaluación de JavaScript -->

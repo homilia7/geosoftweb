@@ -123,21 +123,21 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     if (!introFinished) return;
 
-    // Secuencia de aparición de los 5 pares (cadencia ágil y elegante de ~180ms entre pares)
-    const t1 = setTimeout(() => setPairStage(1), 50);   // Par 1: Logo & Cotizar Ahora
-    const t2 = setTimeout(() => setPairStage(2), 230);  // Par 2: Inicio & Agendar Cita
-    const t3 = setTimeout(() => setPairStage(3), 410);  // Par 3: Servicios & FAQ
-    const t4 = setTimeout(() => setPairStage(4), 590);  // Par 4: Metodología & Cotizador
-    const t5 = setTimeout(() => setPairStage(5), 770);  // Par 5: Proyectos & Equipo
+    // Secuencia de aparición de los 5 pares (cadencia ágil y ultrarrápida)
+    const t1 = setTimeout(() => setPairStage(1), 20);   // Par 1: Logo & Cotizar Ahora
+    const t2 = setTimeout(() => setPairStage(2), 70);   // Par 2: Inicio & Agendar Cita
+    const t3 = setTimeout(() => setPairStage(3), 120);  // Par 3: Servicios & FAQ
+    const t4 = setTimeout(() => setPairStage(4), 170);  // Par 4: Metodología & Cotizador
+    const t5 = setTimeout(() => setPairStage(5), 220);  // Par 5: Proyectos
 
-    // 1. Al asentarse los botones (~1200ms), Flash amarillo rápido como un relámpago
-    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 1200);
+    // 1. Al asentarse los botones (~320ms), Flash amarillo rápido
+    const tYellow = setTimeout(() => setAnimPhase('yellow_letters'), 320);
 
-    // 2. A los 1450ms, arranca la animación de luz rápida de botón en botón
-    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 1450);
+    // 2. A los 450ms, arranca la animación de luz rápida de botón en botón
+    const tSweep = setTimeout(() => setAnimPhase('color_sweep'), 450);
 
-    // 3. A los 1950ms pasamos a 'slow_wake_up'
-    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 1950);
+    // 3. A los 700ms pasamos a 'slow_wake_up' (completamente despierto)
+    const tSlowWake = setTimeout(() => setAnimPhase('slow_wake_up'), 700);
 
     return () => {
       clearTimeout(t1);

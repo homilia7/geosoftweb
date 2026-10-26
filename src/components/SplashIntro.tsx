@@ -10,7 +10,20 @@ const TOTAL_FRAMES = 189;
 const FRAME_BASE_PATH = '/assets/transition-sequence';
 
 export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(() => {
+    try {
+      return sessionStorage.getItem('geosoft_intro_completed') !== 'true';
+    } catch (_) {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    if (!visible && onFinish) {
+      onFinish();
+    }
+  }, [visible, onFinish]);
+
   // Fases: 'cinematic' (Video interactivo con scroll) -> 'brand' (Pantalla con "Iniciando experiencia...") -> 'entering' (Carga la página web)
   const [stage, setStage] = useState<'cinematic' | 'brand' | 'entering'>('cinematic');
   const [progress, setProgress] = useState(0);
@@ -286,23 +299,35 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
     };
   }, [visible]);
 
+  // Auto-avance suave si el usuario no interactúa en 1.2s (evita sensación de espera o carga lenta)
+  useEffect(() => {
+    if (stage !== 'cinematic') return;
+    const idleAdvanceTimer = setTimeout(() => {
+      handleSequenceComplete();
+    }, 1200);
+    return () => clearTimeout(idleAdvanceTimer);
+  }, [stage, handleSequenceComplete]);
+
   const handleDismiss = () => {
     soundEffects.playIntroSound();
     const placeholder = document.getElementById('splash-placeholder');
     if (placeholder) placeholder.style.display = 'none';
+    try {
+      sessionStorage.setItem('geosoft_intro_completed', 'true');
+    } catch (_) {}
     setStage('entering');
     setTimeout(() => {
       setVisible(false);
       if (onFinish) onFinish();
-    }, 650);
+    }, 200);
   };
 
-  // Si está en fase 'brand', tras 1.8s entra automáticamente a la web (cadencia más dinámica)
+  // Si está en fase 'brand', tras 650ms entra automáticamente a la web (cadencia ultra rápida)
   useEffect(() => {
     if (stage === 'brand') {
       const brandTimer = setTimeout(() => {
         handleDismiss();
-      }, 1800);
+      }, 650);
       return () => clearTimeout(brandTimer);
     }
   }, [stage]);
@@ -312,7 +337,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
   return (
     <div
       id="splash-intro"
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-all duration-700 select-none overflow-hidden ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-all duration-300 select-none overflow-hidden ${
         stage === 'entering' ? 'opacity-0 scale-105 filter blur-sm pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >

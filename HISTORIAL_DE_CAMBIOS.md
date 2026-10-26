@@ -15,6 +15,17 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Optimización Extrema de Carga: Precarga en Paralelo y Cadencia Ultrarrápida
+- **Causa de la Sensación de Carga Lenta:**
+  - El sitio condicionaba la descarga de todas las secciones inferiores (`StatsSection`, `ServicesBento`, `ProjectsSection`, `CostCalculator`, etc.) a que el usuario terminara manualmente la animación de scroll de 189 fotogramas y la pantalla de marca (retraso acumulado de 5 a 8 segundos).
+  - Al recargar la página, se forzaba nuevamente la pantalla de bienvenida completa.
+  - La transición de entrada en el Hero y la barra de navegación poseía tiempos muertos excesivos (hasta 1.45s).
+- **Aceleración Inmediata Aplicada:**
+  - **Precarga en Paralelo (`App.tsx`):** Se eliminó el bloqueo condicional; todos los módulos debajo del scroll ahora se precargan en segundo plano de inmediato vía `React.Suspense`. Al revelarse el sitio, la página completa ya está lista en memoria (0ms de espera).
+  - **Memoria de Sesión (`sessionStorage`):** Si el visitante ya vio la bienvenida en su pestaña, las visitas y recargas posteriores se abren instantáneamente sin pasar por el splash.
+  - **Auto-Avance Ágil (`SplashIntro.tsx`):** Si el usuario no hace scroll en 1.2 segundos, la animación avanza automáticamente; el tiempo de la pantalla de marca se redujo de 1.8s a 650ms y el desvanecimiento de salida bajó de 650ms a 200ms.
+  - **Aparición Instantánea en Hero y Navbar (`Hero.tsx` & `Navbar.tsx`):** Contenedores principales del Hero se muestran en 100ms (antes 750ms), el menú superior entra en 220ms (antes 1450ms) y la imagen principal pasa a prioridad alta (`fetchPriority="high"`).
+
 ### 2026-10-26 — Corrección y Activación Plena de las Animaciones de Letras del Pie de Página (Footer)
 - **Causa Raíz de las Letras Estáticas:**
   - El selector `@keyframes textLightSweep` utilizaba porcentajes desfasados (`250% 0` a `-150% 0`) que desplazaban el gradiente fuera de los límites del texto el 95% del tiempo, aparentando que las letras estaban completamente congeladas.
