@@ -15,7 +15,31 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
-### 2026-10-19 — Panel de Captura de Propuestas y Formulario Interactivo de Onboarding de Negocios
+### 2026-10-26 — Rediseño Bimodal Integral (Tema Claro / Oscuro), Botones Burbuja de Agua 3D, Barra Compacta y Ventana de Agendamiento de Cristal Líquido
+- **Tema Claro Profesional de Alto Contraste:**
+  - Calibración completa del tema claro en toda la plataforma (`html.light`), garantizando contraste perfecto WCAG AA, tipografía nítida en tonos slate/gris moderno y erradicación total de choques visuales.
+  - Fondos táctiles con relieve 3D neumórfico y sombras difuminadas con halo de luz sutil en tarjetas interactivas de todas las secciones.
+- **Interruptor Neumórfico 3D Día / Noche (`NeumorphicThemeToggle.tsx`):**
+  - Toggle neumórfico 3D de alta fidelidad con síntesis acústica de switch mecánico vía Web Audio API.
+  - Modos calibrados: cielo diurno con sol radiante y cielo nocturno con luna creciente y estrellas brillantes, con sol dormido atenuado en modo oscuro para máximo balance visual.
+- **Barra de Navegación Compacta y Micro-Iconos (`Navbar.tsx` & `src/index.css`):**
+  - Rediseño de `#main-nav-capsule` con proporciones más angostas y estilizadas (`py-1`), pestañas compactas y micro-iconos de alta definición (`w-3 h-3`).
+  - Reducción del tamaño del logo a 24x24 px y escalado armonioso de los orbes laterales (audio y menú móvil a ~34px) y del toggle 3D (`scale={0.21}`).
+  - Eliminación de la fuga de luz anaranjada en botones activos, sustituida por una rayita especular difuminada ultrafina y pulida.
+- **Botones Hero en Estilo Burbuja de Agua 3D (`src/styles/water-bubble-buttons.css`):**
+  - Botones "Cotizar mi Proyecto" y "Agendar en Vivo" transformados en gotas de agua líquidas 3D con meniscos curvados superior e inferior, reflejo especular blanco puro y halo cáustico prismático.
+- **Ecosistema Tecnológico con Difuminado Ambiental Adaptativo (`TechMarquee.tsx`):**
+  - Eliminación de máscaras negras rígidas; integración de gradientes de difuminado suave multi-stop (`.marquee-fade-left`, `.marquee-fade-right`) adaptados al color de fondo de cada tema (`#edf2f7` en claro y `#040404` en oscuro).
+  - Píldoras tecnológicas (`.tech-marquee-pill`) con acabado de cristal suave y sombras táctiles.
+- **Ventana de Agendamiento en Cristal Líquido Transparente (`BookingModal.tsx`, `CalModal.tsx`, `src/styles/islamic-card.css`):**
+  - Eliminación total de la franja estampada (`IslamicGeometricRibbon`) para lograr una superficie lisa, continua y limpia.
+  - Erradicación de tonos beige/dorados en tema claro, pasando a cristal translúcido blanco/hielo neutro con desenfoque profundo de 36px.
+  - Efecto de luz de transparencia diagonal (`water-window-sheen`) que simula el reflejo arquitectónico de una ventana de cristal abierta.
+  - Bordes con textura de menisco de agua en la ventana modal, en los campos de texto (`water-bubble-input`), en los botones de fecha "Hoy" y "Mañana" (`water-bubble-pill`) y en el botón de confirmación (`btn-water-bubble-action`).
+- **Despliegue y Verificación en Producción:**
+  - Build compilado sin errores con Vite (`0 errores`).
+  - Sincronizado en GitHub (`main`).
+  - Desplegado y verificado con respuesta HTTP 200 en Cloudflare Pages (`https://geosoftweb.pages.dev`).
 - **Panel de Administración (`AdminPanel.tsx` y `AdminProposalsTab.tsx`):**
   - Nueva pestaña "Propuestas de Negocios" con contador en vivo, indicador luminoso para nuevas fichas y filtros por estado (Todas, Nuevas, En Proceso, Completadas).
   - Generador de Enlace Público con 1-clic de copiado (`/#propuesta`) y botón de prueba en vivo para enviar a clientes potenciales.
