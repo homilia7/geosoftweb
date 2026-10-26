@@ -15,6 +15,12 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Restauración y Optimización de las Animaciones Holográficas del Pie de Página (Footer)
+- **Causa Identificada:** En modo claro, la regla `html.light footer { color: #64748b !important; }` sobreescribía la propiedad `color: transparent` del barrido prismático de texto (`.animate-copyright-sweep`), mientras que la conversión de `footer .bg-black` a blanco apagaba el efecto de destello de luz holográfico (`.footer-logo-sweep`) por modo de fusión `screen`.
+- **Restauración y Calibración Bimodal (`src/index.css`):**
+  - **Barrido Prismático en "Consultancy & Engineering":** Se fijó `-webkit-text-fill-color: transparent !important` y se diseñaron gradientes dedicados: espectro neón en modo oscuro y espectro zafiro/esmeralda/púrpura de alto contraste en modo claro, con cadencia rítmica fluida de 3.5 segundos.
+  - **Haz de Luz Holográfico y Destello en el Logo (`.footer-logo-sweep` & `.footer-logo-glow`):** Se blindó el contenedor con aislamiento de apilamiento (`isolation: isolate; z-index: 10`) y fondo oscuro `#0c1017` en ambos temas, permitiendo que el rayo de luz espectral cruce el logotipo dorado de manera nítida e hipnótica en cualquier tema.
+
 ### 2026-10-26 — Renovación de Mensajes Persuasivos de Alto Impacto (Sales Hooks Bimodales)
 - **Mensaje Principal Superior (`SalesHook.tsx`):**
   - Se sustituyó el mensaje informal anterior por la **Opción 1**:
