@@ -1561,7 +1561,6 @@ html.light .bg-white\/15 {
   background-color: #e2e8f0 !important;
 }
 
-html.light #equipo,
 html.light #como-funciona,
 html.light .bg-\[\#060708\],
 html.light .bg-\[\#060709\],
@@ -1570,11 +1569,6 @@ html.light .bg-\[\#050607\],
 html.light .bg-\[\#07080a\],
 html.light .bg-\[\#040404\] {
   background-color: #edf2f7 !important;
-}
-
-html.light #equipo {
-  background-color: #edf2f7 !important;
-  border-top-color: #e2e8f0 !important;
 }
 
 html.light .group:hover .group-hover\:text-\[\#A9F8B5\] {

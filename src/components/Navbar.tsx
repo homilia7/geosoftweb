@@ -14,7 +14,6 @@ import {
   VolumeX,
   Home,
   GitBranch,
-  Users,
   Calculator,
   HelpCircle
 } from 'lucide-react';
@@ -54,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const dropdownContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const sectionIds = ['inicio', 'servicios', 'como-funciona', 'proyectos', 'equipo', 'cotizador', 'faq'];
+    const sectionIds = ['inicio', 'servicios', 'como-funciona', 'proyectos', 'cotizador', 'faq'];
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 220;
       for (let i = sectionIds.length - 1; i >= 0; i--) {
@@ -199,7 +198,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Servicios & Soluciones', href: '#servicios', onClick: onScrollToServices },
     { label: 'Cómo Trabajamos', href: '#como-funciona' },
     { label: 'Nuestros Proyectos', href: '#proyectos' },
-    { label: 'Conoce a Nuestro Equipo', href: '#equipo' },
     { label: 'Cotizador Inteligente', href: '#cotizador', onClick: onScrollToQuote },
     { label: 'Preguntas Frecuentes', href: '#faq' },
   ];
@@ -391,20 +389,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Proyectos
               </span>
               {activeSection === 'proyectos' && <span className="nav-underglow-flare" />}
-            </a>
-
-            {/* Equipo */}
-            <a
-              href="#equipo"
-              onClick={() => setActiveSection('equipo')}
-              style={getNavSweepStyle(5)}
-              className={`liquid-glass-tab ${activeSection === 'equipo' ? 'is-active' : ''} ${getEntranceClass('right', 5)} ${getNavItemClass(5, 'link')}`}
-            >
-              <Users className={`w-3 h-3 mb-0.5 stroke-[1.9] transition-colors ${animPhase === 'yellow_letters' ? 'text-yellow-300' : ''}`} />
-              <span className={`text-[9px] sm:text-[9.5px] font-semibold tracking-tight ${animPhase === 'yellow_letters' ? 'nav-phase-yellow-letters' : ''}`}>
-                Equipo
-              </span>
-              {activeSection === 'equipo' && <span className="nav-underglow-flare" />}
             </a>
 
             {/* Cotizador */}

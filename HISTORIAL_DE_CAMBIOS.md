@@ -15,6 +15,14 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Retiro Aprobado de la Sección "Conoce a Nuestro Equipo"
+- **Desvinculación Completa de la Sección:**
+  - Se eliminó el componente `<TeamSection />` y su carga lazy de `src/App.tsx`.
+  - Se eliminó el enlace de navegación "Equipo" del menú superior principal y móvil (`Navbar.tsx`), ajustando la animación de entrada secuencial de pestañas.
+  - Se removió el enlace "Equipo" del pie de página (`Footer.tsx`).
+  - Se limpiaron las reglas y selectores de tema claro asociados a `#equipo` en `src/index.css`.
+  - Reducción del tamaño final de empaquetado JS sin código muerto.
+
 ### 2026-10-26 — Rediseño Bimodal Integral (Tema Claro / Oscuro), Botones Burbuja de Agua 3D, Barra Compacta y Ventana de Agendamiento de Cristal Líquido
 - **Tema Claro Profesional de Alto Contraste:**
   - Calibración completa del tema claro en toda la plataforma (`html.light`), garantizando contraste perfecto WCAG AA, tipografía nítida en tonos slate/gris moderno y erradicación total de choques visuales.

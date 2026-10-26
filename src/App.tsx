@@ -15,7 +15,6 @@ const TechMarquee = React.lazy(() => import('./components/TechMarquee').then(m =
 const ServicesBento = React.lazy(() => import('./components/ServicesBento').then(m => ({ default: m.ServicesBento })));
 const ProcessTimeline = React.lazy(() => import('./components/ProcessTimeline').then(m => ({ default: m.ProcessTimeline })));
 const ProjectsSection = React.lazy(() => import('./components/ProjectsSection').then(m => ({ default: m.ProjectsSection })));
-const TeamSection = React.lazy(() => import('./components/TeamSection').then(m => ({ default: m.TeamSection })));
 const CostCalculator = React.lazy(() => import('./components/CostCalculator').then(m => ({ default: m.CostCalculator })));
 const FaqSection = React.lazy(() => import('./components/FaqSection').then(m => ({ default: m.FaqSection })));
 const FloatingChat = React.lazy(() => import('./components/FloatingChat').then(m => ({ default: m.FloatingChat })));
@@ -145,7 +144,6 @@ function MainLayout() {
             <ServicesBento onScrollToQuote={scrollToQuote} />
             <ProcessTimeline />
             <ProjectsSection />
-            <TeamSection />
             <CostCalculator />
             <FaqSection />
             <Footer />
