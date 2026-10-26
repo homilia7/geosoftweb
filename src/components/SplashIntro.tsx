@@ -423,7 +423,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
           {/* Tipografía de Identidad de Marca */}
           <div className="space-y-3.5">
             {/* Badge superior */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-[#A9F8B5]/30 text-xs font-semibold tracking-[0.2em] text-[#A9F8B5] uppercase shadow-lg shadow-[#A9F8B5]/10 animate-pulse">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 border border-[#A9F8B5]/50 text-xs font-bold tracking-[0.2em] text-[#A9F8B5] uppercase shadow-lg shadow-[#A9F8B5]/20 animate-pulse">
               <Sparkles className="w-3.5 h-3.5 text-[#DFF494] animate-spin" />
               Software • Web • Inteligencia Artificial
             </div>
@@ -434,26 +434,33 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
             </div>
 
             {/* Subtítulo */}
-            <p className="text-xs sm:text-sm md:text-base text-gray-300 font-light max-w-sm mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm md:text-base text-gray-100 font-normal max-w-sm mx-auto leading-relaxed drop-shadow-sm">
               Innovación arquitectónica, plataformas inteligentes y automatización de alto rendimiento.
             </p>
 
             {/* Barra de progreso de entrada a la web */}
             <div className="pt-2 w-48 sm:w-56 mx-auto space-y-1.5">
-              <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden p-0.5">
+              <div className="h-1 w-full bg-white/15 rounded-full overflow-hidden p-0.5 border border-white/10">
                 <div className="h-full bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] rounded-full animate-[textLightSweep_2s_ease-in-out_infinite] w-full" />
               </div>
-              <div className="flex items-center justify-center gap-1.5 text-[10px] text-gray-400 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#A9F8B5] animate-ping" />
+              <div className="flex items-center justify-center gap-1.5 text-xs text-gray-200 font-mono font-medium drop-shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
                 <span>Iniciando experiencia...</span>
               </div>
             </div>
           </div>
 
-          {/* Indicador táctil para saltar o entrar directo */}
-          <div className="mt-6 flex items-center gap-2 text-xs text-gray-500 hover:text-white transition-colors cursor-pointer">
-            <span>Toca para ingresar de inmediato</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+          {/* Botón táctil con alto contraste y relieve luminoso para entrar directo */}
+          <div className="mt-7 flex items-center justify-center">
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-black/65 hover:bg-black/85 border border-white/40 hover:border-[#A9F8B5] text-white font-bold text-xs sm:text-sm tracking-wide backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.7),0_0_20px_rgba(169,248,181,0.25)] hover:shadow-[0_0_30px_rgba(169,248,181,0.5)] transition-all cursor-pointer active:scale-95 group"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-pulse shrink-0 shadow-[0_0_8px_#A9F8B5]" />
+              <span className="text-white drop-shadow-md">Toca para ingresar de inmediato</span>
+              <ArrowRight className="w-4 h-4 text-[#A9F8B5] group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
       )}

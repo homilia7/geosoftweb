@@ -297,13 +297,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               </div>
 
               <div>
-                <h3 className={`text-xl font-bold font-display ${isLight ? 'text-[#2c241c]' : 'text-white'}`}>
+                <h3 className={`text-xl font-bold font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
                   ¡Cita Registrada con Éxito!
                 </h3>
-                <p className={`text-xs mt-1 max-w-sm mx-auto ${isLight ? 'text-[#5c4f42]' : 'text-gray-300'}`}>
+                <p className={`text-xs mt-1 max-w-sm mx-auto ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                   Hemos guardado tu sesión para el{' '}
-                  <strong className={isLight ? 'text-[#237299]' : 'text-white'}>{date}</strong> a las{' '}
-                  <strong className={isLight ? 'text-[#0d7a64]' : 'text-[#A9F8B5]'}>{time}</strong>. Te contactaremos por WhatsApp.
+                  <strong className={isLight ? 'text-sky-700 font-bold' : 'text-white font-bold'}>{date}</strong> a las{' '}
+                  <strong className={isLight ? 'text-emerald-700 font-bold' : 'text-[#A9F8B5] font-bold'}>{time}</strong>. Te contactaremos por WhatsApp.
                 </p>
               </div>
 
@@ -319,9 +319,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                 </a>
                 <button
                   onClick={handleClose}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                     isLight
-                      ? 'bg-black/10 hover:bg-black/15 text-[#2c241c]'
+                      ? 'bg-slate-200/80 hover:bg-slate-300 text-slate-800'
                       : 'bg-white/10 hover:bg-white/15 text-white'
                   }`}
                 >
