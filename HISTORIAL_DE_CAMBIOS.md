@@ -15,6 +15,17 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Renovación de Mensajes Persuasivos de Alto Impacto (Sales Hooks Bimodales)
+- **Mensaje Principal Superior (`SalesHook.tsx`):**
+  - Se sustituyó el mensaje informal anterior por la **Opción 1**:
+    > *«Tu sitio web no es una simple tarjeta de presentación: es tu mejor vendedor trabajando las 24 horas, capturando clientes y cerrando oportunidades en piloto automático.»*
+  - Badge complementario: *«El 75% de los clientes juzga la credibilidad de tu negocio por tu plataforma web»* con icono de destellos luminosos (`Sparkles`).
+- **Segundo Gancho Estratégico Inferior (`App.tsx`):**
+  - Se integró la **Opción 3** justo después de la sección de proyectos destacados y antes del cotizador inteligente:
+    > *«Mientras tu competencia sigue respondiendo cotizaciones manualmente una por una, tu negocio podría estar agendando, cobrando y operando con software inteligente.»*
+  - Badge complementario: *«La velocidad de respuesta y automatización define quién gana la venta»* con icono de rayo (`Zap`).
+- **Arquitectura Modular y Reutilización:** El componente `SalesHook` ahora admite props opcionales (`quote`, `badge`, `icon`) manteniendo valores por defecto y cero código duplicado (KISS / YAGNI).
+
 ### 2026-10-26 — Blindaje Bimodal de la Animación de Entrada y Retiro del Borde Blanco del Logo
 - **Eliminación Total del Borde Blanco del Logo (`SplashIntro.tsx` & `src/index.css`):**
   - Se removieron los bordes y superposiciones residuales en el contenedor del logotipo (`border border-white/20` y divisiones decorativas internas).

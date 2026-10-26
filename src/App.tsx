@@ -144,6 +144,11 @@ function MainLayout() {
             <ServicesBento onScrollToQuote={scrollToQuote} />
             <ProcessTimeline />
             <ProjectsSection />
+            <SalesHook
+              quote="Mientras tu competencia sigue respondiendo cotizaciones manualmente una por una, tu negocio podría estar agendando, cobrando y operando con software inteligente."
+              badge="La velocidad de respuesta y automatización define quién gana la venta"
+              icon="zap"
+            />
             <CostCalculator />
             <FaqSection />
             <Footer />
