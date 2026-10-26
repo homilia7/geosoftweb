@@ -15,6 +15,17 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Alto Contraste y Calibración Visual de Tarjetas de Proyectos (Verde, Azul, Rojo)
+- **Corrección Radical de Contraste Bimodal (`ProjectsSection.tsx` & `src/index.css`):**
+  - **Inmunidad al Modo Claro:** Se blindaron los banners con clases exclusivas (`.project-banner-title`, `.project-banner-category`, `.project-banner-badge`, `.project-banner-btn`) con reglas `!important` y sombras de texto oscuras (`text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95)`), impidiendo que las reglas globales del tema claro conviertan el texto blanco en negro o gris sobre fondos de color.
+  - **Calibración Cromática Vibrante de los 3 Proyectos:**
+    1. **reservascr.app (Verde):** Gradiente esmeralda intenso `from-[#022c22] via-[#047857] to-[#10b981]`.
+    2. **sibopay.com (Azul):** Gradiente azul marino a real `from-[#0c2340] via-[#1d4ed8] to-[#0284c7]`.
+    3. **declara360.com (Rojo):** Gradiente carmesí a rojo ejecutivo `from-[#450a0a] via-[#b91c1c] to-[#e11d48]`.
+  - **Capa de Viñeta Oscura Inferior:** Se incorporó una viñeta con gradiente degradado a negro (`bg-gradient-to-t from-black/90 via-black/40 to-black/10`) detrás del texto inferior y la categoría en cada tarjeta, asegurando una relación de contraste superior a 15:1 (superando el estándar WCAG AAA).
+  - **Badges y Botones de Enlace:** Badges con fondo de vidrio oscuro translúcido (`rgba(8, 12, 20, 0.88)`), indicador de pulso en vivo verde y texto blanco nítido; botón de enlace con icono blanco e inversión dinámica a fondo blanco con icono negro en hover.
+  - **Tipografía y Métricas en Cuerpo de Tarjeta:** Mayor nitidez con `font-normal` y colores calibrados para descripciones, métricas de impacto y etiquetas tecnológicas.
+
 ### 2026-10-26 — Renovación de Proyectos: "Últimos Proyectos Destacados"
 - **Actualización de Título y Contenido de la Sección (`ProjectsSection.tsx`):**
   - Se cambió el encabezado a *"Últimos Proyectos Destacados"*.

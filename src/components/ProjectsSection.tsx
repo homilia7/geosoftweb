@@ -28,7 +28,7 @@ export const ProjectsSection: React.FC = () => {
       description: 'Plataforma integral de gestión de reservas, citas y sincronización en tiempo real con notificaciones automáticas por WhatsApp y cobros integrados.',
       metrics: '+280% Eficiencia en Citas',
       technologies: ['React & Vite', 'Calendar Sync', 'WhatsApp API', 'Cloudflare Pages'],
-      gradient: 'from-[#064e3b] via-[#047857] to-[#022c22]',
+      gradient: 'from-[#022c22] via-[#047857] to-[#10b981]',
       demoUrl: 'https://reservascr.app'
     },
     {
@@ -40,7 +40,7 @@ export const ProjectsSection: React.FC = () => {
       description: 'Pasarela de pagos rápidos y de alta seguridad con validación automatizada de transferencias Sinpe Móvil y cobros con tarjetas internacionales.',
       metrics: '< 3 seg Validación Sinpe',
       technologies: ['Fintech API', 'Sinpe Móvil', 'Stripe Gateway', 'Cifrado SHA-256'],
-      gradient: 'from-[#0f172a] via-[#1e293b] to-[#0369a1]',
+      gradient: 'from-[#0c2340] via-[#1d4ed8] to-[#0284c7]',
       demoUrl: 'https://sibopay.com'
     },
     {
@@ -52,7 +52,7 @@ export const ProjectsSection: React.FC = () => {
       description: 'Sistema web de facturación electrónica inteligente y administración tributaria automatizada para empresas, comercios y profesionales independientes.',
       metrics: '100% Sin Errores Tributarios',
       technologies: ['React & TypeScript', 'PostgreSQL', 'API Tributaria', 'Cloudflare Pages'],
-      gradient: 'from-[#78350f] via-[#b45309] to-[#1c1917]',
+      gradient: 'from-[#450a0a] via-[#b91c1c] to-[#e11d48]',
       demoUrl: 'https://declara360.com'
     }
   ];
@@ -116,32 +116,40 @@ export const ProjectsSection: React.FC = () => {
 
                 <div className="space-y-5">
                   {/* Visual Banner Preview */}
-                  <div className={`w-full h-40 rounded-2xl bg-gradient-to-tr ${proj.gradient} border border-white/10 p-5 flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500`}>
-                    <div className="flex items-center justify-between z-10">
-                      <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[#A9F8B5] border border-white/10 font-bold">
-                        {proj.badge}
+                  <div className={`w-full h-44 rounded-2xl bg-gradient-to-tr ${proj.gradient} border border-white/20 p-5 flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-lg`}>
+                    {/* Darkening bottom vignette overlay for 100% sharp text contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 pointer-events-none rounded-2xl" />
+
+                    <div className="flex items-center justify-between z-10 relative">
+                      <span className="project-banner-badge inline-flex items-center gap-1.5 text-[11px] font-mono px-3 py-1 rounded-full font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse inline-block" />
+                        <span>{proj.badge}</span>
                       </span>
                       {proj.demoUrl && (
-                        <span className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-white group-hover:bg-[#A9F8B5] group-hover:text-black transition-colors">
+                        <span className="project-banner-btn w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300">
                           <ExternalLink className="w-4 h-4" />
                         </span>
                       )}
                     </div>
 
-                    <div className="z-10">
-                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{proj.category}</div>
-                      <div className="text-xl font-bold font-display text-white">{proj.title}</div>
+                    <div className="z-10 relative">
+                      <div className="project-banner-category text-xs font-bold uppercase tracking-wider mb-1">
+                        {proj.category}
+                      </div>
+                      <div className="project-banner-title text-xl sm:text-2xl font-black font-display tracking-tight">
+                        {proj.title}
+                      </div>
                     </div>
                   </div>
 
                   {/* Description & Impact Metric */}
                   <div className="space-y-3">
-                    <p className="text-xs sm:text-sm text-gray-300 font-light leading-relaxed">
+                    <p className="text-xs sm:text-[13px] text-gray-300 font-normal leading-relaxed">
                       {proj.description}
                     </p>
 
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Impacto Medible:</span>
+                      <span className="text-xs text-gray-400 font-medium">Impacto Medible:</span>
                       <span className="text-xs font-bold font-mono text-[#DFF494]" dangerouslySetInnerHTML={{ __html: proj.metrics }} />
                     </div>
                   </div>
@@ -151,7 +159,7 @@ export const ProjectsSection: React.FC = () => {
                     {proj.technologies.map((t, i) => (
                       <span
                         key={i}
-                        className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300"
+                        className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300 font-medium"
                       >
                         {t}
                       </span>

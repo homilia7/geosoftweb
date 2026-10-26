@@ -1925,5 +1925,74 @@ html.light input[type="password"]:focus {
   border-color: #059669 !important;
 }
 
+/* ==========================================================================
+   PROYECTOS DESTACADOS: ALTO CONTRASTE ABSOLUTO EN BANNERS (Verde, Azul, Rojo)
+   Garantiza texto 100% nítido, blanco puro y perfectamente legible en ambos temas
+   ========================================================================== */
+.project-banner-title,
+html.light .project-banner-title,
+html.dark .project-banner-title {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 1px 3px rgba(0, 0, 0, 0.98) !important;
+  letter-spacing: -0.01em !important;
+}
+
+.project-banner-category,
+html.light .project-banner-category,
+html.dark .project-banner-category {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95) !important;
+  font-weight: 700 !important;
+  opacity: 0.98 !important;
+}
+
+.project-banner-badge,
+html.light .project-banner-badge,
+html.dark .project-banner-badge {
+  background: rgba(8, 12, 20, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.project-banner-badge span,
+html.light .project-banner-badge span,
+html.dark .project-banner-badge span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.project-banner-btn,
+html.light .project-banner-btn,
+html.dark .project-banner-btn {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.38) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.project-banner-btn svg,
+html.light .project-banner-btn svg,
+html.dark .project-banner-btn svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.group:hover .project-banner-btn,
+html.light .group:hover .project-banner-btn {
+  background: #ffffff !important;
+}
+
+.group:hover .project-banner-btn svg,
+html.light .group:hover .project-banner-btn svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+
 
 
