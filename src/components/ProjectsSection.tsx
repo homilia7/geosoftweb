@@ -6,7 +6,7 @@ interface Project {
   id: string;
   title: string;
   category: string;
-  tag: 'ia' | 'saas' | 'ecommerce';
+  tag: 'reservas' | 'fintech' | 'saas';
   badge: string;
   description: string;
   metrics: string;
@@ -16,79 +16,44 @@ interface Project {
 }
 
 export const ProjectsSection: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<'todos' | 'ia' | 'saas' | 'ecommerce'>('todos');
+  const [activeFilter, setActiveFilter] = useState<'todos' | 'reservas' | 'fintech' | 'saas'>('todos');
 
   const projects: Project[] = [
     {
-      id: 'dentalclik',
-      title: 'DentalClik AI Platform',
-      category: 'HealthTech & Citas Médicas',
-      tag: 'ia',
-      badge: 'Agentes 24/7 + Reservas',
-      description: 'Plataforma médica para clínicas dentales con asistente de IA que agenda pacientes, envía recordatorios por WhatsApp y gestiona expedientes en tiempo real.',
-      metrics: '+340% Citas Automatizadas',
-      technologies: ['React', 'Cloudflare Workers', 'WhatsApp Cloud API', 'OpenAI'],
-      gradient: 'from-[#004d40] to-[#104a0e]',
-      demoUrl: 'https://dentalclik-app.pages.dev'
+      id: 'reservascr',
+      title: 'reservascr.app',
+      category: 'Motor de Reservas & Agendas',
+      tag: 'reservas',
+      badge: 'Reservas en Vivo 24/7',
+      description: 'Plataforma integral de gestión de reservas, citas y sincronización en tiempo real con notificaciones automáticas por WhatsApp y cobros integrados.',
+      metrics: '+280% Eficiencia en Citas',
+      technologies: ['React & Vite', 'Calendar Sync', 'WhatsApp API', 'Cloudflare Pages'],
+      gradient: 'from-[#064e3b] via-[#047857] to-[#022c22]',
+      demoUrl: 'https://reservascr.app'
+    },
+    {
+      id: 'sibopay',
+      title: 'sibopay.com',
+      category: 'Pasarela Fintech & Pagos Sinpe',
+      tag: 'fintech',
+      badge: 'Cobros Instantáneos',
+      description: 'Pasarela de pagos rápidos y de alta seguridad con validación automatizada de transferencias Sinpe Móvil y cobros con tarjetas internacionales.',
+      metrics: '< 3 seg Validación Sinpe',
+      technologies: ['Fintech API', 'Sinpe Móvil', 'Stripe Gateway', 'Cifrado SHA-256'],
+      gradient: 'from-[#0f172a] via-[#1e293b] to-[#0369a1]',
+      demoUrl: 'https://sibopay.com'
     },
     {
       id: 'declara360',
-      title: 'Declara 360 FinTech',
-      category: 'Facturación & Tributación',
+      title: 'declara360.com',
+      category: 'Facturación & Gestión Tributaria',
       tag: 'saas',
       badge: 'SaaS Empresarial',
-      description: 'Sistema web de facturación electrónica y gestión tributaria inteligente para empresas y profesionales independientes con reportes automáticos.',
-      metrics: '0% Errores de Facturación',
-      technologies: ['React', 'PostgreSQL', 'Cloudflare Pages', 'Tailwind CSS'],
-      gradient: 'from-[#1a1a1a] to-[#25272a]',
-      demoUrl: 'https://declara360-alr.pages.dev'
-    },
-    {
-      id: 'clikfood',
-      title: 'ClikFood GastroPlatform',
-      category: 'E-commerce & Delivery',
-      tag: 'ecommerce',
-      badge: 'Pedidos en Vivo',
-      description: 'Ecosistema de pedidos gastronómicos digitales con menú autoadministrable, cobros instantáneos por Sinpe Móvil y despacho directo a WhatsApp.',
-      metrics: '< 45s Tiempo de Orden',
-      technologies: ['React', 'SinpePay Gateway', 'Vite', 'Supabase'],
-      gradient: 'from-[#735c00] to-[#1a1a1a]',
-      demoUrl: 'https://clikfood.pages.dev'
-    },
-    {
-      id: 'carautos',
-      title: 'CarAutos CR Marketplace',
-      category: 'Marketplace Automotriz',
-      tag: 'saas',
-      badge: 'Catálogo de Vehículos',
-      description: 'Portal de compra y venta de autos de alta gama con filtros interactivos, cotizador de financiamiento y contacto directo por WhatsApp.',
-      metrics: '+180% Prospectos Cualificados',
-      technologies: ['React', 'Cloudflare CDN', 'Tailwind', 'REST API'],
-      gradient: 'from-[#141517] to-[#040404]',
-      demoUrl: 'https://carautoscr.pages.dev'
-    },
-    {
-      id: 'sinpepay',
-      title: 'SinpePay Gateway Suite',
-      category: 'Pasarela de Cobros Nativos',
-      tag: 'ecommerce',
-      badge: 'Sinpe Móvil Automático',
-      description: 'Integración y validación automática de pagos por Sinpe Móvil para comercios digitales en Costa Rica, eliminando comprobantes manuales.',
-      metrics: 'Verificación en &lt; 2 seg',
-      technologies: ['Node.js API', 'Webhooks', 'Cifrado SHA-256', 'Sinpe'],
-      gradient: 'from-[#004d40] to-[#735c00]'
-    },
-    {
-      id: 'bosuni',
-      title: 'Bosuni CR Luxury Stays',
-      category: 'Hospitality & Reservas',
-      tag: 'ecommerce',
-      badge: 'Comunidades & Hospedaje',
-      description: 'Motor exclusivo de reservas para hospedajes y experiencias de montaña con calendario interactivo y pasarela de cobros recurrentes.',
-      metrics: '100% Sin Overbooking',
-      technologies: ['React', 'Calendar Sync', 'Cloudflare Pages', 'Stripe'],
-      gradient: 'from-[#104a0e] to-[#1a1a1a]',
-      demoUrl: 'https://bosuni.pages.dev'
+      description: 'Sistema web de facturación electrónica inteligente y administración tributaria automatizada para empresas, comercios y profesionales independientes.',
+      metrics: '100% Sin Errores Tributarios',
+      technologies: ['React & TypeScript', 'PostgreSQL', 'API Tributaria', 'Cloudflare Pages'],
+      gradient: 'from-[#78350f] via-[#b45309] to-[#1c1917]',
+      demoUrl: 'https://declara360.com'
     }
   ];
 
@@ -107,10 +72,10 @@ export const ProjectsSection: React.FC = () => {
               Casos Reales de Éxito
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-display text-white">
-              Nuestros <span className="text-gradient-accent">Proyectos</span> Destacados
+              Últimos <span className="text-gradient-accent">Proyectos</span> Destacados
             </h2>
             <p className="text-gray-400 font-light text-sm sm:text-base">
-              Explora algunas de las plataformas web, agentes de IA y sistemas SaaS que hemos diseñado y desplegado en producción.
+              Plataformas web, motores de reservas y soluciones fintech de alta disponibilidad desarrolladas para negocios en producción.
             </p>
           </div>
 
@@ -118,9 +83,9 @@ export const ProjectsSection: React.FC = () => {
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {[
               { id: 'todos', label: 'Todos' },
-              { id: 'ia', label: 'IA & Agentes' },
-              { id: 'saas', label: 'Plataformas SaaS' },
-              { id: 'ecommerce', label: 'Reservas & Pagos' }
+              { id: 'reservas', label: 'Reservas & Citas' },
+              { id: 'fintech', label: 'Fintech & Pagos' },
+              { id: 'saas', label: 'SaaS Tributario' }
             ].map(filter => (
               <button
                 key={filter.id}

@@ -15,6 +15,17 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Renovación de Proyectos: "Últimos Proyectos Destacados"
+- **Actualización de Título y Contenido de la Sección (`ProjectsSection.tsx`):**
+  - Se cambió el encabezado a *"Últimos Proyectos Destacados"*.
+  - Se eliminaron todos los proyectos anteriores de la cuadrícula.
+  - Se integraron los 3 nuevos proyectos exclusivos de alto perfil con enlaces en vivo:
+    1. **reservascr.app:** Motor de reservas en tiempo real 24/7 con integración a WhatsApp y sincronización de calendarios.
+    2. **sibopay.com:** Pasarela fintech de cobros instantáneos con validación automatizada de transferencias Sinpe Móvil y tarjetas.
+    3. **declara360.com:** SaaS de facturación electrónica inteligente y administración tributaria automatizada.
+  - Filtros interactivos adaptados (*Todos*, *Reservas & Citas*, *Fintech & Pagos*, *SaaS Tributario*) y enlaces directos funcionales.
+  - Actualización del menú móvil en `Navbar.tsx` a *"Últimos Proyectos"*.
+
 ### 2026-10-26 — Retiro Aprobado de la Sección "Conoce a Nuestro Equipo"
 - **Desvinculación Completa de la Sección:**
   - Se eliminó el componente `<TeamSection />` y su carga lazy de `src/App.tsx`.

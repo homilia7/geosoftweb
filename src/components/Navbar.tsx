@@ -197,7 +197,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Inicio', href: '#inicio' },
     { label: 'Servicios & Soluciones', href: '#servicios', onClick: onScrollToServices },
     { label: 'Cómo Trabajamos', href: '#como-funciona' },
-    { label: 'Nuestros Proyectos', href: '#proyectos' },
+    { label: 'Últimos Proyectos', href: '#proyectos' },
     { label: 'Cotizador Inteligente', href: '#cotizador', onClick: onScrollToQuote },
     { label: 'Preguntas Frecuentes', href: '#faq' },
   ];
