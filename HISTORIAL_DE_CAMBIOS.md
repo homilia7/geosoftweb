@@ -15,6 +15,14 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Corrección y Activación Plena de las Animaciones de Letras del Pie de Página (Footer)
+- **Causa Raíz de las Letras Estáticas:**
+  - El selector `@keyframes textLightSweep` utilizaba porcentajes desfasados (`250% 0` a `-150% 0`) que desplazaban el gradiente fuera de los límites del texto el 95% del tiempo, aparentando que las letras estaban completamente congeladas.
+  - El título de marca `GEOSOFT` carecía de animación cromática independiente.
+- **Solución y Dinamismo Bimodal Aplicado (`Footer.tsx` & `src/index.css`):**
+  - **Letras "Consultancy & Engineering":** Se sincronizaron con `@keyframes chromaticBeamSweep` (`100% 0` a `-100% 0` con `background-size: 300% 100%`), permitiendo que la onda de luz espectral recorra cada letra de izquierda a derecha de forma ininterrumpida y visible (espectro neón en modo oscuro y espectro joya en modo claro).
+  - **Letras "GEOSOFT" (`.footer-brand-title`):** Se dotó a las letras `SOFT` de un haz especular continuo (`.footer-brand-soft`) con gradiente esmeralda-oro que respira y destella cada 4.5 segundos, completando la animación de todas las letras del pie de página.
+
 ### 2026-10-26 — Restauración y Optimización de las Animaciones Holográficas del Pie de Página (Footer)
 - **Causa Identificada:** En modo claro, la regla `html.light footer { color: #64748b !important; }` sobreescribía la propiedad `color: transparent` del barrido prismático de texto (`.animate-copyright-sweep`), mientras que la conversión de `footer .bg-black` a blanco apagaba el efecto de destello de luz holográfico (`.footer-logo-sweep`) por modo de fusión `screen`.
 - **Restauración y Calibración Bimodal (`src/index.css`):**

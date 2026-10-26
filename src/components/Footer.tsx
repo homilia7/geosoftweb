@@ -20,8 +20,8 @@ export const Footer: React.FC = () => {
             <div className="footer-logo-sweep" />
           </div>
           <div>
-            <div className="font-display font-bold text-white text-sm">
-              GEO<span className="text-gradient-accent">SOFT</span>
+            <div className="font-display font-bold text-sm tracking-wide footer-brand-title">
+              <span className="footer-brand-geo">GEO</span><span className="footer-brand-soft">SOFT</span>
             </div>
             <div className="text-[11px] font-semibold tracking-wider animate-copyright-sweep">
               Consultancy & Engineering

@@ -697,35 +697,76 @@ html.light .bg-\[\#A9F8B5\] {
   }
 }
 
-/* Bosuni CR-inspired Text Light Sweep on Consultancy & Engineering */
-@keyframes textLightSweep {
-  0% {
-    background-position: 250% 0;
-  }
-  60%, 100% {
-    background-position: -150% 0;
-  }
+/* Footer Letters Animations (GEOSOFT & Consultancy & Engineering) */
+.footer-brand-title {
+  display: inline-block;
+  letter-spacing: -0.01em;
 }
 
-.animate-copyright-sweep {
-  background: linear-gradient(
-    90deg,
-    #94a3b8 0%,
-    #94a3b8 20%,
-    #A9F8B5 35%,
-    #DFF494 45%,
-    #38bdf8 55%,
-    #c084fc 65%,
-    #f472b6 75%,
-    #94a3b8 85%,
-    #94a3b8 100%
+.footer-brand-geo {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.light .footer-brand-geo {
+  color: #090d16 !important;
+  -webkit-text-fill-color: #090d16 !important;
+}
+
+.footer-brand-soft {
+  background-image: linear-gradient(
+    110deg,
+    #A9F8B5 0%,
+    #DFF494 35%,
+    #ffffff 50%,
+    #DFF494 65%,
+    #C1A35B 100%
   ) !important;
-  background-size: 260% 100% !important;
+  background-size: 250% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  animation: textLightSweep 3.5s cubic-bezier(0.22, 1, 0.36, 1) infinite !important;
+  animation: chromaticBeamSweep 4.5s linear infinite !important;
+  display: inline-block;
+}
+
+html.light .footer-brand-soft {
+  background-image: linear-gradient(
+    110deg,
+    #047857 0%,
+    #0d9488 35%,
+    #10b981 50%,
+    #059669 65%,
+    #b45309 100%
+  ) !important;
+  background-size: 250% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: chromaticBeamSweep 4.5s linear infinite !important;
+}
+
+/* Bosuni CR-inspired Text Light Sweep on Consultancy & Engineering */
+.animate-copyright-sweep {
+  background-image: linear-gradient(
+    110deg,
+    #94a3b8 15%,
+    #38bdf8 32%,
+    #A9F8B5 42%,
+    #DFF494 50%,
+    #fbbf24 58%,
+    #f43f5e 68%,
+    #c084fc 78%,
+    #94a3b8 88%
+  ) !important;
+  background-size: 300% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: chromaticBeamSweep 4s linear infinite !important;
   display: inline-block !important;
 }
 
@@ -1796,22 +1837,23 @@ html.light footer .footer-logo-glow {
 }
 
 html.light .animate-copyright-sweep {
-  background: linear-gradient(
-    90deg,
-    #475569 0%,
+  background-image: linear-gradient(
+    110deg,
     #475569 15%,
-    #047857 32%,
-    #0284c7 45%,
-    #7c3aed 58%,
-    #db2777 70%,
-    #475569 85%,
-    #475569 100%
+    #0284c7 32%,
+    #047857 42%,
+    #16a34a 50%,
+    #d97706 58%,
+    #e11d48 68%,
+    #7c3aed 78%,
+    #475569 88%
   ) !important;
-  background-size: 260% 100% !important;
+  background-size: 300% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
+  animation: chromaticBeamSweep 4s linear infinite !important;
 }
 
 /* Chatbot Flotante en Modo Claro */
