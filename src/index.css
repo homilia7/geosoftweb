@@ -1993,6 +1993,144 @@ html.light .group:hover .project-banner-btn svg {
   stroke: #000000 !important;
 }
 
+/* ==========================================================================
+   SPLASH INTRO: BLINDAJE CINEMATOGRÁFICO Y CONTRASTE ABSOLUTO
+   Garantiza que la pantalla de introducción sea siempre oscura, ultra-nítida
+   y 100% inmune a los estilos globales del tema claro.
+   ========================================================================== */
+#splash-intro,
+html.light #splash-intro,
+html.dark #splash-intro {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Eliminación total del borde blanco alrededor del logo */
+#splash-intro .splash-logo-container,
+#splash-intro .splash-logo-container *,
+html.light #splash-intro .splash-logo-container,
+html.light #splash-intro .splash-logo-container *,
+html.dark #splash-intro .splash-logo-container,
+html.dark #splash-intro .splash-logo-container * {
+  border: 0 none !important;
+  border-color: transparent !important;
+  outline: none !important;
+}
+
+/* Badge superior (Software • Web • IA) */
+#splash-intro .splash-pill-badge,
+html.light #splash-intro .splash-pill-badge,
+html.dark #splash-intro .splash-pill-badge {
+  background: rgba(10, 16, 24, 0.85) !important;
+  border: 1px solid rgba(169, 248, 181, 0.45) !important;
+  color: #A9F8B5 !important;
+  -webkit-text-fill-color: #A9F8B5 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75), 0 0 15px rgba(169, 248, 181, 0.25) !important;
+}
+
+#splash-intro .splash-pill-badge span,
+html.light #splash-intro .splash-pill-badge span,
+html.dark #splash-intro .splash-pill-badge span {
+  color: #A9F8B5 !important;
+  -webkit-text-fill-color: #A9F8B5 !important;
+  font-weight: 700 !important;
+}
+
+/* Título de Marca GEOSOFT */
+#splash-intro .splash-brand-title,
+html.light #splash-intro .splash-brand-title,
+html.dark #splash-intro .splash-brand-title {
+  color: #ffffff !important;
+}
+
+#splash-intro .splash-brand-geo,
+html.light #splash-intro .splash-brand-geo,
+html.dark #splash-intro .splash-brand-geo {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 2px 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(169, 248, 181, 0.35) !important;
+}
+
+/* Subtítulo */
+#splash-intro .splash-subtitle,
+html.light #splash-intro .splash-subtitle,
+html.dark #splash-intro .splash-subtitle {
+  color: #f1f5f9 !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95) !important;
+  font-weight: 400 !important;
+}
+
+/* Texto 'Iniciando experiencia...' */
+#splash-intro .splash-loading-text,
+html.light #splash-intro .splash-loading-text,
+html.dark #splash-intro .splash-loading-text {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#splash-intro .splash-loading-text span,
+html.light #splash-intro .splash-loading-text span,
+html.dark #splash-intro .splash-loading-text span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+/* Botón 'Toca para ingresar de inmediato' */
+#splash-intro .splash-cta-btn,
+html.light #splash-intro .splash-cta-btn,
+html.dark #splash-intro .splash-cta-btn {
+  background: rgba(12, 18, 25, 0.9) !important;
+  border: 1px solid rgba(169, 248, 181, 0.55) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(169, 248, 181, 0.28) !important;
+}
+
+#splash-intro .splash-cta-btn:hover,
+html.light #splash-intro .splash-cta-btn:hover,
+html.dark #splash-intro .splash-cta-btn:hover {
+  background: rgba(18, 26, 36, 0.98) !important;
+  border-color: #A9F8B5 !important;
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 248, 181, 0.5) !important;
+}
+
+#splash-intro .splash-cta-text,
+html.light #splash-intro .splash-cta-text,
+html.dark #splash-intro .splash-cta-text {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+#splash-intro .splash-cta-btn svg,
+html.light #splash-intro .splash-cta-btn svg,
+html.dark #splash-intro .splash-cta-btn svg {
+  color: #A9F8B5 !important;
+  stroke: #A9F8B5 !important;
+}
+
+/* Blindaje para Etapa 1 (Cinemática / Scroll) */
+#splash-intro .bg-black\/75,
+#splash-intro .bg-black\/80,
+html.light #splash-intro .bg-black\/75,
+html.light #splash-intro .bg-black\/80 {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+#splash-intro .text-white,
+html.light #splash-intro .text-white {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+
 
 
 

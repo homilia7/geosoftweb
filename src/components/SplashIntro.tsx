@@ -311,6 +311,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
 
   return (
     <div
+      id="splash-intro"
       className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-all duration-700 select-none overflow-hidden ${
         stage === 'entering' ? 'opacity-0 scale-105 filter blur-sm pointer-events-none' : 'opacity-100 scale-100'
       }`}
@@ -402,11 +403,11 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
           {/* Luz ambiental cinematográfica de fondo */}
           <div className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-[#A9F8B5]/18 via-[#00ff88]/12 to-[#C1A35B]/12 blur-[150px] pointer-events-none animate-pulse" />
 
-          {/* Emblema GeoSoft con resplandor */}
+          {/* Emblema GeoSoft con resplandor (Sin bordes blancos) */}
           <div className="relative group mb-6">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] opacity-40 blur-xl animate-pulse" />
             
-            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-3xl overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(169,248,181,0.3)] bg-[#111214] flex items-center justify-center">
+            <div className="splash-logo-container relative w-32 h-32 sm:w-40 sm:h-40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(169,248,181,0.3)] bg-[#111214] flex items-center justify-center border-0">
               <img
                 src="/assets/logo-emerald-md.webp"
                 alt="GeoSoft Logo"
@@ -415,26 +416,24 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
                 decoding="async"
                 className="w-full h-full object-cover select-none pointer-events-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
-              <div className="absolute inset-0 border border-white/20 rounded-3xl pointer-events-none" />
             </div>
           </div>
 
           {/* Tipografía de Identidad de Marca */}
           <div className="space-y-3.5">
             {/* Badge superior */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 border border-[#A9F8B5]/50 text-xs font-bold tracking-[0.2em] text-[#A9F8B5] uppercase shadow-lg shadow-[#A9F8B5]/20 animate-pulse">
+            <div className="splash-pill-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.2em] uppercase animate-pulse">
               <Sparkles className="w-3.5 h-3.5 text-[#DFF494] animate-spin" />
-              Software • Web • Inteligencia Artificial
+              <span>Software • Web • Inteligencia Artificial</span>
             </div>
 
             {/* Título de Marca con Efecto Cromático */}
-            <div className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-display text-white">
-              GEO<span className="text-gradient-accent">SOFT</span>
+            <div className="splash-brand-title text-4xl sm:text-5xl md:text-6xl font-black tracking-tight font-display">
+              <span className="splash-brand-geo">GEO</span><span className="text-gradient-accent">SOFT</span>
             </div>
 
             {/* Subtítulo */}
-            <p className="text-xs sm:text-sm md:text-base text-gray-100 font-normal max-w-sm mx-auto leading-relaxed drop-shadow-sm">
+            <p className="splash-subtitle text-xs sm:text-sm md:text-base font-normal max-w-sm mx-auto leading-relaxed">
               Innovación arquitectónica, plataformas inteligentes y automatización de alto rendimiento.
             </p>
 
@@ -443,7 +442,7 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
               <div className="h-1 w-full bg-white/15 rounded-full overflow-hidden p-0.5 border border-white/10">
                 <div className="h-full bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] rounded-full animate-[textLightSweep_2s_ease-in-out_infinite] w-full" />
               </div>
-              <div className="flex items-center justify-center gap-1.5 text-xs text-gray-200 font-mono font-medium drop-shadow-sm">
+              <div className="splash-loading-text flex items-center justify-center gap-1.5 font-mono">
                 <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-ping" />
                 <span>Iniciando experiencia...</span>
               </div>
@@ -455,10 +454,10 @@ export const SplashIntro: React.FC<SplashIntroProps> = ({ onFinish }) => {
             <button
               type="button"
               onClick={handleDismiss}
-              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-black/65 hover:bg-black/85 border border-white/40 hover:border-[#A9F8B5] text-white font-bold text-xs sm:text-sm tracking-wide backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.7),0_0_20px_rgba(169,248,181,0.25)] hover:shadow-[0_0_30px_rgba(169,248,181,0.5)] transition-all cursor-pointer active:scale-95 group"
+              className="splash-cta-btn inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full text-xs sm:text-sm tracking-wide transition-all cursor-pointer active:scale-95 group"
             >
               <span className="w-2 h-2 rounded-full bg-[#A9F8B5] animate-pulse shrink-0 shadow-[0_0_8px_#A9F8B5]" />
-              <span className="text-white drop-shadow-md">Toca para ingresar de inmediato</span>
+              <span className="splash-cta-text">Toca para ingresar de inmediato</span>
               <ArrowRight className="w-4 h-4 text-[#A9F8B5] group-hover:translate-x-1 transition-transform" />
             </button>
           </div>

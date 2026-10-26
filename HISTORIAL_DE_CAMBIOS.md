@@ -15,6 +15,17 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-26 — Blindaje Bimodal de la Animación de Entrada y Retiro del Borde Blanco del Logo
+- **Eliminación Total del Borde Blanco del Logo (`SplashIntro.tsx` & `src/index.css`):**
+  - Se removieron los bordes y superposiciones residuales en el contenedor del logotipo (`border border-white/20` y divisiones decorativas internas).
+  - Se blindó la clase `.splash-logo-container` con `border: 0 none !important` para impedir que los estilos del tema claro pinten un recuadro blanco alrededor del emblema 3D.
+- **Alto Contraste y Nitidez Absoluta en Textos de Bienvenida:**
+  - Se aisló la animación completa bajo `#splash-intro` haciéndola 100% inmune a la cascada de modo claro (`html.light`):
+    1. **Título GEOSOFT:** La palabra `GEO` se fijó en blanco puro brillante (`#ffffff !important`) con resplandor ambiental, resolviendo el problema de texto negro sobre fondo negro.
+    2. **Indicador de Progreso ("Iniciando experiencia..."):** Texto fijado en blanco nítido (`#ffffff !important`, peso 600) con punto de pulso esmeralda brillante.
+    3. **Botón "Toca para ingresar de inmediato":** Cápsula táctil de vidrio oscuro con borde menta translúcido y texto blanco puro de alta visibilidad (`#ffffff !important`, peso 700) con sombra de contraste.
+    4. **Badge Superior ("Software • Web • IA"):** Blindado como cápsula oscura de alta definición con acento menta, eliminando la conversión a gris claro producida por el modo claro.
+
 ### 2026-10-26 — Alto Contraste y Calibración Visual de Tarjetas de Proyectos (Verde, Azul, Rojo)
 - **Corrección Radical de Contraste Bimodal (`ProjectsSection.tsx` & `src/index.css`):**
   - **Inmunidad al Modo Claro:** Se blindaron los banners con clases exclusivas (`.project-banner-title`, `.project-banner-category`, `.project-banner-badge`, `.project-banner-btn`) con reglas `!important` y sombras de texto oscuras (`text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95)`), impidiendo que las reglas globales del tema claro conviertan el texto blanco en negro o gris sobre fondos de color.
