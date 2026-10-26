@@ -1,7 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { useGeoSoftStore } from '../context/StoreContext';
-import { IslamicGeometricRibbon } from './IslamicGeometricRibbon';
 
 interface CalModalProps {
   isOpen: boolean;
@@ -28,7 +27,7 @@ export const CalModal: React.FC<CalModalProps> = ({ isOpen, onClose }) => {
     <div
       onClick={handleClose}
       className={`fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 select-none ${
-        isLight ? 'bg-stone-900/40 backdrop-blur-md' : 'bg-black/85 backdrop-blur-md'
+        isLight ? 'bg-slate-900/35 backdrop-blur-xl' : 'bg-black/85 backdrop-blur-xl'
       } ${isClosing ? 'animate-backdrop-leave' : 'animate-backdrop-fade'}`}
     >
       <div
@@ -38,48 +37,41 @@ export const CalModal: React.FC<CalModalProps> = ({ isOpen, onClose }) => {
           isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
         }`}
       >
+        {/* Reflejo Especular Diagonal de Ventana de Cristal */}
+        <div className="water-window-sheen" />
+
         {/* Header con botón cerrar, badge e insignia */}
-        <div className="relative pt-4 pb-2.5 px-6 sm:px-8 text-center shrink-0">
+        <div className="relative pt-5 pb-3 px-6 sm:px-8 text-center shrink-0 z-10">
           <button
             onClick={handleClose}
-            className={`absolute right-5 top-4 p-2 rounded-full backdrop-blur-md transition-all cursor-pointer flex items-center justify-center ${
-              isLight
-                ? 'bg-black/5 hover:bg-black/10 text-[#3d332a]'
-                : 'bg-white/10 hover:bg-white/15 text-gray-200'
-            }`}
+            className="water-bubble-orb absolute right-5 top-5 w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full z-20"
             title="Cerrar ventana"
             aria-label="Cerrar"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
 
           <div className="inline-flex items-center justify-center">
-            <span
-              className={`px-5 py-1 rounded-full text-[11px] font-semibold tracking-wider uppercase ${
-                isLight ? 'islamic-badge-light' : 'islamic-badge-dark'
-              }`}
-            >
+            <span className="water-bubble-mini-badge px-4 py-1 text-[10.5px] font-bold tracking-wider uppercase">
               Videollamada Directa 1 a 1
             </span>
           </div>
 
           <h2
             className={`font-display text-xl sm:text-2xl font-bold tracking-tight mt-1.5 transition-colors ${
-              isLight ? 'text-[#2c241c]' : 'text-white'
+              isLight ? 'text-slate-900' : 'text-white'
             }`}
           >
             Agendar Demostración (30 Min)
           </h2>
+
+          <p className={`text-[11px] font-medium tracking-wide mt-1 transition-colors ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
+            Cal.com • Sincronización en Tiempo Real
+          </p>
         </div>
 
-        {/* Franja con Patrón Geométrico */}
-        <IslamicGeometricRibbon
-          theme={theme}
-          badgeText="Cal.com • Sincronización en Tiempo Real"
-        />
-
         {/* Modal Body / Cal.com Iframe */}
-        <div className="w-full flex-grow bg-transparent overflow-hidden">
+        <div className="w-full flex-grow bg-transparent overflow-hidden z-10">
           <iframe
             src={`https://cal.com/geosoft/30min?embed=true&theme=${theme}`}
             title="Agendar Cita GeoSoft"

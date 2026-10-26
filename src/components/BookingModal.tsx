@@ -6,7 +6,6 @@ import {
 import confetti from 'canvas-confetti';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { api } from '../services/api';
-import { IslamicGeometricRibbon } from './IslamicGeometricRibbon';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -210,10 +209,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
     <div
       onClick={handleClose}
       className={`fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 select-none ${
-        isLight ? 'bg-stone-900/40 backdrop-blur-md' : 'bg-black/85 backdrop-blur-md'
+        isLight ? 'bg-slate-900/35 backdrop-blur-xl' : 'bg-black/85 backdrop-blur-xl'
       } ${isClosing ? 'animate-backdrop-leave' : 'animate-backdrop-fade'}`}
     >
-      {/* 3D Neumorphic Islamic Glass Slab Modal Container */}
+      {/* Ventana de Cristal 3D Estilo Burbuja de Agua (Water Bubble Glass Window) */}
       <div
         onClick={e => e.stopPropagation()}
         data-theme={theme}
@@ -221,12 +220,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
           isClosing ? 'animate-modal-leave' : 'animate-modal-drop'
         }`}
       >
-        {/* Barra de Progreso Sutil en el Borde Superior */}
-        <div className="h-1 w-full bg-black/10 dark:bg-white/5 relative overflow-hidden shrink-0">
+        {/* Reflejo Especular Diagonal de Ventana de Cristal (Window Sheen) */}
+        <div className="water-window-sheen" />
+
+        {/* Línea de Progreso de Cristal Sutil y Limpia */}
+        <div className="h-[2px] w-full bg-black/5 dark:bg-white/5 relative overflow-hidden shrink-0 z-10">
           <div
             className={`h-full transition-all duration-300 ease-out ${
               isLight
-                ? 'bg-gradient-to-r from-[#237299] via-[#3188af] to-[#0d7a64]'
+                ? 'bg-gradient-to-r from-sky-400 via-teal-400 to-emerald-500'
                 : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B]'
             }`}
             style={{ width: submitted ? '100%' : `${(step / 8) * 100}%` }}
@@ -234,44 +236,32 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
         </div>
 
         {/* ================= SECCIÓN SUPERIOR: BOTONES NAV + INSIGNIA + TÍTULO HERO ================= */}
-        <div className="relative pt-5 pb-3 px-6 sm:px-8 text-center shrink-0">
-          {/* Botón Atrás (Flotante Esquina Superior Izquierda) */}
+        <div className="relative pt-6 pb-2 px-6 sm:px-8 text-center shrink-0 z-10">
+          {/* Botón Atrás (Flotante Esquina Superior Izquierda con Menisco de Agua) */}
           {step > 1 && !submitted && (
             <button
               onClick={prevStep}
-              className={`absolute left-5 top-5 p-2 rounded-full backdrop-blur-md transition-all cursor-pointer flex items-center justify-center ${
-                isLight
-                  ? 'bg-black/5 hover:bg-black/10 text-[#3d332a]'
-                  : 'bg-white/10 hover:bg-white/15 text-gray-200'
-              }`}
+              className="water-bubble-orb absolute left-5 top-5 w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full z-20"
               title="Volver al paso anterior"
               aria-label="Atrás"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5" />
             </button>
           )}
 
-          {/* Botón Cerrar (Flotante Esquina Superior Derecha) */}
+          {/* Botón Cerrar (Flotante Esquina Superior Derecha con Menisco de Agua) */}
           <button
             onClick={handleClose}
-            className={`absolute right-5 top-5 p-2 rounded-full backdrop-blur-md transition-all cursor-pointer flex items-center justify-center ${
-              isLight
-                ? 'bg-black/5 hover:bg-black/10 text-[#3d332a]'
-                : 'bg-white/10 hover:bg-white/15 text-gray-200'
-            }`}
+            className="water-bubble-orb absolute right-5 top-5 w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full z-20"
             title="Cerrar ventana"
             aria-label="Cerrar"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
 
-          {/* Insignia Biselada Superior ("Template" en la referencia de diseño) */}
+          {/* Insignia Burbuja de Agua Superior ("AGENDAR CITA") */}
           <div className="inline-flex items-center justify-center">
-            <span
-              className={`px-5 py-1.5 rounded-full text-[11px] font-semibold tracking-wider uppercase ${
-                isLight ? 'islamic-badge-light' : 'islamic-badge-dark'
-              }`}
-            >
+            <span className="water-bubble-mini-badge px-4 py-1 text-[10.5px] font-bold tracking-wider uppercase">
               {submitted ? 'Cita Confirmada' : 'Agendar Cita'}
             </span>
           </div>
@@ -279,21 +269,20 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
           {/* Título Hero con Tipografía Distintiva */}
           <h2
             className={`font-display text-2xl sm:text-3xl font-bold tracking-tight mt-2.5 transition-colors ${
-              isLight ? 'text-[#2c241c]' : 'text-white'
+              isLight ? 'text-slate-900' : 'text-white'
             }`}
           >
             {getStepHeroTitle()}
           </h2>
+
+          {/* Subtítulo Limpio y Elegante acorde al tema (Reemplazo Liso sin barra de colores) */}
+          <p className={`text-[11px] font-medium tracking-wide mt-1 transition-colors ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
+            {submitted ? 'Sesión Registrada en Agenda' : `Paso ${step} de 8 • Disponibilidad en Vivo`}
+          </p>
         </div>
 
-        {/* ================= FRANJA CON PATRÓN GEOMÉTRICO (RIBBON BAND) ================= */}
-        <IslamicGeometricRibbon
-          theme={theme}
-          badgeText={submitted ? 'Sesión Registrada en Agenda' : `Paso ${step} de 8 • Disponibilidad en Vivo`}
-        />
-
         {/* ================= CONTENIDO INFERIOR CON FORMULARIO ================= */}
-        <div className="px-5 py-4 sm:px-7 sm:py-5 flex-1 flex flex-col justify-center relative overflow-y-auto">
+        <div className="px-5 py-4 sm:px-7 sm:py-5 flex-1 flex flex-col justify-center relative overflow-y-auto z-10">
           {/* ================= PANTALLA DE CONFIRMACIÓN ================= */}
           {submitted ? (
             <div className="text-center space-y-4 animate-step-next my-auto">
@@ -350,23 +339,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 1: DÍA ================= */}
               {step === 1 && (
                 <div className="space-y-4 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     Elige una fecha conveniente para coordinar tu sesión estratégica.
                   </p>
 
-                  {/* Acceso rápido a días */}
-                  <div className="flex gap-2 text-xs">
+                  {/* Acceso rápido a días: Burbujas de Agua (Water Bubble Pills) */}
+                  <div className="flex gap-2.5 text-xs">
                     <button
                       type="button"
                       onClick={() => setDate(todayStr)}
-                      className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-                        date === todayStr
-                          ? isLight
-                            ? 'bg-[#237299] border-[#237299] text-white shadow-sm'
-                            : 'bg-[#A9F8B5]/20 border-[#A9F8B5] text-[#A9F8B5] shadow-sm'
-                          : isLight
-                          ? 'bg-white/70 border-[#d8cdb9] text-[#3d332a] hover:bg-white'
-                          : 'bg-[#151922] border-white/10 text-gray-300 hover:border-white/25'
+                      className={`water-bubble-pill flex-1 py-2.5 px-3 rounded-2xl text-xs font-semibold ${
+                        date === todayStr ? 'is-active' : ''
                       }`}
                     >
                       Hoy
@@ -378,10 +361,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                         tom.setDate(tom.getDate() + 1);
                         setDate(tom.toISOString().split('T')[0]);
                       }}
-                      className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-                        isLight
-                          ? 'bg-white/70 border-[#d8cdb9] text-[#3d332a] hover:bg-white'
-                          : 'bg-[#151922] border-white/10 text-gray-300 hover:border-white/25'
+                      className={`water-bubble-pill flex-1 py-2.5 px-3 rounded-2xl text-xs font-semibold ${
+                        date !== todayStr ? 'is-active' : ''
                       }`}
                     >
                       Mañana
@@ -391,7 +372,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   <div className="relative">
                     <Calendar
                       className={`w-4 h-4 absolute left-3.5 top-3.5 pointer-events-none ${
-                        isLight ? 'text-[#237299]' : 'text-[#A9F8B5]'
+                        isLight ? 'text-sky-600' : 'text-[#A9F8B5]'
                       }`}
                     />
                     <input
@@ -403,7 +384,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       onKeyDown={e => {
                         if (e.key === 'Enter' && date) nextStep();
                       }}
-                      className={`w-full pl-10 pr-3 py-2.5 rounded-xl text-xs outline-none transition-colors ${
+                      className={`water-bubble-input pl-10 pr-3 py-2.5 rounded-2xl text-xs outline-none transition-all ${
                         isLight ? 'islamic-input-light' : 'islamic-input-dark'
                       }`}
                     />
@@ -412,11 +393,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   <button
                     disabled={!date}
                     onClick={nextStep}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer active:scale-98 disabled:opacity-40 ${
-                      isLight
-                        ? 'bg-gradient-to-r from-[#237299] to-[#0d7a64] text-white shadow-[#237299]/25 hover:opacity-95'
-                        : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                    }`}
+                    className="btn-water-bubble-action w-full py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98 disabled:opacity-40"
                   >
                     <span>Continuar a la Hora</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -433,12 +410,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
                         <div
                           className={`absolute inset-0 rounded-2xl blur-xl animate-pulse ${
-                            isLight ? 'bg-[#237299]/25' : 'bg-[#A9F8B5]/20'
+                            isLight ? 'bg-sky-500/25' : 'bg-[#A9F8B5]/20'
                           }`}
                         />
                         <div
                           className={`w-16 h-16 rounded-2xl overflow-hidden border-2 shadow-lg bg-black animate-logo-check flex items-center justify-center ${
-                            isLight ? 'border-[#237299]' : 'border-[#A9F8B5]'
+                            isLight ? 'border-sky-500' : 'border-[#A9F8B5]'
                           }`}
                         >
                           <img
@@ -456,17 +433,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       <div>
                         <h4
                           className={`text-sm font-bold flex items-center justify-center gap-2 ${
-                            isLight ? 'text-[#2c241c]' : 'text-white'
+                            isLight ? 'text-slate-900' : 'text-white'
                           }`}
                         >
                           <span
                             className={`w-2 h-2 rounded-full animate-ping ${
-                              isLight ? 'bg-[#237299]' : 'bg-[#A9F8B5]'
+                              isLight ? 'bg-sky-500' : 'bg-[#A9F8B5]'
                             }`}
                           />
                           Comprobando disponibilidad...
                         </h4>
-                        <p className={`text-[11px] mt-1 ${isLight ? 'text-[#605244]' : 'text-gray-400'}`}>
+                        <p className={`text-[11px] mt-1 ${isLight ? 'text-slate-600' : 'text-gray-400'}`}>
                           Verificando agenda en vivo para el {date} a las {time}
                         </p>
                       </div>
@@ -476,7 +453,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                     <div
                       className={`space-y-3.5 p-4 rounded-2xl border text-center animate-message-soft ${
                         isLight
-                          ? 'bg-amber-500/15 border-amber-600/30'
+                          ? 'bg-amber-500/10 border-amber-500/30 text-slate-800'
                           : 'bg-amber-500/10 border-amber-500/30'
                       }`}
                     >
@@ -484,26 +461,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                         <AlertCircle className="w-5 h-5" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-amber-700 dark:text-amber-300">
+                        <h4 className="text-sm font-bold text-amber-600 dark:text-amber-300">
                           Horario no disponible
                         </h4>
-                        <p className={`text-xs mt-1 ${isLight ? 'text-[#5c4f42]' : 'text-gray-300'}`}>
-                          La hora <strong className={isLight ? 'text-[#2c241c]' : 'text-white'}>{time}</strong> ya está reservada.
+                        <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
+                          La hora <strong className={isLight ? 'text-slate-900' : 'text-white'}>{time}</strong> ya está reservada.
                         </p>
                       </div>
 
                       {availabilityResult.suggestedTime && (
                         <div className="pt-2">
-                          <p className={`text-[11px] mb-2 ${isLight ? 'text-[#605244]' : 'text-gray-400'}`}>
+                          <p className={`text-[11px] mb-2 ${isLight ? 'text-slate-600' : 'text-gray-400'}`}>
                             Te sugerimos la siguiente hora libre:
                           </p>
                           <button
                             onClick={() => handleAcceptSuggestedTime(availabilityResult.suggestedTime!)}
-                            className={`w-full py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md hover:scale-102 transition-transform cursor-pointer ${
-                              isLight
-                                ? 'bg-[#237299] text-white'
-                                : 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black'
-                            }`}
+                            className="btn-water-bubble-action w-full py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98"
                           >
                             <span>Aceptar {availabilityResult.suggestedTime}</span>
                             <ArrowRight className="w-3.5 h-3.5" />
@@ -514,7 +487,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       <button
                         onClick={() => setAvailabilityResult(null)}
                         className={`text-[11px] underline cursor-pointer ${
-                          isLight ? 'text-[#605244] hover:text-[#2c241c]' : 'text-gray-400 hover:text-white'
+                          isLight ? 'text-slate-600 hover:text-slate-900' : 'text-gray-400 hover:text-white'
                         }`}
                       >
                         Elegir otra hora manualmente
@@ -526,41 +499,35 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       <div
                         className={`w-12 h-12 rounded-full border flex items-center justify-center mx-auto shadow-md ${
                           isLight
-                            ? 'bg-[#237299]/20 border-[#237299] text-[#237299]'
+                            ? 'bg-emerald-500/20 border-emerald-500 text-emerald-600'
                             : 'bg-[#A9F8B5]/20 border-[#A9F8B5] text-[#A9F8B5]'
                         }`}
                       >
                         <CheckCircle2 className="w-6 h-6" />
                       </div>
-                      <h4 className={`text-sm font-bold ${isLight ? 'text-[#2c241c]' : 'text-white'}`}>
+                      <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
                         ¡Horario 100% Disponible!
                       </h4>
-                      <p className={`text-xs ${isLight ? 'text-[#605244]' : 'text-gray-400'}`}>
+                      <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-gray-400'}`}>
                         Avanzando a tus datos personales...
                       </p>
                     </div>
                   ) : (
-                    /* SELECCIÓN DE HORA */
+                    /* SELECCIÓN DE HORA CON BURBUJAS DE AGUA */
                     <>
-                      <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                      <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                         Escoge una franja horaria sugerida o ingresa tu horario predilecto.
                       </p>
 
-                      {/* Botones de horas estándar */}
+                      {/* Botones de horas estándar estilo burbuja de agua */}
                       <div className="grid grid-cols-3 gap-2">
                         {standardTimes.map(t => (
                           <button
                             key={t}
                             type="button"
                             onClick={() => handleTimeSelected(t)}
-                            className={`py-2 px-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-                              time === t
-                                ? isLight
-                                  ? 'bg-[#237299] border-[#237299] text-white shadow-sm'
-                                  : 'bg-[#A9F8B5]/20 border-[#A9F8B5] text-[#A9F8B5] shadow-sm'
-                                : isLight
-                                ? 'bg-white/70 border-[#d8cdb9] text-[#3d332a] hover:bg-white'
-                                : 'bg-[#151922] border-white/10 text-gray-300 hover:border-white/25'
+                            className={`water-bubble-pill py-2.5 px-2 rounded-2xl text-xs font-semibold ${
+                              time === t ? 'is-active' : ''
                             }`}
                           >
                             {t}
@@ -571,11 +538,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       <div className="pt-1">
                         <button
                           onClick={() => handleTimeSelected(time)}
-                          className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer active:scale-98 ${
-                            isLight
-                              ? 'bg-gradient-to-r from-[#237299] to-[#0d7a64] text-white shadow-[#237299]/25 hover:opacity-95'
-                              : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                          }`}
+                          className="btn-water-bubble-action w-full py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98"
                         >
                           <span>Comprobar {time}</span>
                           <ArrowRight className="w-3.5 h-3.5" />
@@ -589,14 +552,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 3: NOMBRE ================= */}
               {step === 3 && (
                 <div className="space-y-4 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     Indícanos tu nombre completo para personalizar tu sesión.
                   </p>
 
                   <div className="relative">
                     <User
                       className={`w-4 h-4 absolute left-3.5 top-3.5 pointer-events-none ${
-                        isLight ? 'text-[#237299]' : 'text-[#A9F8B5]'
+                        isLight ? 'text-sky-600' : 'text-[#A9F8B5]'
                       }`}
                     />
                     <input
@@ -608,7 +571,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       onKeyDown={e => {
                         if (e.key === 'Enter' && fullName.trim()) nextStep();
                       }}
-                      className={`w-full pl-10 pr-3 py-2.5 rounded-xl text-xs outline-none transition-colors ${
+                      className={`water-bubble-input pl-10 pr-3 py-2.5 rounded-2xl text-xs outline-none transition-all ${
                         isLight ? 'islamic-input-light' : 'islamic-input-dark'
                       }`}
                     />
@@ -617,11 +580,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   <button
                     disabled={!fullName.trim()}
                     onClick={nextStep}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer active:scale-98 disabled:opacity-40 ${
-                      isLight
-                        ? 'bg-gradient-to-r from-[#237299] to-[#0d7a64] text-white shadow-[#237299]/25 hover:opacity-95'
-                        : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                    }`}
+                    className="btn-water-bubble-action w-full py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98 disabled:opacity-40"
                   >
                     <span>Continuar al Teléfono</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -632,14 +591,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 4: TELÉFONO / WHATSAPP ================= */}
               {step === 4 && (
                 <div className="space-y-4 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     Te enviaremos los accesos de la reunión y el recordatorio por WhatsApp.
                   </p>
 
                   <div className="relative">
                     <Phone
                       className={`w-4 h-4 absolute left-3.5 top-3.5 pointer-events-none ${
-                        isLight ? 'text-[#237299]' : 'text-[#A9F8B5]'
+                        isLight ? 'text-sky-600' : 'text-[#A9F8B5]'
                       }`}
                     />
                     <input
@@ -651,7 +610,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       onKeyDown={e => {
                         if (e.key === 'Enter' && whatsapp.trim()) nextStep();
                       }}
-                      className={`w-full pl-10 pr-3 py-2.5 rounded-xl text-xs outline-none transition-colors ${
+                      className={`water-bubble-input pl-10 pr-3 py-2.5 rounded-2xl text-xs outline-none transition-all ${
                         isLight ? 'islamic-input-light' : 'islamic-input-dark'
                       }`}
                     />
@@ -660,11 +619,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   <button
                     disabled={!whatsapp.trim()}
                     onClick={nextStep}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer active:scale-98 disabled:opacity-40 ${
-                      isLight
-                        ? 'bg-gradient-to-r from-[#237299] to-[#0d7a64] text-white shadow-[#237299]/25 hover:opacity-95'
-                        : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                    }`}
+                    className="btn-water-bubble-action w-full py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98 disabled:opacity-40"
                   >
                     <span>Continuar al Correo</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -675,14 +630,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 5: CORREO ================= */}
               {step === 5 && (
                 <div className="space-y-4 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     Para enviarte el enlace de Google Meet y el resumen técnico.
                   </p>
 
                   <div className="relative">
                     <Mail
                       className={`w-4 h-4 absolute left-3.5 top-3.5 pointer-events-none ${
-                        isLight ? 'text-[#237299]' : 'text-[#A9F8B5]'
+                        isLight ? 'text-sky-600' : 'text-[#A9F8B5]'
                       }`}
                     />
                     <input
@@ -694,7 +649,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                       onKeyDown={e => {
                         if (e.key === 'Enter' && email.includes('@')) nextStep();
                       }}
-                      className={`w-full pl-10 pr-3 py-2.5 rounded-xl text-xs outline-none transition-colors ${
+                      className={`water-bubble-input pl-10 pr-3 py-2.5 rounded-2xl text-xs outline-none transition-all ${
                         isLight ? 'islamic-input-light' : 'islamic-input-dark'
                       }`}
                     />
@@ -703,11 +658,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   <button
                     disabled={!email.includes('@')}
                     onClick={nextStep}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer active:scale-98 disabled:opacity-40 ${
-                      isLight
-                        ? 'bg-gradient-to-r from-[#237299] to-[#0d7a64] text-white shadow-[#237299]/25 hover:opacity-95'
-                        : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                    }`}
+                    className="btn-water-bubble-action w-full py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98 disabled:opacity-40"
                   >
                     <span>Continuar a Servicios</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -718,11 +669,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 6: SERVICIO DE INTERÉS ================= */}
               {step === 6 && (
                 <div className="space-y-3 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     Selecciona la solución principal que deseas implementar.
                   </p>
 
-                  <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1" style={{ scrollbarWidth: 'none' }}>
+                  <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1" style={{ scrollbarWidth: 'none' }}>
                     {servicesList.map(s => (
                       <div
                         key={s.title}
@@ -730,28 +681,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                           setService(s.title);
                           nextStep();
                         }}
-                        className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between ${
-                          service === s.title
-                            ? isLight
-                              ? 'bg-[#237299]/15 border-[#237299] shadow-sm'
-                              : 'bg-[#A9F8B5]/15 border-[#A9F8B5] shadow-sm'
-                            : isLight
-                            ? 'bg-white/70 border-[#d8cdb9] hover:bg-white'
-                            : 'bg-[#151922] border-white/10 hover:border-white/25'
+                        className={`water-bubble-pill p-3 rounded-2xl border text-left cursor-pointer transition-all flex items-center justify-between w-full ${
+                          service === s.title ? 'is-active' : ''
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
                           <span className="text-base">{s.icon}</span>
                           <div>
-                            <div className={`text-xs font-semibold ${isLight ? 'text-[#2c241c]' : 'text-white'}`}>
+                            <div className={`text-xs font-semibold ${isLight ? 'text-slate-900' : 'text-white'}`}>
                               {s.title}
                             </div>
-                            <div className={`text-[10.5px] ${isLight ? 'text-[#605244]' : 'text-gray-400'}`}>
+                            <div className={`text-[10.5px] ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
                               {s.desc}
                             </div>
                           </div>
                         </div>
-                        <ArrowRight className={`w-3.5 h-3.5 ${isLight ? 'text-[#237299]' : 'text-gray-400'}`} />
+                        <ArrowRight className={`w-3.5 h-3.5 ${isLight ? 'text-sky-600' : 'text-gray-400'}`} />
                       </div>
                     ))}
                   </div>
@@ -761,7 +706,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 7: CUÉNTANOS BREVEMENTE ================= */}
               {step === 7 && (
                 <div className="space-y-4 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     ¿Cuál es tu objetivo o principal reto actual? (Opcional)
                   </p>
 
@@ -771,31 +716,23 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                     placeholder="Ej. Buscamos automatizar citas y cobros con Sinpe y un agente de IA..."
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
-                    className={`w-full px-3 py-2 rounded-xl text-xs outline-none transition-colors resize-none ${
+                    className={`water-bubble-input px-3.5 py-2.5 rounded-2xl text-xs outline-none transition-all resize-none ${
                       isLight ? 'islamic-input-light' : 'islamic-input-dark'
                     }`}
                   />
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2.5">
                     <button
                       type="button"
                       onClick={nextStep}
-                      className={`flex-1 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-                        isLight
-                          ? 'bg-black/5 hover:bg-black/10 text-[#3d332a]'
-                          : 'bg-white/10 hover:bg-white/15 text-gray-300 hover:text-white'
-                      }`}
+                      className="water-bubble-pill flex-1 py-2.5 rounded-2xl text-xs font-medium cursor-pointer"
                     >
                       Omitir
                     </button>
                     <button
                       type="button"
                       onClick={nextStep}
-                      className={`flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer active:scale-98 ${
-                        isLight
-                          ? 'bg-gradient-to-r from-[#237299] to-[#0d7a64] text-white shadow-[#237299]/25 hover:opacity-95'
-                          : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                      }`}
+                      className="btn-water-bubble-action flex-1 py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <span>Ver Resumen</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -807,22 +744,20 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
               {/* ================= PASO 8: RESUMEN DE TU CITA ================= */}
               {step === 8 && (
                 <div className="space-y-3.5 my-auto">
-                  <p className={`text-xs text-center ${isLight ? 'text-[#605244]' : 'text-gray-300'}`}>
+                  <p className={`text-xs text-center ${isLight ? 'text-slate-600' : 'text-gray-300'}`}>
                     Revisa tu información y confirma para reservar tu espacio.
                   </p>
 
-                  {/* Tarjeta de Resumen Compacta */}
+                  {/* Tarjeta de Resumen Compacta en Cristal */}
                   <div
-                    className={`p-3.5 rounded-2xl border space-y-2 text-xs shadow-inner ${
-                      isLight
-                        ? 'bg-white/70 border-[#d8cdb9]'
-                        : 'bg-[#151922] border-white/15'
+                    className={`water-bubble-card p-4 rounded-2xl space-y-2 text-xs ${
+                      isLight ? 'bg-white/80' : 'bg-black/30'
                     }`}
                   >
                     <div className="flex items-center justify-between pb-2 border-b border-black/10 dark:border-white/10">
                       <div
                         className={`flex items-center gap-1.5 font-semibold ${
-                          isLight ? 'text-[#237299]' : 'text-[#A9F8B5]'
+                          isLight ? 'text-sky-600' : 'text-[#A9F8B5]'
                         }`}
                       >
                         <Calendar className="w-3.5 h-3.5" />
@@ -832,9 +767,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                         <span>{time}</span>
                       </div>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[9.5px] font-semibold ${
+                        className={`px-2.5 py-0.5 rounded-full text-[9.5px] font-semibold ${
                           isLight
-                            ? 'bg-[#237299]/15 text-[#237299]'
+                            ? 'bg-sky-500/15 text-sky-700'
                             : 'bg-[#A9F8B5]/15 text-[#A9F8B5]'
                         }`}
                       >
@@ -844,36 +779,36 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
 
                     <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
                       <div>
-                        <span className={`block text-[10px] ${isLight ? 'text-[#827263]' : 'text-gray-400'}`}>
+                        <span className={`block text-[10px] ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
                           Nombre:
                         </span>
-                        <span className={`font-medium truncate block ${isLight ? 'text-[#2c241c]' : 'text-white'}`}>
+                        <span className={`font-medium truncate block ${isLight ? 'text-slate-900' : 'text-white'}`}>
                           {fullName || 'No especificado'}
                         </span>
                       </div>
                       <div>
-                        <span className={`block text-[10px] ${isLight ? 'text-[#827263]' : 'text-gray-400'}`}>
+                        <span className={`block text-[10px] ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
                           WhatsApp:
                         </span>
-                        <span className={`font-medium truncate block ${isLight ? 'text-[#2c241c]' : 'text-white'}`}>
+                        <span className={`font-medium truncate block ${isLight ? 'text-slate-900' : 'text-white'}`}>
                           {whatsapp || 'No especificado'}
                         </span>
                       </div>
                       <div>
-                        <span className={`block text-[10px] ${isLight ? 'text-[#827263]' : 'text-gray-400'}`}>
+                        <span className={`block text-[10px] ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
                           Correo:
                         </span>
-                        <span className={`font-medium truncate block ${isLight ? 'text-[#2c241c]' : 'text-white'}`}>
+                        <span className={`font-medium truncate block ${isLight ? 'text-slate-900' : 'text-white'}`}>
                           {email || 'No especificado'}
                         </span>
                       </div>
                       <div>
-                        <span className={`block text-[10px] ${isLight ? 'text-[#827263]' : 'text-gray-400'}`}>
+                        <span className={`block text-[10px] ${isLight ? 'text-slate-500' : 'text-gray-400'}`}>
                           Servicio:
                         </span>
                         <span
                           className={`font-medium truncate block ${
-                            isLight ? 'text-[#237299]' : 'text-[#DFF494]'
+                            isLight ? 'text-sky-600 font-semibold' : 'text-[#DFF494]'
                           }`}
                         >
                           {service}
@@ -883,8 +818,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
 
                     {notes && (
                       <div className="pt-1.5 border-t border-black/10 dark:border-white/10 text-[10.5px]">
-                        <span className={isLight ? 'text-[#827263]' : 'text-gray-400'}>Proyecto:</span>
-                        <p className={`italic truncate ${isLight ? 'text-[#3d332a]' : 'text-gray-300'}`}>
+                        <span className={isLight ? 'text-slate-500' : 'text-gray-400'}>Proyecto:</span>
+                        <p className={`italic truncate ${isLight ? 'text-slate-800' : 'text-gray-300'}`}>
                           {notes}
                         </p>
                       </div>
@@ -895,11 +830,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) =
                   <button
                     disabled={isSubmitting}
                     onClick={handleSubmit}
-                    className={`w-full py-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 shadow-xl transition-all cursor-pointer active:scale-98 disabled:opacity-50 ${
-                      isLight
-                        ? 'bg-gradient-to-r from-[#237299] via-[#3188af] to-[#0d7a64] text-white shadow-[#237299]/30 hover:opacity-95'
-                        : 'bg-gradient-to-r from-[#A9F8B5] via-[#DFF494] to-[#C1A35B] text-black shadow-[#A9F8B5]/25 hover:opacity-95'
-                    }`}
+                    className="btn-water-bubble-action w-full py-3.5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>{isSubmitting ? 'Guardando cita...' : 'Confirmar Cita y Enviar 🚀'}</span>

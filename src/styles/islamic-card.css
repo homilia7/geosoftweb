@@ -1,127 +1,414 @@
 /* ==========================================================
-   ESTILO DE POP-UP DE AGENDAR "ISLAMIC PATTERN GLASS SLAB"
-   Diseño de alta fidelidad basado en tarjeta física de cristal biselado 3D
-   con franja perimetral de patrón geométrico y soporte bimodal (Claro / Oscuro)
+   WATER BUBBLE GLASS WINDOW / MODAL DE AGENDAMIENTO
+   Diseño de ventana de cristal arquitectónico 3D ultratransparente
+   con física de menisco de agua, refracción cáustica y soporte
+   bimodal puro (Claro cristalino vs Oscuro obsidiana).
    ========================================================== */
 
-/* Tarjeta Principal Flotante (Slab) en Modo Claro */
-.islamic-glass-card[data-theme="light"] {
+/* 1. VENTANA PRINCIPAL DE CRISTAL (Glass Window Slab) */
+.islamic-glass-card {
+  position: relative;
+  border-radius: 36px;
+  overflow: hidden;
+  backdrop-filter: blur(36px) saturate(190%);
+  -webkit-backdrop-filter: blur(36px) saturate(190%);
+  isolation: isolate;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Modo Claro: Cristal puro blanco/hielo (CERO BEIGE, CERO DORADO) */
+.islamic-glass-card[data-theme="light"],
+html.light .islamic-glass-card {
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.65) 45%, rgba(245, 248, 255, 0.78) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+  color: #0f172a !important;
+  box-shadow: 
+    /* Menisco superior e inferior de agua cristalina con reflejo especular */
+    inset 0 2.5px 4px 0px #ffffff,
+    inset 0 -2.5px 4px 0px rgba(180, 205, 230, 0.45),
+    inset 2.5px 0 4px rgba(255, 255, 255, 0.95),
+    inset -2.5px 0 4px rgba(255, 255, 255, 0.95),
+    /* Sombra de ventana flotante con dispersión cáustica azul cielo */
+    0 35px 80px -15px rgba(100, 116, 139, 0.28),
+    0 12px 28px -4px rgba(0, 175, 240, 0.22),
+    0 16px 36px -4px rgba(255, 190, 90, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Modo Oscuro: Cristal obsidiana ahumado profundo con menisco de agua */
+.islamic-glass-card[data-theme="dark"],
+html:not(.light) .islamic-glass-card {
+  background: 
+    linear-gradient(145deg, rgba(20, 25, 36, 0.85) 0%, rgba(13, 16, 24, 0.88) 45%, rgba(8, 10, 16, 0.94) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  color: #f8fafc !important;
+  box-shadow: 
+    /* Menisco superior de agua */
+    inset 0 2.5px 4px 0px rgba(255, 255, 255, 0.85),
+    inset 0 -2.5px 4px 0px rgba(255, 255, 255, 0.15),
+    inset 2px 0 3px rgba(255, 255, 255, 0.35),
+    inset -2px 0 3px rgba(255, 255, 255, 0.35),
+    /* Sombra profunda y halo cáustico */
+    0 45px 100px -20px rgba(0, 0, 0, 0.9),
+    0 14px 32px -4px rgba(0, 195, 255, 0.22),
+    0 18px 40px -4px rgba(169, 248, 181, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 2. EFECTO DE LUZ DE TRANSPARENCIA (Diagonal Window Sheen) */
+.water-window-sheen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
   background: linear-gradient(
-    175deg,
-    rgba(248, 245, 238, 0.96) 0%,
-    rgba(238, 232, 220, 0.93) 50%,
-    rgba(230, 222, 208, 0.96) 100%
+    170deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0) 100%
   );
-  border: 1.5px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 
-    0 40px 90px -15px rgba(110, 95, 75, 0.38),
-    0 18px 40px -10px rgba(130, 115, 95, 0.22),
-    inset 0 2.5px 3.5px rgba(255, 255, 255, 1),
-    inset 0 -3.5px 6px rgba(185, 172, 152, 0.45),
-    inset 1.5px 0 3px rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  color: #2c241c;
+  pointer-events: none;
+  border-radius: inherit;
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  z-index: 1;
 }
 
-/* Tarjeta Principal Flotante (Slab) en Modo Oscuro */
-.islamic-glass-card[data-theme="dark"] {
+html.light .water-window-sheen {
   background: linear-gradient(
-    175deg,
-    rgba(24, 28, 36, 0.95) 0%,
-    rgba(16, 19, 26, 0.94) 50%,
-    rgba(10, 12, 17, 0.98) 100%
+    170deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.2) 45%,
+    rgba(255, 255, 255, 0) 100%
   );
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 
-    0 40px 90px -15px rgba(0, 0, 0, 0.9),
-    0 18px 40px -10px rgba(0, 0, 0, 0.75),
-    0 0 50px -15px rgba(169, 248, 181, 0.18),
-    inset 0 2.5px 3.5px rgba(255, 255, 255, 0.22),
-    inset 0 -3.5px 6px rgba(0, 0, 0, 0.9),
-    inset 1.5px 0 2.5px rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  color: #f1f5f9;
 }
 
-/* ==========================================================
-   INSIGNIA SUPERIOR BISELADA / HUNDIDA ("Template" en la referencia)
-   ========================================================== */
-.islamic-badge-light {
-  background: linear-gradient(180deg, rgba(224, 216, 202, 0.8) 0%, rgba(238, 232, 221, 0.95) 100%);
-  box-shadow: 
-    inset 0 1.5px 2px rgba(120, 105, 90, 0.22),
-    inset 0 -1.5px 2px rgba(255, 255, 255, 0.95),
-    0 1px 2px rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(200, 190, 175, 0.65);
-  color: #3d332a;
+/* 3. INSIGNIA SUPERIOR BURBUJA DE AGUA (Mini Capsule Badge) */
+.water-bubble-mini-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  user-select: none;
+  transition: all 0.3s ease;
 }
 
-.islamic-badge-dark {
-  background: linear-gradient(180deg, rgba(14, 17, 23, 0.85) 0%, rgba(24, 28, 38, 0.9) 100%);
+.islamic-badge-light,
+html.light .water-bubble-mini-badge {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.65) 50%, rgba(245, 249, 255, 0.8) 100%) !important;
+  border: 1.5px solid #ffffff !important;
+  color: #0369a1 !important;
   box-shadow: 
-    inset 0 1.5px 2px rgba(0, 0, 0, 0.65),
-    inset 0 -1px 1.5px rgba(255, 255, 255, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #DFF494;
+    inset 0 2px 2.5px #ffffff,
+    inset 0 -1.5px 2px rgba(180, 200, 225, 0.4),
+    0 4px 12px rgba(100, 116, 139, 0.14) !important;
 }
 
-/* ==========================================================
-   FRANJA HORIZONTAL CON PATRÓN GEOMÉTRICO (RIBBON BAND)
-   ========================================================== */
-.islamic-ribbon-light {
-  background: linear-gradient(90deg, #237299 0%, #3188af 50%, #237299 100%);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.75);
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.75);
+.islamic-badge-dark,
+html:not(.light) .water-bubble-mini-badge {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.02) 100%), rgba(255, 255, 255, 0.05) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.38) !important;
+  color: #A9F8B5 !important;
   box-shadow: 
-    inset 0 2.5px 4px rgba(255, 255, 255, 0.35),
-    inset 0 -2.5px 4px rgba(0, 0, 0, 0.25),
-    0 4px 14px rgba(35, 114, 153, 0.25);
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.7),
+    inset 0 -1px 1.5px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
 
-.islamic-ribbon-dark {
-  background: linear-gradient(90deg, #06543e 0%, #0d7a64 50%, #06543e 100%);
-  border-top: 1.5px solid rgba(169, 248, 181, 0.55);
-  border-bottom: 1.5px solid rgba(169, 248, 181, 0.55);
-  box-shadow: 
-    inset 0 2.5px 5px rgba(169, 248, 181, 0.4),
-    inset 0 -2.5px 5px rgba(0, 0, 0, 0.5),
-    0 4px 18px rgba(169, 248, 181, 0.18);
+/* 4. ORBES DE CRISTAL PARA BOTONES DE NAVEGACIÓN (Atrás y Cerrar) */
+.water-bubble-orb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ==========================================================
-   INPUTS Y CONTROLES ADAPTATIVOS
-   ========================================================== */
-.islamic-input-light {
-  background: rgba(255, 255, 255, 0.82) !important;
-  border: 1.5px solid rgba(206, 196, 180, 0.8) !important;
-  color: #2c241c !important;
+html.light .water-bubble-orb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.5) 100%) !important;
+  border: 1.5px solid #ffffff !important;
+  color: #334155 !important;
   box-shadow: 
-    inset 0 1.5px 3px rgba(130, 115, 95, 0.15),
-    0 1px 1px rgba(255, 255, 255, 0.8) !important;
+    inset 0 1.5px 2px #ffffff,
+    inset 0 -1px 1.5px rgba(180, 200, 225, 0.35),
+    0 4px 12px -2px rgba(100, 116, 139, 0.2) !important;
 }
 
-.islamic-input-light:focus {
-  border-color: #237299 !important;
+html.light .water-bubble-orb:hover {
+  transform: translateY(-1px) scale(1.05);
+  color: #0f172a !important;
   box-shadow: 
-    0 0 0 3px rgba(35, 114, 153, 0.18),
-    inset 0 1.5px 3px rgba(130, 115, 95, 0.1) !important;
+    inset 0 2px 2.5px #ffffff,
+    0 6px 16px -2px rgba(100, 116, 139, 0.28) !important;
 }
 
-.islamic-input-dark {
-  background: rgba(12, 15, 21, 0.82) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
-  color: #f1f5f9 !important;
+html:not(.light) .water-bubble-orb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  color: #e2e8f0 !important;
   box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.65),
-    0 1px 1px rgba(255, 255, 255, 0.05) !important;
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.6),
+    inset 0 -1px 1.5px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-.islamic-input-dark:focus {
-  border-color: #A9F8B5 !important;
+html:not(.light) .water-bubble-orb:hover {
+  transform: translateY(-1px) scale(1.05);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
   box-shadow: 
-    0 0 0 3px rgba(169, 248, 181, 0.2),
-    inset 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+    inset 0 2px 2.5px rgba(255, 255, 255, 0.8),
+    0 6px 16px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* 5. BOTONES DE FECHA Y HORA TIPO BURBUJA DE AGUA (Water Bubble Date Pills) */
+.water-bubble-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Modo Oscuro - No Seleccionado */
+html:not(.light) .water-bubble-pill {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 60%, rgba(255, 255, 255, 0) 100%), 
+    rgba(255, 255, 255, 0.04) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.32) !important;
+  color: #e2e8f0 !important;
+  box-shadow: 
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.6),
+    inset 0 -1.5px 2px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+html:not(.light) .water-bubble-pill:hover {
+  transform: translateY(-1.5px);
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 
+    inset 0 2px 3px rgba(255, 255, 255, 0.8),
+    0 6px 16px rgba(0, 0, 0, 0.45),
+    0 0 15px rgba(0, 195, 255, 0.25) !important;
+}
+
+/* Modo Oscuro - Seleccionado / Activo */
+html:not(.light) .water-bubble-pill.is-active {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%), 
+    linear-gradient(135deg, rgba(169, 248, 181, 0.4) 0%, rgba(223, 244, 148, 0.3) 100%) !important;
+  border: 1.5px solid #A9F8B5 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 
+    inset 0 2px 3px rgba(255, 255, 255, 0.95),
+    inset 0 -1.5px 2px rgba(0, 0, 0, 0.25),
+    0 8px 20px -3px rgba(169, 248, 181, 0.45),
+    0 0 18px 2px rgba(169, 248, 181, 0.3) !important;
+}
+
+/* Modo Claro - No Seleccionado */
+html.light .water-bubble-pill {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0.2) 100%), 
+    rgba(255, 255, 255, 0.5) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+  color: #1e293b !important;
+  box-shadow: 
+    inset 0 2px 2.5px #ffffff,
+    inset 0 -1.5px 2px rgba(180, 200, 225, 0.35),
+    0 6px 16px -3px rgba(100, 116, 139, 0.18),
+    0 2px 6px rgba(0, 175, 240, 0.12) !important;
+}
+
+html.light .water-bubble-pill:hover {
+  transform: translateY(-1.5px);
+  border-color: #ffffff !important;
+  box-shadow: 
+    inset 0 2.5px 3px #ffffff,
+    0 8px 20px -3px rgba(100, 116, 139, 0.25),
+    0 3px 10px rgba(0, 175, 240, 0.2) !important;
+}
+
+/* Modo Claro - Seleccionado / Activo */
+html.light .water-bubble-pill.is-active {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.75) 50%, rgba(240, 248, 255, 0.9) 100%) !important;
+  border: 1.5px solid #0284c7 !important;
+  color: #0369a1 !important;
+  font-weight: 700 !important;
+  box-shadow: 
+    inset 0 2px 3px #ffffff,
+    inset 0 -1.5px 2px rgba(2, 132, 199, 0.25),
+    0 8px 22px -3px rgba(2, 132, 199, 0.35),
+    0 0 16px 2px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* 6. INPUTS TIPO BURBUJA DE AGUA CON REFLEJO ESPECULAR */
+.water-bubble-input {
+  width: 100%;
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+/* Inputs en Modo Claro */
+.islamic-input-light,
+html.light .water-bubble-input {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(245, 249, 255, 0.92) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+  color: #0f172a !important;
+  box-shadow: 
+    inset 0 2px 3px rgba(100, 116, 139, 0.12),
+    inset 0 -1.5px 2px #ffffff,
+    0 6px 18px -3px rgba(100, 116, 139, 0.15),
+    0 1px 3px rgba(0, 175, 240, 0.1) !important;
+}
+
+.islamic-input-light:focus,
+html.light .water-bubble-input:focus {
+  border-color: #38bdf8 !important;
+  box-shadow: 
+    inset 0 2px 3px rgba(100, 116, 139, 0.08),
+    0 0 0 3.5px rgba(56, 189, 248, 0.25),
+    0 8px 24px -4px rgba(56, 189, 248, 0.22) !important;
+}
+
+/* Inputs en Modo Oscuro */
+.islamic-input-dark,
+html:not(.light) .water-bubble-input {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 60%, rgba(0, 0, 0, 0.25) 100%), 
+    rgba(14, 18, 26, 0.75) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  color: #f8fafc !important;
+  box-shadow: 
+    inset 0 2px 3px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.15),
+    0 3px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.islamic-input-dark:focus,
+html:not(.light) .water-bubble-input:focus {
+  border-color: rgba(169, 248, 181, 0.8) !important;
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 60%, rgba(0, 0, 0, 0.2) 100%), 
+    rgba(14, 18, 26, 0.85) !important;
+  box-shadow: 
+    inset 0 2px 3px rgba(0, 0, 0, 0.4),
+    0 0 0 3px rgba(169, 248, 181, 0.25),
+    0 6px 18px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 7. BOTÓN PRINCIPAL DE ACCIÓN (Continuar / Confirmar Cita) */
+.btn-water-bubble-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  overflow: hidden;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  transition: 
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+/* Modo Claro: Núcleo oceánico cyan-esmeralda radiante con meniscos de agua */
+html.light .btn-water-bubble-action {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.18) 48%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(135deg, #0284c7 0%, #0ea5e9 45%, #10b981 100%) !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    inset 0 2.5px 3.5px 0px #ffffff,
+    inset 0 -2.5px 3.5px 0px rgba(0, 0, 0, 0.2),
+    inset 2px 0 3px rgba(255, 255, 255, 0.7),
+    inset -2px 0 3px rgba(255, 255, 255, 0.7),
+    0 14px 32px -6px rgba(2, 132, 199, 0.45),
+    0 6px 16px -2px rgba(14, 165, 233, 0.35) !important;
+}
+
+html.light .btn-water-bubble-action:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #ffffff !important;
+  box-shadow: 
+    inset 0 3px 4px #ffffff,
+    0 18px 40px -6px rgba(2, 132, 199, 0.6),
+    0 8px 20px -2px rgba(14, 165, 233, 0.45) !important;
+}
+
+/* Modo Oscuro: Núcleo radiante menta-lima-oro con meniscos de agua */
+html:not(.light) .btn-water-bubble-action {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 45%, rgba(255, 255, 255, 0) 65%),
+    linear-gradient(135deg, rgba(169, 248, 181, 0.95) 0%, rgba(223, 244, 148, 0.95) 52%, rgba(200, 175, 100, 0.9) 100%) !important;
+  color: #040404 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 
+    inset 0 2px 3px 0px rgba(255, 255, 255, 1),
+    inset 0 -2.5px 3.5px 0px rgba(0, 0, 0, 0.25),
+    0 16px 36px -6px rgba(169, 248, 181, 0.55),
+    0 8px 18px -3px rgba(223, 244, 148, 0.4) !important;
+}
+
+html:not(.light) .btn-water-bubble-action:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #ffffff !important;
+  box-shadow: 
+    inset 0 2.5px 4px rgba(255, 255, 255, 1),
+    0 20px 42px -6px rgba(169, 248, 181, 0.75),
+    0 10px 22px -3px rgba(223, 244, 148, 0.5) !important;
+}
+
+/* 8. TARJETA RESUMEN DE CRISTAL (Summary Card) */
+.water-bubble-card {
+  position: relative;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 20px;
+  transition: all 0.25s ease;
+}
+
+html.light .water-bubble-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 249, 255, 0.7) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 
+    inset 0 1.5px 2px #ffffff,
+    inset 0 -1.5px 2px rgba(180, 200, 225, 0.25),
+    0 6px 18px -3px rgba(100, 116, 139, 0.15) !important;
+}
+
+html:not(.light) .water-bubble-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.4),
+    inset 0 -1.5px 2px rgba(0, 0, 0, 0.3),
+    0 6px 18px rgba(0, 0, 0, 0.35) !important;
 }
