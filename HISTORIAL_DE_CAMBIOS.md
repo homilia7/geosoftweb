@@ -10,10 +10,30 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 - **Repositorio:** https://github.com/homilia7/geosoftweb.git
 - **Rama:** main
 - **URL Producción:** https://geosoftweb.pages.dev
+- **Dominio Personalizado:** https://geosoft.lat / https://www.geosoft.lat
 
 ---
 
 ## 📅 Entradas de Cambios Aprobados
+
+### 2026-10-29 — Cotizador Ejecutivo de Proyectos en Panel Admin (ARQMODULAR)
+- **Implementación Arquitectónica en 3 Capas (<150 líneas por componente):**
+  - **Capa de Tipos (`src/types/projectQuote.ts`):** Contrato tipado estricto sin `any` para ítems, entregables y modalidades de pago.
+  - **Capa de Lógica & Datos (`src/hooks/useProjectQuote.ts`):** Gestión de estado, persistencia automática en `localStorage`, cálculo de subtotales, generador de mensajes ejecutivos para WhatsApp e impresión.
+  - **Capa de Presentación Modular (`src/components/admin/quote/`):**
+    - `QuoteHeader.tsx`: Cabecera corporativa con logo GeoSoft, selector de moneda (USD/CRC), número de cotización y campo editable para Nombre del Proyecto y Cliente.
+    - `QuoteItemsTable.tsx`: Tabla dinámica para ingresar, editar, calcular cantidades y precios unitarios, y eliminar ítems con subtotales automáticos.
+    - `QuotePricingModes.tsx`: Dos modalidades comerciales configurables por el Admin (Modalidad 1: Pago Inicial + Mensualidad vs Modalidad 2: Solo Pago Mensual / $0 Inicial).
+    - `QuoteActionsBar.tsx`: Acciones de despacho comercial (Enviar por WhatsApp, Copiar propuesta, Imprimir/PDF, Restablecer) y términos comerciales.
+    - `AdminProjectQuoteTab.tsx`: Orquestador delgado (<60 líneas) integrado en el menú principal del `AdminPanel.tsx` bajo la categoría *Operaciones & Ventas*.
+
+### 2026-10-27 — Montaje y Vinculación de Dominio Personalizado `geosoft.lat`
+- **Configuración de Infraestructura en Cloudflare:**
+  - Creación de zona DNS para el dominio `geosoft.lat` (Zone ID `660e3e091c5f251b3067eb150e797cb5`).
+  - Vinculación en Cloudflare Pages (`geosoftweb`) para `geosoft.lat` y `www.geosoft.lat`.
+  - Configuración de registros CNAME con aplanamiento en el apex (`@` y `www` apuntando a `geosoftweb.pages.dev`).
+  - Delegación de Nameservers asignados en registrador: `edna.ns.cloudflare.com` y `houston.ns.cloudflare.com`.
+  - Emisión y validación de certificado SSL universal de alto rendimiento.
 
 ### 2026-10-26 — Optimización Extrema de Carga: Precarga en Paralelo y Cadencia Ultrarrápida
 - **Causa de la Sensación de Carga Lenta:**

@@ -21,17 +21,19 @@ import {
   ChevronRight,
   Clock,
   Layers,
-  CheckCircle2
+  CheckCircle2,
+  Calculator
 } from 'lucide-react';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { AppointmentStatus, PlatformType } from '../types';
 import { AdminAnalyticsTab } from './AdminAnalyticsTab';
 import { AdminBotTab } from './AdminBotTab';
 import { AdminProposalsTab } from './AdminProposalsTab';
+import { AdminProjectQuoteTab } from './admin/quote/AdminProjectQuoteTab';
 import { ClientProposalModal } from './ClientProposalModal';
 import { soundEffects } from '../services/soundEffects';
 
-type AdminTab = 'propuestas' | 'citas' | 'bot' | 'analiticas' | 'precios';
+type AdminTab = 'propuestas' | 'cotizador' | 'citas' | 'bot' | 'analiticas' | 'precios';
 
 export const AdminPanel: React.FC = () => {
   const {
@@ -54,6 +56,7 @@ export const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.toLowerCase();
+      if (hash.includes('cotizador')) return 'cotizador';
       if (hash.includes('citas')) return 'citas';
       if (hash.includes('bot')) return 'bot';
       if (hash.includes('analiticas')) return 'analiticas';
@@ -112,6 +115,12 @@ export const AdminPanel: React.FC = () => {
       title: 'OPERACIONES & VENTAS',
       items: [
         {
+          id: 'cotizador' as AdminTab,
+          label: 'Cotizador de Proyectos',
+          icon: Calculator,
+          badge: 'Nuevo'
+        },
+        {
           id: 'propuestas' as AdminTab,
           label: 'Propuestas de Negocios',
           icon: FileText,
@@ -161,6 +170,11 @@ export const AdminPanel: React.FC = () => {
 
   const getTabTitle = () => {
     switch (activeTab) {
+      case 'cotizador':
+        return {
+          title: 'Cotizador Ejecutivo de Proyectos',
+          desc: 'Creación de propuestas formales con desglose de ítems y modalidades de pago (Inicial + Mensual / Solo Mensual)'
+        };
       case 'propuestas':
         return {
           title: 'Propuestas de Negocios',
@@ -538,7 +552,9 @@ export const AdminPanel: React.FC = () => {
 
         {/* Cuerpo del Espacio Activo (Sin restricciones de modal, con scroll amplio y fluido) */}
         <div className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-          {activeTab === 'propuestas' ? (
+          {activeTab === 'cotizador' ? (
+            <AdminProjectQuoteTab />
+          ) : activeTab === 'propuestas' ? (
             <AdminProposalsTab />
           ) : activeTab === 'precios' ? (
             /* Tab de Precios y Campañas Promocionales */
