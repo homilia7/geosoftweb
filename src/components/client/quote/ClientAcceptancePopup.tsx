@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, Send, ShieldCheck, User, Phone, Mail, Sparkles } from 'lucide-react';
+import { X, CheckCircle2, Send, User, Phone, Mail } from 'lucide-react';
 import { ProjectQuoteData, QuoteAcceptancePayload } from '../../../types/projectQuote';
 import { soundEffects } from '../../../services/soundEffects';
 
 interface ClientAcceptancePopupProps {
   quote: ProjectQuoteData;
   selectedMode: 'initial_plus_monthly' | 'only_monthly';
+  activeCurrency?: 'USD' | 'CRC';
+  convertedInitial?: number;
+  convertedMonthly?: number;
   onClose: () => void;
   onConfirmAcceptance: (payload: QuoteAcceptancePayload) => Promise<void>;
 }
@@ -13,6 +16,9 @@ interface ClientAcceptancePopupProps {
 export const ClientAcceptancePopup: React.FC<ClientAcceptancePopupProps> = ({
   quote,
   selectedMode,
+  activeCurrency = 'USD',
+  convertedInitial,
+  convertedMonthly,
   onClose,
   onConfirmAcceptance
 }) => {
@@ -24,9 +30,13 @@ export const ClientAcceptancePopup: React.FC<ClientAcceptancePopupProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
 
   const isMode1 = selectedMode === 'initial_plus_monthly';
-  const sym = quote.currencySymbol;
-  const initialAmount = isMode1 ? quote.modeInitialPlusMonthly.initialPayment : 0;
-  const monthlyAmount = isMode1 ? quote.modeInitialPlusMonthly.monthlyPayment : quote.modeOnlyMonthly.monthlyPayment;
+  const sym = activeCurrency === 'CRC' ? '₡' : '$';
+  const initialAmount = convertedInitial !== undefined
+    ? convertedInitial
+    : (isMode1 ? quote.modeInitialPlusMonthly.initialPayment : 0);
+  const monthlyAmount = convertedMonthly !== undefined
+    ? convertedMonthly
+    : (isMode1 ? quote.modeInitialPlusMonthly.monthlyPayment : quote.modeOnlyMonthly.monthlyPayment);
   const modeTitle = isMode1 ? 'Pago Inicial + Mensualidad' : 'Solo Pago Mensual ($0 Inicial)';
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,6 +59,7 @@ export const ClientAcceptancePopup: React.FC<ClientAcceptancePopupProps> = ({
       initialAmount,
       monthlyAmount,
       currencySymbol: sym,
+      currency: activeCurrency,
       notes: notes.trim(),
       acceptedAt: new Date().toISOString()
     };
@@ -82,15 +93,15 @@ export const ClientAcceptancePopup: React.FC<ClientAcceptancePopupProps> = ({
               </button>
             </div>
 
-            {/* Selected Mode Summary */}
+            {/* Selected Mode Summary with active currency */}
             <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-3.5 flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">Modalidad Elegida:</span>
+                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">Modalidad Elegida ({activeCurrency}):</span>
                 <span className="text-xs font-bold text-white">{modeTitle}</span>
               </div>
               <div className="text-right">
                 <span className="text-xs font-mono font-bold text-[#A9F8B5]">
-                  {sym}{initialAmount > 0 ? `${initialAmount.toLocaleString()} inicial + ` : ''}{sym}{monthlyAmount}/mes
+                  {sym}{initialAmount > 0 ? `${initialAmount.toLocaleString()} inicial + ` : ''}{sym}{monthlyAmount.toLocaleString()}/mes
                 </span>
               </div>
             </div>

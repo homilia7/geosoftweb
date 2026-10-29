@@ -16,6 +16,15 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-29 — Soporte Bimoneda Completo (Colones ₡ / Dólares $) en Cotizador y Vista Cliente
+- **Conmutador Bimoneda Inteligente (`useProjectQuote.ts` & `QuoteHeader.tsx`):**
+  - Selector prominente para alternar entre Dólares (`$ USD`) y Colones costarricenses (`₡ CRC`).
+  - Tipo de cambio en vivo configurable (ej. `₡520`) con recálculo y redondeo comercial automático de ítems y cuotas.
+  - Formato adaptativo con separador de miles y escalonamiento de precios optimizado para colones y dólares.
+- **Selector de Moneda en Vista de Cliente (`ClientQuoteModal.tsx` & `ClientAcceptancePopup.tsx`):**
+  - El cliente puede alternar libremente entre Dólares y Colones en la cabecera de su cotización.
+  - Desglose y confirmación de aceptación registrados con la moneda exacta seleccionada.
+
 ### 2026-10-29 — Generador de Link Único y Flujo de Aceptación con Pop-up y Notificación Admin
 - **Generador de Link Único de Cotización (`useProjectQuote.ts` & `QuoteActionsBar.tsx`):**
   - Generación de URL interactiva única mediante serialización base64 segura UTF-8 (`/#cotizacion=<payload>`).

@@ -11,6 +11,7 @@ export const AdminProjectQuoteTab: React.FC = () => {
     quote,
     itemsSubtotal,
     updateField,
+    switchCurrency,
     addItem,
     updateItem,
     removeItem,
@@ -27,8 +28,12 @@ export const AdminProjectQuoteTab: React.FC = () => {
       {/* 0. Alertas de Notificaciones de Cotizaciones Aceptadas */}
       <QuoteAcceptedAlerts />
 
-      {/* 1. Header Ejecutivo con Logo GeoSoft y Nombre del Proyecto */}
-      <QuoteHeader quote={quote} updateField={updateField} />
+      {/* 1. Header Ejecutivo con Logo GeoSoft, Nombre del Proyecto y Selector de Moneda (USD / CRC) */}
+      <QuoteHeader
+        quote={quote}
+        updateField={updateField}
+        onSwitchCurrency={switchCurrency}
+      />
 
       {/* 2. Tabla Interactiva de Ítems / Entregables */}
       <QuoteItemsTable

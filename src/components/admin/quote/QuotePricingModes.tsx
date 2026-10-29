@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreditCard, Repeat, Sparkles, Check, ArrowRight } from 'lucide-react';
+import { CreditCard, Repeat } from 'lucide-react';
 import { PaymentModeInitialPlusMonthly, PaymentModeOnlyMonthly } from '../../../types/projectQuote';
 
 interface QuotePricingModesProps {
@@ -25,6 +25,10 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
   onSelectPreferred,
   onSyncSubtotal
 }) => {
+  const isCrc = currencySymbol === '₡';
+  const initialStep = isCrc ? 10000 : 25;
+  const monthlyStep = isCrc ? 2500 : 5;
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
@@ -32,7 +36,7 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
           <h3 className="font-display font-bold text-white text-base flex items-center gap-2">
             <span>Modalidades de Pago Flexibles</span>
             <span className="text-[10px] bg-[#A9F8B5]/20 text-[#A9F8B5] border border-[#A9F8B5]/30 px-2 py-0.5 rounded-full font-mono uppercase">
-              2 Opciones para el Cliente
+              2 Opciones ({currencySymbol === '₡' ? 'Colones ₡' : 'Dólares $'})
             </span>
           </h3>
           <p className="text-xs text-gray-400">Define los precios y cuotas para cada alternativa comercial</p>
@@ -100,16 +104,16 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
           {/* Pricing Inputs */}
           <div className="grid grid-cols-2 gap-3 bg-black/40 p-4 rounded-xl border border-white/10">
             <div>
-              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Pago Inicial</label>
+              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Pago Inicial ({currencySymbol})</label>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-xs text-gray-500 font-mono">{currencySymbol}</span>
                 <input
                   type="number"
                   min={0}
-                  step={25}
+                  step={initialStep}
                   value={modeInitial.initialPayment}
                   onChange={e => onUpdateInitial({ initialPayment: Math.max(0, Number(e.target.value) || 0) })}
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#A9F8B5] rounded-xl pl-7 pr-3 py-2 text-sm font-bold text-white font-mono outline-none"
+                  className="w-full bg-white/5 border border-white/10 focus:border-[#A9F8B5] rounded-xl pl-8 pr-3 py-2 text-sm font-bold text-white font-mono outline-none"
                 />
               </div>
             </div>
@@ -121,10 +125,10 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
                 <input
                   type="number"
                   min={0}
-                  step={5}
+                  step={monthlyStep}
                   value={modeInitial.monthlyPayment}
                   onChange={e => onUpdateInitial({ monthlyPayment: Math.max(0, Number(e.target.value) || 0) })}
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#A9F8B5] rounded-xl pl-7 pr-3 py-2 text-sm font-bold text-[#A9F8B5] font-mono outline-none"
+                  className="w-full bg-white/5 border border-white/10 focus:border-[#A9F8B5] rounded-xl pl-8 pr-3 py-2 text-sm font-bold text-[#A9F8B5] font-mono outline-none"
                 />
               </div>
             </div>
@@ -166,7 +170,7 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
               </div>
             </div>
             <span className="text-[10px] font-mono font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              $0 INICIAL
+              {currencySymbol}0 INICIAL
             </span>
           </div>
 
@@ -175,21 +179,21 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
             <div>
               <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Pago Inicial</label>
               <div className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm font-bold text-gray-400 font-mono">
-                {currencySymbol}0.00
+                {currencySymbol}0
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Cuota Todo Incluido</label>
+              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Cuota Todo Incluido ({currencySymbol})</label>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-xs text-gray-500 font-mono">{currencySymbol}</span>
                 <input
                   type="number"
                   min={0}
-                  step={10}
+                  step={monthlyStep * 2}
                   value={modeMonthly.monthlyPayment}
                   onChange={e => onUpdateMonthly({ monthlyPayment: Math.max(0, Number(e.target.value) || 0) })}
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#DFF494] rounded-xl pl-7 pr-3 py-2 text-sm font-bold text-[#DFF494] font-mono outline-none"
+                  className="w-full bg-white/5 border border-white/10 focus:border-[#DFF494] rounded-xl pl-8 pr-3 py-2 text-sm font-bold text-[#DFF494] font-mono outline-none"
                 />
               </div>
             </div>

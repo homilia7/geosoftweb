@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Trash2, Layers, CheckCircle2, DollarSign } from 'lucide-react';
+import { Plus, Trash2, Layers, CheckCircle2 } from 'lucide-react';
 import { ProjectQuoteItem } from '../../../types/projectQuote';
 
 interface QuoteItemsTableProps {
@@ -19,6 +19,9 @@ export const QuoteItemsTable: React.FC<QuoteItemsTableProps> = ({
   onUpdateItem,
   onRemoveItem
 }) => {
+  const isCrc = currencySymbol === '₡';
+  const priceStep = isCrc ? 5000 : 10;
+
   return (
     <div className="card-accent p-6 border-white/10 space-y-5">
       {/* Table Header / Action */}
@@ -86,15 +89,15 @@ export const QuoteItemsTable: React.FC<QuoteItemsTableProps> = ({
                   <input
                     type="number"
                     min={0}
-                    step={10}
+                    step={priceStep}
                     value={item.unitPrice}
                     onChange={e => onUpdateItem(item.id, { unitPrice: Math.max(0, Number(e.target.value) || 0) })}
-                    className="w-24 bg-white/5 border border-white/10 focus:border-[#A9F8B5] rounded-lg px-2.5 py-1 text-xs text-white font-mono font-bold text-right outline-none"
+                    className="w-28 bg-white/5 border border-white/10 focus:border-[#A9F8B5] rounded-lg px-2.5 py-1 text-xs text-white font-mono font-bold text-right outline-none"
                   />
                 </div>
 
                 {/* Row Total */}
-                <div className="text-right shrink-0 min-w-[90px]">
+                <div className="text-right shrink-0 min-w-[100px]">
                   <span className="text-xs font-mono font-bold text-[#A9F8B5]">
                     {currencySymbol}{rowTotal.toLocaleString()}
                   </span>

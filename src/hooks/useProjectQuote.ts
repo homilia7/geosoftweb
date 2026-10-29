@@ -15,7 +15,9 @@ export const encodeQuotePayload = (data: ProjectQuoteData): string => {
 export const decodeQuotePayload = (encoded: string): ProjectQuoteData | null => {
   try {
     const json = decodeURIComponent(escape(atob(encoded)));
-    return JSON.parse(json);
+    const parsed = JSON.parse(json);
+    if (!parsed.exchangeRate) parsed.exchangeRate = 520;
+    return parsed;
   } catch {
     return null;
   }
@@ -32,7 +34,8 @@ export const DEFAULT_QUOTE: ProjectQuoteData = {
   validUntilDays: 15,
   currency: 'USD',
   currencySymbol: '$',
-  notes: 'Incluye despliegue en la nube Cloudflare Pages, certificado SSL de por vida y capacitación remota.',
+  exchangeRate: 520,
+  notes: 'Incluye despliegue en Cloudflare Pages, certificado SSL de por vida y capacitación remota.',
   items: [
     {
       id: 'item-1',
@@ -80,7 +83,11 @@ export const useProjectQuote = () => {
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (!parsed.exchangeRate) parsed.exchangeRate = 520;
+          return parsed;
+        }
       } catch {}
     }
     return DEFAULT_QUOTE;
@@ -100,13 +107,49 @@ export const useProjectQuote = () => {
     setQuote(prev => ({ ...prev, [key]: value }));
   };
 
+  const switchCurrency = (newCurrency: 'USD' | 'CRC', autoConvert: boolean = false) => {
+    setQuote(prev => {
+      const isCurrentlyUsd = prev.currency === 'USD';
+      const toCrc = newCurrency === 'CRC';
+      const rate = prev.exchangeRate || 520;
+      const symbol = toCrc ? '₡' : '$';
+
+      if (!autoConvert || prev.currency === newCurrency) {
+        return { ...prev, currency: newCurrency, currencySymbol: symbol };
+      }
+
+      const factor = toCrc ? rate : (1 / rate);
+      const roundPrice = (val: number) => {
+        if (toCrc) return Math.round((val * factor) / 1000) * 1000;
+        return Math.round(val * factor);
+      };
+
+      return {
+        ...prev,
+        currency: newCurrency,
+        currencySymbol: symbol,
+        items: prev.items.map(it => ({ ...it, unitPrice: roundPrice(it.unitPrice) })),
+        modeInitialPlusMonthly: {
+          ...prev.modeInitialPlusMonthly,
+          initialPayment: roundPrice(prev.modeInitialPlusMonthly.initialPayment),
+          monthlyPayment: roundPrice(prev.modeInitialPlusMonthly.monthlyPayment)
+        },
+        modeOnlyMonthly: {
+          ...prev.modeOnlyMonthly,
+          monthlyPayment: roundPrice(prev.modeOnlyMonthly.monthlyPayment)
+        }
+      };
+    });
+  };
+
   const addItem = (item?: Partial<ProjectQuoteItem>) => {
+    const isCrc = quote.currency === 'CRC';
     const newItem: ProjectQuoteItem = {
       id: 'item-' + Date.now(),
       name: item?.name || 'Nuevo Servicio / Módulo',
       description: item?.description || 'Descripción detallada de los entregables y alcance',
       quantity: item?.quantity || 1,
-      unitPrice: item?.unitPrice || 150,
+      unitPrice: item?.unitPrice || (isCrc ? 75000 : 150),
       category: item?.category || 'desarrollo'
     };
     setQuote(prev => ({ ...prev, items: [...prev.items, newItem] }));
@@ -160,10 +203,11 @@ export const useProjectQuote = () => {
     let msg = `*PROPUESTA COMERCIAL FORMAL — GEOSOFT*\n`;
     msg += `📄 *Proyecto:* ${quote.projectName}\n`;
     msg += `👤 *Cliente:* ${quote.clientName} (${quote.clientCompany || 'N/A'})\n`;
-    msg += `📅 *Fecha:* ${quote.date} (Válida por ${quote.validUntilDays} días)\n\n`;
+    msg += `📅 *Fecha:* ${quote.date} (Válida por ${quote.validUntilDays} días)\n`;
+    msg += `💰 *Moneda:* ${quote.currency === 'CRC' ? 'Colones costarricenses (₡)' : 'Dólares estadounidenses ($)'}\n\n`;
     msg += `*MODALIDADES DE PAGO DISPONIBLES:*\n`;
-    msg += `🔹 *Opción 1 (Inicial + Mensual):* ${sym}${quote.modeInitialPlusMonthly.initialPayment} inicial + ${sym}${quote.modeInitialPlusMonthly.monthlyPayment}/mes\n`;
-    msg += `🔹 *Opción 2 (Suscripción Todo Incluido):* $0 inicial + ${sym}${quote.modeOnlyMonthly.monthlyPayment}/mes\n\n`;
+    msg += `🔹 *Opción 1 (Inicial + Mensual):* ${sym}${quote.modeInitialPlusMonthly.initialPayment.toLocaleString()} inicial + ${sym}${quote.modeInitialPlusMonthly.monthlyPayment.toLocaleString()}/mes\n`;
+    msg += `🔹 *Opción 2 (Suscripción Todo Incluido):* ${sym}0 inicial + ${sym}${quote.modeOnlyMonthly.monthlyPayment.toLocaleString()}/mes\n\n`;
     msg += `🌐 *Ver y Aprobar Propuesta Interactiva en Línea:*\n${clientLink}\n\n`;
     msg += `_Emitido por GeoSoft Consultancy & Software Engineering_`;
     return encodeURIComponent(msg);
@@ -173,6 +217,7 @@ export const useProjectQuote = () => {
     quote,
     itemsSubtotal,
     updateField,
+    switchCurrency,
     addItem,
     updateItem,
     removeItem,

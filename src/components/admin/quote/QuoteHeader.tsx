@@ -1,13 +1,16 @@
-import React from 'react';
-import { Building2, Calendar, DollarSign, FileSpreadsheet, Sparkles, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { Building2, Calendar, DollarSign, FileSpreadsheet, Sparkles, User, ArrowLeftRight } from 'lucide-react';
 import { ProjectQuoteData } from '../../../types/projectQuote';
 
 interface QuoteHeaderProps {
   quote: ProjectQuoteData;
   updateField: <K extends keyof ProjectQuoteData>(key: K, value: ProjectQuoteData[K]) => void;
+  onSwitchCurrency: (currency: 'USD' | 'CRC', autoConvert: boolean) => void;
 }
 
-export const QuoteHeader: React.FC<QuoteHeaderProps> = ({ quote, updateField }) => {
+export const QuoteHeader: React.FC<QuoteHeaderProps> = ({ quote, updateField, onSwitchCurrency }) => {
+  const [autoConvert, setAutoConvert] = useState(true);
+
   return (
     <div className="card-accent p-6 lg:p-7 border-white/10 space-y-6">
       {/* Top Branding Bar */}
@@ -27,47 +30,57 @@ export const QuoteHeader: React.FC<QuoteHeaderProps> = ({ quote, updateField }) 
           </div>
         </div>
 
-        {/* Currency & Quote Number */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-black/40 border border-white/10 rounded-xl p-1">
+        {/* Currency Switcher & Exchange Rate */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Currency Toggle */}
+          <div className="flex items-center bg-black/60 border border-white/15 rounded-xl p-1 shadow-inner">
             <button
               type="button"
-              onClick={() => {
-                updateField('currency', 'USD');
-                updateField('currencySymbol', '$');
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              onClick={() => onSwitchCurrency('USD', autoConvert)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 quote.currency === 'USD'
-                  ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-sm'
+                  ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              USD ($)
+              <span>$ Dólares (USD)</span>
             </button>
             <button
               type="button"
-              onClick={() => {
-                updateField('currency', 'CRC');
-                updateField('currencySymbol', '₡');
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              onClick={() => onSwitchCurrency('CRC', autoConvert)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 quote.currency === 'CRC'
-                  ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-sm'
+                  ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-md'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              CRC (₡)
+              <span>₡ Colones (CRC)</span>
             </button>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-right">
+          {/* Exchange rate input */}
+          <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-2.5 py-1 text-xs">
+            <span className="text-[10px] text-gray-400 font-mono mr-1.5">TC: ₡</span>
+            <input
+              type="number"
+              min={100}
+              max={1000}
+              step={5}
+              value={quote.exchangeRate || 520}
+              onChange={e => updateField('exchangeRate', Number(e.target.value) || 520)}
+              className="w-12 bg-transparent text-white font-mono font-bold outline-none text-right"
+              title="Tipo de cambio colones por dólar"
+            />
+          </div>
+
+          <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-right hidden sm:block">
             <div className="text-[9px] font-mono text-gray-500 uppercase">Cotización</div>
             <div className="text-xs font-mono font-bold text-white">{quote.id}</div>
           </div>
         </div>
       </div>
 
-      {/* Main Project Name (Prominent Input) */}
+      {/* Main Project Name */}
       <div className="space-y-1.5">
         <label className="text-xs font-bold font-mono uppercase text-[#A9F8B5] flex items-center gap-1.5">
           <FileSpreadsheet className="w-3.5 h-3.5" />

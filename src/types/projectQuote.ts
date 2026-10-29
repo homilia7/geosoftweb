@@ -33,6 +33,7 @@ export interface ProjectQuoteData {
   validUntilDays: number;
   currency: 'USD' | 'CRC';
   currencySymbol: string;
+  exchangeRate: number; // Tipo de cambio CRC por USD (ej. 520)
   notes: string;
   items: ProjectQuoteItem[];
   modeInitialPlusMonthly: PaymentModeInitialPlusMonthly;
@@ -51,6 +52,7 @@ export interface QuoteAcceptancePayload {
   initialAmount: number;
   monthlyAmount: number;
   currencySymbol: string;
+  currency: 'USD' | 'CRC';
   notes?: string;
   acceptedAt: string;
 }

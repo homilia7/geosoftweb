@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, CreditCard, Repeat, Layers, Sparkles, Building2, Calendar, FileText } from 'lucide-react';
+import { X, CheckCircle2, CreditCard, Repeat, Layers, Sparkles, Calendar } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ProjectQuoteData, QuoteAcceptancePayload } from '../../../types/projectQuote';
 import { ClientAcceptancePopup } from './ClientAcceptancePopup';
@@ -18,6 +18,7 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
   onClose,
   onAcceptanceSuccess
 }) => {
+  const [activeCurrency, setActiveCurrency] = useState<'USD' | 'CRC'>(quote.currency || 'USD');
   const [selectedMode, setSelectedMode] = useState<'initial_plus_monthly' | 'only_monthly'>(
     quote.preferredMode === 'only_monthly' ? 'only_monthly' : 'initial_plus_monthly'
   );
@@ -25,8 +26,25 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
 
   if (!isOpen) return null;
 
-  const sym = quote.currencySymbol;
-  const itemsSubtotal = quote.items.reduce((acc, it) => acc + (it.unitPrice * it.quantity), 0);
+  const rate = quote.exchangeRate || 520;
+  const isOriginalCrc = quote.currency === 'CRC';
+  const viewingCrc = activeCurrency === 'CRC';
+  const sym = viewingCrc ? '₡' : '$';
+
+  // Dynamic currency conversion helper
+  const convertAmount = (val: number): number => {
+    if (isOriginalCrc === viewingCrc) return val;
+    if (viewingCrc && !isOriginalCrc) {
+      // USD to CRC
+      return Math.round((val * rate) / 1000) * 1000;
+    }
+    // CRC to USD
+    return Math.round(val / rate);
+  };
+
+  const initialPayment = convertAmount(quote.modeInitialPlusMonthly.initialPayment);
+  const monthlyMode1 = convertAmount(quote.modeInitialPlusMonthly.monthlyPayment);
+  const monthlyMode2 = convertAmount(quote.modeOnlyMonthly.monthlyPayment);
 
   const handleOpenPopup = () => {
     try {
@@ -50,8 +68,8 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex flex-col justify-start overflow-y-auto p-4 sm:p-6 lg:p-8 font-sans selection:bg-[#A9F8B5] selection:text-black">
       <div className="max-w-4xl w-full mx-auto my-auto space-y-6 animate-message-soft">
-        {/* Top Floating Close Bar */}
-        <div className="flex items-center justify-between bg-[#0d0f14]/80 border border-white/10 rounded-2xl px-5 py-3">
+        {/* Top Floating Close Bar & Currency Switcher */}
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0d0f14]/80 border border-white/10 rounded-2xl px-5 py-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-extrabold flex items-center justify-center text-xs">
               GS
@@ -61,13 +79,42 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
               <span className="text-[10px] text-gray-400 block font-mono">Ref: {quote.id}</span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
+
+          <div className="flex items-center gap-3">
+            {/* Currency selector for client */}
+            <div className="flex items-center bg-black/60 border border-white/15 rounded-xl p-1 text-xs">
+              <button
+                type="button"
+                onClick={() => setActiveCurrency('USD')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  activeCurrency === 'USD'
+                    ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                $ USD
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCurrency('CRC')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  activeCurrency === 'CRC'
+                    ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                ₡ CRC
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Executive Header Card */}
@@ -94,25 +141,28 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
         <div className="card-accent p-6 border-white/10 space-y-4">
           <h3 className="font-display font-bold text-white text-sm flex items-center gap-2">
             <Layers className="w-4 h-4 text-[#A9F8B5]" />
-            <span>Alcance & Módulos Incluidos</span>
+            <span>Alcance & Módulos Incluidos ({activeCurrency === 'CRC' ? 'Colones ₡' : 'Dólares $'})</span>
           </h3>
           <div className="divide-y divide-white/5 space-y-1">
-            {quote.items.map((it, idx) => (
-              <div key={it.id} className="pt-3 pb-2 flex items-start justify-between gap-4">
-                <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-white/10 text-gray-300 text-[11px] font-mono flex items-center justify-center shrink-0 mt-0.5">
-                    {idx + 1}
-                  </span>
-                  <div>
-                    <h4 className="text-xs font-bold text-white">{it.name}</h4>
-                    <p className="text-[11px] text-gray-400">{it.description}</p>
+            {quote.items.map((it, idx) => {
+              const convertedPrice = convertAmount(it.unitPrice);
+              return (
+                <div key={it.id} className="pt-3 pb-2 flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-white/10 text-gray-300 text-[11px] font-mono flex items-center justify-center shrink-0 mt-0.5">
+                      {idx + 1}
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-white">{it.name}</h4>
+                      <p className="text-[11px] text-gray-400">{it.description}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-mono font-bold text-[#A9F8B5]">{sym}{(convertedPrice * it.quantity).toLocaleString()}</span>
                   </div>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className="text-xs font-mono font-bold text-[#A9F8B5]">{sym}{(it.unitPrice * it.quantity).toLocaleString()}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -139,7 +189,7 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
                 )}
               </div>
               <div className="text-lg font-mono font-extrabold text-white">
-                {sym}{quote.modeInitialPlusMonthly.initialPayment.toLocaleString()} <span className="text-xs font-sans text-gray-400 font-normal">inicial</span> + {sym}{quote.modeInitialPlusMonthly.monthlyPayment}/mes
+                {sym}{initialPayment.toLocaleString()} <span className="text-xs font-sans text-gray-400 font-normal">inicial</span> + {sym}{monthlyMode1.toLocaleString()}/mes
               </div>
               <p className="text-[11px] text-gray-400">{quote.modeInitialPlusMonthly.description}</p>
             </div>
@@ -163,7 +213,7 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
                 )}
               </div>
               <div className="text-lg font-mono font-extrabold text-white">
-                {sym}0 inicial + {sym}{quote.modeOnlyMonthly.monthlyPayment}/mes
+                {sym}0 inicial + {sym}{monthlyMode2.toLocaleString()}/mes
               </div>
               <p className="text-[11px] text-gray-400">{quote.modeOnlyMonthly.description}</p>
             </div>
@@ -192,6 +242,9 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
         <ClientAcceptancePopup
           quote={quote}
           selectedMode={selectedMode}
+          activeCurrency={activeCurrency}
+          convertedInitial={initialPayment}
+          convertedMonthly={selectedMode === 'initial_plus_monthly' ? monthlyMode1 : monthlyMode2}
           onClose={() => setIsPopupOpen(false)}
           onConfirmAcceptance={handleConfirm}
         />
