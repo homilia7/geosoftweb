@@ -31,14 +31,11 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
   const viewingCrc = activeCurrency === 'CRC';
   const sym = viewingCrc ? '₡' : '$';
 
-  // Dynamic currency conversion helper
   const convertAmount = (val: number): number => {
     if (isOriginalCrc === viewingCrc) return val;
     if (viewingCrc && !isOriginalCrc) {
-      // USD to CRC
       return Math.round((val * rate) / 1000) * 1000;
     }
-    // CRC to USD
     return Math.round(val / rate);
   };
 
@@ -71,17 +68,24 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
         {/* Top Floating Close Bar & Currency Switcher */}
         <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0d0f14]/80 border border-white/10 rounded-2xl px-5 py-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#A9F8B5] to-[#DFF494] text-black font-extrabold flex items-center justify-center text-xs">
-              GS
+            {/* Logo Cubo GeoSoft Mini en barra superior */}
+            <div className="relative w-9 h-9 rounded-xl overflow-hidden border border-emerald-400/30 bg-black footer-logo-glow flex items-center justify-center shrink-0">
+              <img
+                src="/assets/logo-emerald-md.webp"
+                alt="GeoSoft Cube"
+                width={36}
+                height={36}
+                className="w-full h-full object-cover"
+              />
+              <div className="footer-logo-sweep" />
             </div>
             <div>
-              <span className="font-display font-bold text-white text-xs">GeoSoft • Propuesta Oficial</span>
+              <span className="font-display font-bold text-white text-xs">Propuesta Comercial Oficial</span>
               <span className="text-[10px] text-gray-400 block font-mono">Ref: {quote.id}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Currency selector for client */}
             <div className="flex items-center bg-black/60 border border-white/15 rounded-xl p-1 text-xs">
               <button
                 type="button"
@@ -117,23 +121,43 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
           </div>
         </div>
 
-        {/* Executive Header Card */}
-        <div className="card-accent p-6 lg:p-8 border-white/10 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
-            <div>
-              <span className="text-[10px] font-mono uppercase text-[#A9F8B5] font-bold tracking-wider">Propuesta Comercial de Software</span>
-              <h1 className="font-display font-extrabold text-white text-xl sm:text-2xl mt-1">{quote.projectName}</h1>
+        {/* Executive Header Card con Logo del Cubo Holográfico */}
+        <div className="card-accent p-6 lg:p-8 border-white/10 space-y-5">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pb-5 border-b border-white/10">
+            {/* Logo del Cubo de GeoSoft con Destello Prismático */}
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-emerald-400/40 bg-black/90 footer-logo-glow flex items-center justify-center shadow-[0_0_30px_rgba(169,248,181,0.25)] shrink-0">
+              <img
+                src="/assets/logo-emerald-md.webp"
+                alt="GeoSoft 3D Cube Emblem"
+                width={96}
+                height={96}
+                fetchPriority="high"
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              />
+              <div className="footer-logo-sweep" />
             </div>
-            <div className="text-left sm:text-right">
-              <span className="text-xs text-gray-400 block">Preparado para:</span>
-              <span className="text-sm font-bold text-white">{quote.clientName}</span>
-              {quote.clientCompany && <span className="text-xs text-gray-400 block">{quote.clientCompany}</span>}
+
+            <div className="flex-1 text-center sm:text-left">
+              <span className="text-[10px] font-mono uppercase text-[#A9F8B5] font-bold tracking-wider">
+                Propuesta de Desarrollo & Software
+              </span>
+              <h1 className="font-display font-extrabold text-white text-xl sm:text-2xl mt-1">
+                {quote.projectName}
+              </h1>
+              <p className="text-xs text-gray-400 mt-1">
+                Cliente: <strong className="text-white">{quote.clientName}</strong> {quote.clientCompany ? `(${quote.clientCompany})` : ''}
+              </p>
+            </div>
+
+            <div className="text-center sm:text-right text-xs text-gray-400 shrink-0">
+              <span className="block font-mono text-[11px] text-gray-500 uppercase">Validez</span>
+              <span className="font-bold text-white">{quote.validUntilDays} días desde {quote.date}</span>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 pt-1">
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-gray-400">
             <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#A9F8B5]" /> Emisión: {quote.date}</span>
-            <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-[#DFF494]" /> Válida por {quote.validUntilDays} días</span>
+            <span className="flex items-center gap-1.5 text-emerald-300"><Sparkles className="w-3.5 h-3.5 text-[#DFF494]" /> Moneda activa: {activeCurrency === 'CRC' ? 'Colones Costarricenses (₡)' : 'Dólares Estadounidenses ($)'}</span>
           </div>
         </div>
 
@@ -141,7 +165,7 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
         <div className="card-accent p-6 border-white/10 space-y-4">
           <h3 className="font-display font-bold text-white text-sm flex items-center gap-2">
             <Layers className="w-4 h-4 text-[#A9F8B5]" />
-            <span>Alcance & Módulos Incluidos ({activeCurrency === 'CRC' ? 'Colones ₡' : 'Dólares $'})</span>
+            <span>Módulos & Entregables Incluidos</span>
           </h3>
           <div className="divide-y divide-white/5 space-y-1">
             {quote.items.map((it, idx) => {
@@ -234,6 +258,19 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
             <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
             <span>Aceptar Propuesta Comercial</span>
           </button>
+        </div>
+
+        {/* Parte Inferior: Logo de Letras Animadas de GeoSoft */}
+        <div className="pt-8 pb-4 flex flex-col items-center justify-center gap-2 text-center">
+          <div className="font-display font-black text-2xl sm:text-3xl tracking-widest footer-brand-title">
+            <span className="footer-brand-geo">GEO</span><span className="footer-brand-soft">SOFT</span>
+          </div>
+          <div className="text-xs sm:text-sm font-bold tracking-widest uppercase animate-copyright-sweep">
+            Consultancy & Engineering
+          </div>
+          <p className="text-[11px] text-gray-500 font-mono mt-1">
+            Desarrollo de Software, Webs e Inteligencia Artificial de Alto Rendimiento • Costa Rica
+          </p>
         </div>
       </div>
 

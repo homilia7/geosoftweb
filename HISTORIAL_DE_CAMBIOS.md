@@ -16,6 +16,15 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-29 — Link Corto Único por Propuesta, Logo Cubo 3D y Letras Animadas en Vista Cliente
+- **Enlace Único y Corto por Cotización (`useProjectQuote.ts` & `App.tsx`):**
+  - Formato de link ultra-limpio y corto: `https://www.geosoft.lat/#cotizacion=COT-2026-XXX`.
+  - Persistencia bidireccional inmediata en `localStorage` (`geosoft_quotes_store`) y almacenamiento sincronizado en la base de datos de Cloudflare D1.
+  - Resolución inteligente en `App.tsx`: busca en caché local, decodifica base64 histórico de respaldo, y si es un dispositivo ajeno consulta el endpoint `/api/proposals?id=COT-2026-XXX`.
+- **Branding y Arte Visual en Vista de Cotización del Cliente (`ClientQuoteModal.tsx`):**
+  - **Logo del Cubo 3D Oficial:** Insignia tridimensional `/assets/logo-emerald-md.webp` con halo esmeralda `footer-logo-glow`, destello prismático `footer-logo-sweep` y efecto flotante en cabecera principal y barra superior.
+  - **Logo de Letras Animadas Inferior:** Inclusión en el pie de la cotización del logotipo tipográfico corporativo `GEO` `SOFT` (`.footer-brand-title`) con barrido especular degradado y sweep cromático en `Consultancy & Engineering` (`.animate-copyright-sweep`).
+
 ### 2026-10-29 — Soporte Bimoneda Completo (Colones ₡ / Dólares $) en Cotizador y Vista Cliente
 - **Conmutador Bimoneda Inteligente (`useProjectQuote.ts` & `QuoteHeader.tsx`):**
   - Selector prominente para alternar entre Dólares (`$ USD`) y Colones costarricenses (`₡ CRC`).

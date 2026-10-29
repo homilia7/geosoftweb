@@ -29,6 +29,7 @@ const ClientProposalModal = React.lazy(() => import('./components/ClientProposal
 const ClientQuoteModal = React.lazy(() => import('./components/client/quote/ClientQuoteModal').then(m => ({ default: m.ClientQuoteModal })));
 import { ProjectQuoteData, QuoteAcceptancePayload } from './types/projectQuote';
 import { decodeQuotePayload, DEFAULT_QUOTE } from './hooks/useProjectQuote';
+import { api } from './services/api';
 
 function MainLayout() {
   useAnalyticsTracker();
@@ -64,13 +65,39 @@ function MainLayout() {
       const path = window.location.pathname.toLowerCase();
 
       if (rawHash.includes('#cotizacion=') || rawHash.includes('#propuesta-cliente=')) {
-        const code = rawHash.split('=')[1];
+        const code = rawHash.split('=')[1]?.trim();
         if (code) {
+          // 1. Buscar en almacenamiento local de cotizaciones
+          try {
+            const stored = localStorage.getItem('geosoft_quotes_store');
+            if (stored) {
+              const quotesMap = JSON.parse(stored);
+              if (quotesMap[code]) {
+                setClientQuote(quotesMap[code]);
+                setIsClientQuoteOpen(true);
+                return;
+              }
+            }
+          } catch {}
+
+          // 2. Intentar decodificación base64 histórica
           const parsed = decodeQuotePayload(code);
           if (parsed) {
             setClientQuote(parsed);
             setIsClientQuoteOpen(true);
+            return;
           }
+
+          // 3. Fallback: Recuperar cotización por ID corto desde Cloudflare D1
+          api.getProposalById(code).then(res => {
+            if (res && res.notes) {
+              try {
+                const q = JSON.parse(res.notes);
+                setClientQuote(q);
+                setIsClientQuoteOpen(true);
+              } catch {}
+            }
+          }).catch(() => {});
         }
       } else if (hash === '#cotizacion' || hash === '#propuesta-cliente' || path === '/cotizacion') {
         setClientQuote(DEFAULT_QUOTE);

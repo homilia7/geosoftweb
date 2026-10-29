@@ -130,6 +130,16 @@ export const api = {
     }
   },
 
+  async getProposalById(id: string): Promise<any | null> {
+    try {
+      const res = await fetch(`/api/proposals?id=${encodeURIComponent(id)}`);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
   async createProposal(prop: Omit<BusinessProposal, 'id' | 'createdAt' | 'status'> & { id?: string; status?: ProposalStatus }): Promise<BusinessProposal | null> {
     try {
       const res = await fetch('/api/proposals', {

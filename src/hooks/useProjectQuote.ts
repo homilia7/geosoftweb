@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { ProjectQuoteData, ProjectQuoteItem } from '../types/projectQuote';
+import { api } from '../services/api';
 
 const STORAGE_KEY = 'geosoft_admin_project_quote_v1';
+const QUOTES_STORE_KEY = 'geosoft_quotes_store';
 
 export const encodeQuotePayload = (data: ProjectQuoteData): string => {
   try {
@@ -192,9 +194,42 @@ export const useProjectQuote = () => {
   };
 
   const getClientShareableUrl = () => {
-    const code = encodeQuotePayload(quote);
+    const cleanId = (quote.id || 'COT-' + Date.now()).trim();
+
+    // 1. Guardar en mapa local
+    try {
+      const stored = localStorage.getItem(QUOTES_STORE_KEY);
+      const map = stored ? JSON.parse(stored) : {};
+      map[cleanId] = quote;
+      localStorage.setItem(QUOTES_STORE_KEY, JSON.stringify(map));
+    } catch {}
+
+    // 2. Guardar en base de datos Cloudflare D1 en segundo plano
+    try {
+      api.createProposal({
+        id: cleanId,
+        businessName: quote.projectName,
+        contactName: quote.clientName,
+        whatsapp: quote.clientWhatsapp,
+        email: quote.clientEmail,
+        status: 'revisada' as any,
+        source: 'web',
+        notes: JSON.stringify(quote),
+        images: [],
+        industry: 'Software & Web',
+        mainGoal: quote.projectName,
+        targetAudience: quote.clientCompany,
+        servicesOrProducts: quote.items.map(it => `${it.name} (x${it.quantity}): ${quote.currencySymbol}${it.unitPrice * it.quantity}`).join(', '),
+        aiRole: 'cotizador',
+        aiTone: 'formal',
+        aiCommonFaqs: '',
+        aiDestination: 'admin'
+      });
+    } catch {}
+
+    // 3. Retornar enlace CORTO y ÚNICO por propuesta
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.geosoft.lat';
-    return `${origin}/#cotizacion=${code}`;
+    return `${origin}/#cotizacion=${cleanId}`;
   };
 
   const generateWhatsAppMessage = () => {

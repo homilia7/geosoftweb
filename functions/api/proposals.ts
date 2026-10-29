@@ -28,6 +28,31 @@ export const onRequestGet = async (context: { request: Request; env: Env }) => {
 
     await ensureTable(context.env.DB);
 
+    const url = new URL(context.request.url);
+    const targetId = url.searchParams.get('id');
+
+    if (targetId) {
+      const row: any = await context.env.DB.prepare(
+        "SELECT * FROM proposals WHERE id = ?"
+      ).bind(targetId).first();
+
+      if (row) {
+        let parsed = row;
+        if (row.data) {
+          try {
+            parsed = {
+              ...JSON.parse(row.data),
+              id: row.id,
+              status: row.status || 'propuesta_publicada'
+            };
+          } catch {}
+        }
+        return new Response(JSON.stringify(parsed), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' }
+        });
+      }
+    }
+
     const { results } = await context.env.DB.prepare(
       "SELECT * FROM proposals ORDER BY createdAt DESC"
     ).all();
