@@ -4,6 +4,7 @@ import { QuoteHeader } from './QuoteHeader';
 import { QuoteItemsTable } from './QuoteItemsTable';
 import { QuotePricingModes } from './QuotePricingModes';
 import { QuoteActionsBar } from './QuoteActionsBar';
+import { QuoteAcceptedAlerts } from './QuoteAcceptedAlerts';
 
 export const AdminProjectQuoteTab: React.FC = () => {
   const {
@@ -17,11 +18,15 @@ export const AdminProjectQuoteTab: React.FC = () => {
     updateOnlyMonthly,
     syncInitialWithSubtotal,
     resetToTemplate,
+    getClientShareableUrl,
     generateWhatsAppMessage
   } = useProjectQuote();
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12 animate-message-soft">
+      {/* 0. Alertas de Notificaciones de Cotizaciones Aceptadas */}
+      <QuoteAcceptedAlerts />
+
       {/* 1. Header Ejecutivo con Logo GeoSoft y Nombre del Proyecto */}
       <QuoteHeader quote={quote} updateField={updateField} />
 
@@ -48,12 +53,13 @@ export const AdminProjectQuoteTab: React.FC = () => {
         onSyncSubtotal={syncInitialWithSubtotal}
       />
 
-      {/* 4. Barra de Acciones (WhatsApp, Copiar, Imprimir/PDF, Notas) */}
+      {/* 4. Barra de Acciones (Generar Link, WhatsApp, Copiar, PDF, Términos) */}
       <QuoteActionsBar
         quote={quote}
         onUpdateNotes={notes => updateField('notes', notes)}
         onReset={resetToTemplate}
         getWhatsAppEncoded={generateWhatsAppMessage}
+        getClientShareUrl={getClientShareableUrl}
       />
     </div>
   );

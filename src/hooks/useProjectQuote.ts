@@ -3,7 +3,25 @@ import { ProjectQuoteData, ProjectQuoteItem } from '../types/projectQuote';
 
 const STORAGE_KEY = 'geosoft_admin_project_quote_v1';
 
-const DEFAULT_QUOTE: ProjectQuoteData = {
+export const encodeQuotePayload = (data: ProjectQuoteData): string => {
+  try {
+    const json = JSON.stringify(data);
+    return btoa(unescape(encodeURIComponent(json)));
+  } catch {
+    return '';
+  }
+};
+
+export const decodeQuotePayload = (encoded: string): ProjectQuoteData | null => {
+  try {
+    const json = decodeURIComponent(escape(atob(encoded)));
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+};
+
+export const DEFAULT_QUOTE: ProjectQuoteData = {
   id: 'COT-' + new Date().getFullYear() + '-001',
   projectName: 'Plataforma Web E-Commerce & Agente IA 24/7',
   clientName: 'Cliente Corporativo',
@@ -130,27 +148,24 @@ export const useProjectQuote = () => {
     setQuote({ ...DEFAULT_QUOTE, id: 'COT-' + new Date().getFullYear() + '-' + Math.floor(100 + Math.random() * 900) });
   };
 
+  const getClientShareableUrl = () => {
+    const code = encodeQuotePayload(quote);
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.geosoft.lat';
+    return `${origin}/#cotizacion=${code}`;
+  };
+
   const generateWhatsAppMessage = () => {
     const sym = quote.currencySymbol;
+    const clientLink = getClientShareableUrl();
     let msg = `*PROPUESTA COMERCIAL FORMAL — GEOSOFT*\n`;
     msg += `📄 *Proyecto:* ${quote.projectName}\n`;
     msg += `👤 *Cliente:* ${quote.clientName} (${quote.clientCompany || 'N/A'})\n`;
     msg += `📅 *Fecha:* ${quote.date} (Válida por ${quote.validUntilDays} días)\n\n`;
-    msg += `*ALCANCE & MÓDULOS DEL PROYECTO:*\n`;
-    quote.items.forEach((it, idx) => {
-      msg += `${idx + 1}. *${it.name}* (x${it.quantity}) — ${sym}${it.unitPrice * it.quantity}\n   _${it.description}_\n`;
-    });
-    msg += `\n*MODALIDADES DE PAGO DISPONIBLES:*\n\n`;
-    msg += `🔹 *MODALIDAD 1: Pago Inicial + Mensualidad*\n`;
-    msg += `• Pago Inicial (Desarrollo & Setup): *${sym}${quote.modeInitialPlusMonthly.initialPayment}*\n`;
-    msg += `• Mantenimiento & Soporte IA: *${sym}${quote.modeInitialPlusMonthly.monthlyPayment}/mes*\n`;
-    msg += `• _${quote.modeInitialPlusMonthly.description}_\n\n`;
-    msg += `🔹 *MODALIDAD 2: Solo Pago Mensual (Cero Desembolso Inicial)*\n`;
-    msg += `• Pago Inicial: *$0 (Bonificado)*\n`;
-    msg += `• Cuota Mensual Todo Incluido: *${sym}${quote.modeOnlyMonthly.monthlyPayment}/mes*\n`;
-    msg += `• _${quote.modeOnlyMonthly.description}_\n\n`;
-    if (quote.notes) msg += `📌 *Notas:* ${quote.notes}\n\n`;
-    msg += `_Emitido por GeoSoft Consultancy & Software Engineering_\n🌐 https://www.geosoft.lat`;
+    msg += `*MODALIDADES DE PAGO DISPONIBLES:*\n`;
+    msg += `🔹 *Opción 1 (Inicial + Mensual):* ${sym}${quote.modeInitialPlusMonthly.initialPayment} inicial + ${sym}${quote.modeInitialPlusMonthly.monthlyPayment}/mes\n`;
+    msg += `🔹 *Opción 2 (Suscripción Todo Incluido):* $0 inicial + ${sym}${quote.modeOnlyMonthly.monthlyPayment}/mes\n\n`;
+    msg += `🌐 *Ver y Aprobar Propuesta Interactiva en Línea:*\n${clientLink}\n\n`;
+    msg += `_Emitido por GeoSoft Consultancy & Software Engineering_`;
     return encodeURIComponent(msg);
   };
 
@@ -165,6 +180,7 @@ export const useProjectQuote = () => {
     updateOnlyMonthly,
     syncInitialWithSubtotal,
     resetToTemplate,
+    getClientShareableUrl,
     generateWhatsAppMessage
   };
 };

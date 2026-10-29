@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Copy, Check, Printer, RotateCcw, FileText } from 'lucide-react';
+import { Send, Copy, Check, Printer, RotateCcw, FileText, Link2, ExternalLink } from 'lucide-react';
 import { ProjectQuoteData } from '../../../types/projectQuote';
 import { soundEffects } from '../../../services/soundEffects';
 
@@ -8,15 +8,28 @@ interface QuoteActionsBarProps {
   onUpdateNotes: (notes: string) => void;
   onReset: () => void;
   getWhatsAppEncoded: () => string;
+  getClientShareUrl: () => string;
 }
 
 export const QuoteActionsBar: React.FC<QuoteActionsBarProps> = ({
   quote,
   onUpdateNotes,
   onReset,
-  getWhatsAppEncoded
+  getWhatsAppEncoded,
+  getClientShareUrl
 }) => {
-  const [copied, setCopied] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopyLink = () => {
+    try {
+      soundEffects.playClick();
+    } catch {}
+    const link = getClientShareUrl();
+    navigator.clipboard.writeText(link);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2500);
+  };
 
   const handleCopyText = () => {
     try {
@@ -24,8 +37,8 @@ export const QuoteActionsBar: React.FC<QuoteActionsBarProps> = ({
     } catch {}
     const decoded = decodeURIComponent(getWhatsAppEncoded());
     navigator.clipboard.writeText(decoded);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    setCopiedText(true);
+    setTimeout(() => setCopiedText(false), 2500);
   };
 
   const handleWhatsApp = () => {
@@ -36,13 +49,6 @@ export const QuoteActionsBar: React.FC<QuoteActionsBarProps> = ({
     const cleanPhone = (quote.clientWhatsapp || '').replace(/[^0-9]/g, '');
     const url = cleanPhone ? `https://wa.me/${cleanPhone}?text=${text}` : `https://wa.me/?text=${text}`;
     window.open(url, '_blank');
-  };
-
-  const handlePrint = () => {
-    try {
-      soundEffects.playClick();
-    } catch {}
-    window.print();
   };
 
   return (
@@ -70,45 +76,51 @@ export const QuoteActionsBar: React.FC<QuoteActionsBarProps> = ({
           className="px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          <span>Restablecer Borrador</span>
+          <span>Restablecer</span>
         </button>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* Botón Generador de Link Único para el Cliente */}
           <button
             type="button"
-            onClick={handlePrint}
-            className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 hover:text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-            title="Imprimir o Guardar en PDF"
+            onClick={handleCopyLink}
+            className={`px-4 py-2.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+              copiedLink
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                : 'bg-white/10 hover:bg-white/15 text-white border-white/20'
+            }`}
+            title="Generar y copiar enlace interactivo único para enviar al cliente"
           >
-            <Printer className="w-3.5 h-3.5 text-gray-300" />
-            <span>Imprimir / PDF</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleCopyText}
-            className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
-          >
-            {copied ? (
+            {copiedLink ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">¡Copiado al Portapapeles!</span>
+                <span>¡Link Único Copiado!</span>
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5 text-[#A9F8B5]" />
-                <span>Copiar Propuesta</span>
+                <Link2 className="w-3.5 h-3.5 text-[#A9F8B5]" />
+                <span>Generar Link de Cliente</span>
               </>
             )}
           </button>
 
+          {/* Botón WhatsApp */}
           <button
             type="button"
             onClick={handleWhatsApp}
             className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black text-xs font-extrabold flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-md shadow-[#A9F8B5]/20"
           >
             <Send className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Enviar por WhatsApp</span>
+            <span>Enviar WhatsApp</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all cursor-pointer"
+            title="Imprimir o Exportar en PDF"
+          >
+            <Printer className="w-4 h-4" />
           </button>
         </div>
       </div>

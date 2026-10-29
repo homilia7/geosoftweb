@@ -26,6 +26,9 @@ const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => 
 const AdminLoginModal = React.lazy(() => import('./components/AdminLoginModal').then(m => ({ default: m.AdminLoginModal })));
 const HolographicCubeViewer = React.lazy(() => import('./components/HolographicCubeViewer').then(m => ({ default: m.HolographicCubeViewer })));
 const ClientProposalModal = React.lazy(() => import('./components/ClientProposalModal').then(m => ({ default: m.ClientProposalModal })));
+const ClientQuoteModal = React.lazy(() => import('./components/client/quote/ClientQuoteModal').then(m => ({ default: m.ClientQuoteModal })));
+import { ProjectQuoteData, QuoteAcceptancePayload } from './types/projectQuote';
+import { decodeQuotePayload, DEFAULT_QUOTE } from './hooks/useProjectQuote';
 
 function MainLayout() {
   useAnalyticsTracker();
@@ -34,13 +37,16 @@ function MainLayout() {
   const [isCubeViewerOpen, setIsCubeViewerOpen] = useState(false);
   const [introFinished, setIntroFinished] = useState(false);
   const [navAnimStarted, setNavAnimStarted] = useState(false);
+  const [clientQuote, setClientQuote] = useState<ProjectQuoteData | null>(null);
+  const [isClientQuoteOpen, setIsClientQuoteOpen] = useState(false);
   const {
     openAdminModal,
     isAdminModalOpen,
     isLoginModalOpen,
     isProposalModalOpen,
     openProposalModal,
-    closeProposalModal
+    closeProposalModal,
+    addProposal
   } = useGeoSoftStore();
 
   const openAdminModalRef = React.useRef(openAdminModal);
@@ -53,9 +59,23 @@ function MainLayout() {
   React.useEffect(() => {
     soundEffects.init();
     const checkHash = () => {
-      const hash = window.location.hash.toLowerCase();
+      const rawHash = window.location.hash;
+      const hash = rawHash.toLowerCase();
       const path = window.location.pathname.toLowerCase();
-      if (hash === '#cubo' || hash === '#cubo3d') {
+
+      if (rawHash.includes('#cotizacion=') || rawHash.includes('#propuesta-cliente=')) {
+        const code = rawHash.split('=')[1];
+        if (code) {
+          const parsed = decodeQuotePayload(code);
+          if (parsed) {
+            setClientQuote(parsed);
+            setIsClientQuoteOpen(true);
+          }
+        }
+      } else if (hash === '#cotizacion' || hash === '#propuesta-cliente' || path === '/cotizacion') {
+        setClientQuote(DEFAULT_QUOTE);
+        setIsClientQuoteOpen(true);
+      } else if (hash === '#cubo' || hash === '#cubo3d') {
         setIsCubeViewerOpen(true);
       } else if (hash === '#propuesta' || hash === '#formulario' || hash === '#brief' || path === '/propuesta') {
         if (!isModalOpenRef.current.isProposalModalOpen) {
@@ -87,6 +107,28 @@ function MainLayout() {
   const scrollToServices = () => {
     const el = document.getElementById('servicios');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleQuoteAcceptanceSuccess = async (payload: QuoteAcceptancePayload) => {
+    await addProposal({
+      businessName: `${payload.projectName} (COTIZACIÓN ACEPTADA)`,
+      contactName: payload.clientFullName,
+      whatsapp: payload.clientPhone,
+      email: payload.clientEmail || '',
+      industry: 'Cotización Aceptada',
+      location: 'Costa Rica / En línea',
+      mainGoal: `Modalidad Elegida: ${payload.selectedModeTitle} (${payload.currencySymbol}${payload.selectedMode === 'initial_plus_monthly' ? `${payload.initialAmount.toLocaleString()} inicial + ${payload.monthlyAmount}/mes` : `${payload.monthlyAmount}/mes`})`,
+      targetAudience: 'Cliente final formalizado',
+      servicesOrProducts: clientQuote ? clientQuote.items.map(it => `${it.name} (x${it.quantity}): ${clientQuote.currencySymbol}${(it.unitPrice * it.quantity).toLocaleString()}`).join('\n') : '',
+      aiRole: 'cotizacion_aceptada',
+      aiTone: 'formal',
+      aiCommonFaqs: `ID Cotización: ${payload.quoteId}\nModalidad: ${payload.selectedModeTitle}\nMonto: ${payload.currencySymbol}${payload.initialAmount} inicial / ${payload.currencySymbol}${payload.monthlyAmount} mensual`,
+      aiDestination: 'admin',
+      status: 'nueva',
+      source: 'web',
+      notes: `Aceptado por ${payload.clientFullName} (${payload.clientPhone}) el ${new Date(payload.acceptedAt).toLocaleString()}.${payload.notes ? ' Notas: ' + payload.notes : ''}`,
+      images: []
+    });
   };
 
   // Espacio de Web Independiente para el Panel de Administración (No Popup)
@@ -195,6 +237,21 @@ function MainLayout() {
                 history.pushState('', document.title, window.location.pathname + window.location.search);
               }
             }}
+          />
+        )}
+
+        {/* Modal Interactivo de Cotización Única para Cliente */}
+        {isClientQuoteOpen && clientQuote && (
+          <ClientQuoteModal
+            quote={clientQuote}
+            isOpen={isClientQuoteOpen}
+            onClose={() => {
+              setIsClientQuoteOpen(false);
+              if (window.location.hash.includes('#cotizacion') || window.location.hash.includes('#propuesta-cliente')) {
+                history.pushState('', document.title, window.location.pathname + window.location.search);
+              }
+            }}
+            onAcceptanceSuccess={handleQuoteAcceptanceSuccess}
           />
         )}
       </React.Suspense>

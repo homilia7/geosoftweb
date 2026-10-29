@@ -39,3 +39,18 @@ export interface ProjectQuoteData {
   modeOnlyMonthly: PaymentModeOnlyMonthly;
   preferredMode: 'both' | 'initial_plus_monthly' | 'only_monthly';
 }
+
+export interface QuoteAcceptancePayload {
+  quoteId: string;
+  projectName: string;
+  clientFullName: string;
+  clientPhone: string;
+  clientEmail?: string;
+  selectedMode: 'initial_plus_monthly' | 'only_monthly';
+  selectedModeTitle: string;
+  initialAmount: number;
+  monthlyAmount: number;
+  currencySymbol: string;
+  notes?: string;
+  acceptedAt: string;
+}

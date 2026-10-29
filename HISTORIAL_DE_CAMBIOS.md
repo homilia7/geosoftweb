@@ -16,6 +16,19 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-10-29 — Generador de Link Único y Flujo de Aceptación con Pop-up y Notificación Admin
+- **Generador de Link Único de Cotización (`useProjectQuote.ts` & `QuoteActionsBar.tsx`):**
+  - Generación de URL interactiva única mediante serialización base64 segura UTF-8 (`/#cotizacion=<payload>`).
+  - Botón "Generar Link de Cliente" con copia en un clic y feedback visual.
+- **Vista Interactiva Pública para el Cliente (`ClientQuoteModal.tsx`):**
+  - Acceso directo mediante enlace compartido con desglose corporativo de alcance, ítems y precios.
+  - Selección interactiva entre las 2 modalidades (Inicial + Mensual vs Solo Mensual).
+  - Botón prominente "Aceptar Propuesta Comercial".
+- **Pop-up de Confirmación y Notificación Admin (`ClientAcceptancePopup.tsx` & `QuoteAcceptedAlerts.tsx`):**
+  - Formulario modal emergente para captura de Nombre Completo, WhatsApp/Teléfono y confirmación de la modalidad elegida.
+  - Integración reactiva al confirmar: despacho al backend/store (`api.createProposal`) con estado `nueva` y rol `cotizacion_aceptada`.
+  - Notificación visual inmediata en el panel del administrador con badge, datos de contacto y enlace directo a WhatsApp.
+
 ### 2026-10-29 — Cotizador Ejecutivo de Proyectos en Panel Admin (ARQMODULAR)
 - **Implementación Arquitectónica en 3 Capas (<150 líneas por componente):**
   - **Capa de Tipos (`src/types/projectQuote.ts`):** Contrato tipado estricto sin `any` para ítems, entregables y modalidades de pago.
