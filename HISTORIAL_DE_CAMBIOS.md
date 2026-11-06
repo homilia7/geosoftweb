@@ -16,6 +16,16 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-11-06 — Tarifas en Colones (₡) en Cotizador y Remoción de "Web con Agente de IA 24/7"
+- **Estructura Oficial de Precios en Colones (`₡ CRC`):**
+  - **Plataforma SaaS & Sistema Web (Solución Enterprise):** `₡80,000 / mes` en Plan Emprendedor.
+  - **Web Dinámica / Catálogo (Autoadministrable):** `₡55,000 / mes` en Plan Emprendedor.
+  - **Web Estática / Landing Page (Presencia Rápida):** `₡35,000 / mes` en Plan Emprendedor.
+  - **Eliminación de "Web con Agente de IA 24/7":** Retirada de las opciones de plataformas para simplificar la toma de decisión del cliente.
+- **Sincronización Total en Cotizador en Vivo y Panel Admin (`CostCalculator.tsx`, `StoreContext.tsx`, `AdminPanel.tsx`):**
+  - Actualización de montos, formateo localizado con separador de miles costarricense (`₡35,000`, `₡55,000`, `₡80,000`).
+  - Despacho a WhatsApp formateado con la moneda en colones y $0 adelanto / $0 anualidades.
+
 ### 2026-11-06 — Plan Emprendedor Personalizado: Cuota Mensual Única ($0 Adelantos & $0 Anualidades)
 - **Modalidad Plan Emprendedor en Cotizador Público en Vivo (`CostCalculator.tsx`):**
   - Selector prominente de modalidad: `Plan Emprendedor (Cuota Mensual Única)` vs `Proyecto Tradicional`.

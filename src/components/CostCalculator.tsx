@@ -7,7 +7,7 @@ import { Reveal } from './Reveal';
 
 export const CostCalculator: React.FC = () => {
   const { pricing } = useGeoSoftStore();
-  const platforms = pricing.platforms;
+  const platforms = pricing.platforms.filter(p => p.id !== 'ai');
   const addons = pricing.addons;
 
   const [planMode, setPlanMode] = useState<'emprendedor' | 'tradicional'>('emprendedor');
@@ -20,7 +20,7 @@ export const CostCalculator: React.FC = () => {
   const isEntrepreneur = planMode === 'emprendedor';
 
   const entrepreneurFee = selectedPlatform.entrepreneurMonthlyPrice ||
-    (selectedPlatform.id === 'static' ? 35 : selectedPlatform.id === 'dynamic' ? 55 : selectedPlatform.id === 'ai' ? 75 : 125);
+    (selectedPlatform.id === 'static' ? 35000 : selectedPlatform.id === 'dynamic' ? 55000 : 80000);
 
   const toggleAddon = (id: string) => {
     setSelectedAddons(prev =>
@@ -64,17 +64,17 @@ export const CostCalculator: React.FC = () => {
       const text = encodeURIComponent(
         `¡Hola GeoSoft! Me interesa el *Plan Emprendedor (Cuota Mensual Única)* para mi proyecto:\n\n` +
         `🚀 *Plan:* Plan Emprendedor Personalizado\n` +
-        `💻 *Plataforma:* ${selectedPlatform.title}\n` +
-        `💵 *Adelanto de Proyecto:* $0 (¡Sin pagos por adelantos!)\n` +
-        `🌐 *Anualidades:* $0 (¡Sin anualidades! Dominio y Hosting cloud incluidos)\n` +
-        `📅 *Cuota Mensual Única:* $${entrepreneurFee}/mes adaptada a mi negocio\n\n` +
-        `¿Podemos coordinar para iniciar con el desarrollo?`
+        `💻 *Plataforma:* ${selectedPlatform.title} (${selectedPlatform.badge})\n` +
+        `💵 *Adelanto de Proyecto:* ₡0 (¡Sin pagos por adelantos!)\n` +
+        `🌐 *Anualidades:* ₡0 (¡Sin anualidades! Dominio y Hosting cloud incluidos)\n` +
+        `📅 *Cuota Mensual Única:* ₡${entrepreneurFee.toLocaleString('es-CR')}/mes adaptada a mi negocio\n\n` +
+        `¿Podemos coordinar para formalizar e iniciar el desarrollo?`
       );
       return `https://wa.me/50689999999?text=${text}`;
     }
 
     const text = encodeURIComponent(
-      `¡Hola GeoSoft! Acabo de cotizar mi proyecto en geosoftweb.pages.dev:\n\n*Tipo de Web:* ${selectedPlatform.title} ($${totals.oneTime}${pricing.discountActive ? ' con ' + pricing.discountPercent + '% OFF' : ''})\n*Servicios adicionales:* ${selectedAddons.map(id => addons.find(a => a.id === id)?.title).join(', ') || 'Ninguno'}\n*Total Inicial:* $${totals.oneTime + totals.annual}\n\n¿Podemos coordinar para formalizar la propuesta exacta?`
+      `¡Hola GeoSoft! Acabo de cotizar mi proyecto en geosoftweb.pages.dev:\n\n*Tipo de Web:* ${selectedPlatform.title} (₡${totals.oneTime.toLocaleString('es-CR')}${pricing.discountActive ? ' con ' + pricing.discountPercent + '% OFF' : ''})\n*Servicios adicionales:* ${selectedAddons.map(id => addons.find(a => a.id === id)?.title).join(', ') || 'Ninguno'}\n*Total Inicial:* ₡${(totals.oneTime + totals.annual).toLocaleString('es-CR')}\n\n¿Podemos coordinar para formalizar la propuesta exacta?`
     );
     return `https://wa.me/50689999999?text=${text}`;
   };
@@ -119,7 +119,7 @@ export const CostCalculator: React.FC = () => {
               <span className={`text-[9.5px] font-mono uppercase px-1.5 py-0.5 rounded-md ${
                 isEntrepreneur ? 'bg-black/20 text-black font-bold' : 'bg-white/10 text-gray-400'
               }`}>
-                $0 Adelanto
+                ₡0 Adelanto
               </span>
             </button>
 
@@ -147,11 +147,12 @@ export const CostCalculator: React.FC = () => {
                 Elige el tipo de Web / Plataforma
               </h3>
 
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-3 gap-4">
                 {platforms.map(p => {
                   const isSelected = selectedPlatform.id === p.id;
                   const discountMultiplier = pricing.discountActive ? (100 - pricing.discountPercent) / 100 : 1;
                   const discountedPrice = Math.round(p.basePrice * discountMultiplier);
+                  const monthlyFee = p.entrepreneurMonthlyPrice || (p.id === 'static' ? 35000 : p.id === 'dynamic' ? 55000 : 80000);
 
                   return (
                     <div
@@ -173,20 +174,20 @@ export const CostCalculator: React.FC = () => {
                         <div className="text-right">
                           {isEntrepreneur ? (
                             <div>
-                              <span className="text-[10px] text-[#A9F8B5] font-mono block font-semibold">$0 adelanto</span>
+                              <span className="text-[10px] text-[#A9F8B5] font-mono block font-semibold">₡0 adelanto</span>
                               <span className="text-lg font-extrabold font-display text-[#DFF494]">
-                                ${p.entrepreneurMonthlyPrice || 35}
+                                ₡{monthlyFee.toLocaleString('es-CR')}
                                 <span className="text-xs font-normal text-gray-400">/mes</span>
                               </span>
                             </div>
                           ) : pricing.discountActive ? (
                             <div className="flex items-baseline gap-1.5">
-                              <span className="text-xs text-gray-500 line-through font-mono">${p.basePrice}</span>
-                              <span className="text-lg font-extrabold font-display text-[#DFF494]">${discountedPrice}</span>
+                              <span className="text-xs text-gray-500 line-through font-mono">₡{p.basePrice.toLocaleString('es-CR')}</span>
+                              <span className="text-lg font-extrabold font-display text-[#DFF494]">₡{discountedPrice.toLocaleString('es-CR')}</span>
                             </div>
                           ) : (
                             <div className="text-lg font-extrabold font-display text-white">
-                              ${p.basePrice}
+                              ₡{p.basePrice.toLocaleString('es-CR')}
                             </div>
                           )}
                         </div>
@@ -276,7 +277,7 @@ export const CostCalculator: React.FC = () => {
                       </div>
 
                       <div className="text-right shrink-0">
-                        <div className="font-bold text-white text-sm">${addon.price}</div>
+                        <div className="font-bold text-white text-sm">₡{addon.price.toLocaleString('es-CR')}</div>
                         <div className="text-[10px] text-gray-400">/{addon.period}</div>
                       </div>
                     </div>
@@ -304,14 +305,14 @@ export const CostCalculator: React.FC = () => {
                   <span className="truncate pr-2">{selectedPlatform.title}</span>
                   <div className="text-right">
                     {isEntrepreneur ? (
-                      <span className="font-mono font-bold text-[#DFF494]">${entrepreneurFee}/mes</span>
+                      <span className="font-mono font-bold text-[#DFF494]">₡{entrepreneurFee.toLocaleString('es-CR')}/mes</span>
                     ) : pricing.discountActive ? (
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-gray-500 line-through font-mono">${totals.rawOneTime}</span>
-                        <span className="font-mono font-bold text-[#DFF494]">${totals.oneTime}</span>
+                        <span className="text-xs text-gray-500 line-through font-mono">₡{totals.rawOneTime.toLocaleString('es-CR')}</span>
+                        <span className="font-mono font-bold text-[#DFF494]">₡{totals.oneTime.toLocaleString('es-CR')}</span>
                       </div>
                     ) : (
-                      <span className="font-mono font-semibold text-white">${totals.oneTime}</span>
+                      <span className="font-mono font-semibold text-white">₡{totals.oneTime.toLocaleString('es-CR')}</span>
                     )}
                   </div>
                 </div>
@@ -322,7 +323,7 @@ export const CostCalculator: React.FC = () => {
                   return (
                     <div key={id} className="flex justify-between items-center text-gray-400 text-xs">
                       <span>{item.title}</span>
-                      <span className="font-mono text-gray-200">+${item.price} ({item.period})</span>
+                      <span className="font-mono text-gray-200">+₡{item.price.toLocaleString('es-CR')} ({item.period})</span>
                     </div>
                   );
                 })}
@@ -335,14 +336,14 @@ export const CostCalculator: React.FC = () => {
                     <div className="flex justify-between items-baseline pb-2 border-b border-white/10">
                       <span className="text-xs text-gray-400 uppercase tracking-wider">Adelanto de Proyecto:</span>
                       <span className="text-base font-mono font-extrabold text-[#A9F8B5]">
-                        $0 <span className="text-[10px] text-gray-400 font-sans font-normal">(¡Sin adelantos!)</span>
+                        ₡0 <span className="text-[10px] text-gray-400 font-sans font-normal">(¡Sin adelantos!)</span>
                       </span>
                     </div>
 
                     <div className="flex justify-between items-baseline pb-2 border-b border-white/10">
                       <span className="text-xs text-gray-400 uppercase tracking-wider">Cobros por Anualidades:</span>
                       <span className="text-sm font-mono font-bold text-[#DFF494]">
-                        $0 / año <span className="text-[10px] text-gray-400 font-sans font-normal">(¡Sin anualidades!)</span>
+                        ₡0 / año <span className="text-[10px] text-gray-400 font-sans font-normal">(¡Sin anualidades!)</span>
                       </span>
                     </div>
 
@@ -352,7 +353,7 @@ export const CostCalculator: React.FC = () => {
                         <span className="text-[10px] text-[#A9F8B5] font-mono">Plan Emprendedor</span>
                       </div>
                       <span className="text-2xl font-extrabold font-display text-gradient-accent">
-                        ${entrepreneurFee}
+                        ₡{entrepreneurFee.toLocaleString('es-CR')}
                         <span className="text-xs font-normal text-gray-400 font-sans">/mes</span>
                       </span>
                     </div>
@@ -369,25 +370,25 @@ export const CostCalculator: React.FC = () => {
                     <div className="flex justify-between items-baseline">
                       <span className="text-xs text-gray-400 uppercase tracking-wider">Inversión Desarrollo:</span>
                       <span className="text-2xl font-extrabold font-display text-gradient-accent">
-                        ${totals.oneTime}
+                        ₡{totals.oneTime.toLocaleString('es-CR')}
                       </span>
                     </div>
                     {pricing.discountActive && (
                       <div className="flex justify-between items-center text-xs text-[#DFF494]">
                         <span>Ahorro Promocional:</span>
-                        <span className="font-mono font-bold">-${totals.savings} USD</span>
+                        <span className="font-mono font-bold">-₡{totals.savings.toLocaleString('es-CR')}</span>
                       </div>
                     )}
                     {totals.annual > 0 && (
                       <div className="flex justify-between items-center text-xs text-gray-400">
                         <span>Servicios Anuales:</span>
-                        <span className="font-mono text-gray-200">${totals.annual}/año</span>
+                        <span className="font-mono text-gray-200">₡{totals.annual.toLocaleString('es-CR')}/año</span>
                       </div>
                     )}
                     {totals.monthly > 0 && (
                       <div className="flex justify-between items-center text-xs text-gray-400">
                         <span>Mantenimiento Mensual:</span>
-                        <span className="font-mono text-gray-200">${totals.monthly}/mes</span>
+                        <span className="font-mono text-gray-200">₡{totals.monthly.toLocaleString('es-CR')}/mes</span>
                       </div>
                     )}
                   </>

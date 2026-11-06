@@ -8,8 +8,8 @@ export const DEFAULT_PLATFORMS: PlatformOption[] = [
     title: 'Web Estática / Landing Page',
     badge: 'Presencia Rápida',
     description: 'Ideal para marca corporativa, portafolio y máxima velocidad de carga.',
-    basePrice: 199,
-    entrepreneurMonthlyPrice: 35,
+    basePrice: 150000,
+    entrepreneurMonthlyPrice: 35000,
     features: ['Diseño 100% responsivo', 'Optimización SEO básica', 'Despliegue en Cloudflare']
   },
   {
@@ -17,27 +17,18 @@ export const DEFAULT_PLATFORMS: PlatformOption[] = [
     title: 'Web Dinámica / Catálogo',
     badge: 'Autoadministrable',
     description: 'Ideal para blogs, catálogos, inmobiliarias o actualización frecuente.',
-    basePrice: 399,
-    entrepreneurMonthlyPrice: 55,
+    basePrice: 285000,
+    entrepreneurMonthlyPrice: 55000,
     features: ['Panel de administración fácil', 'Formularios avanzados', 'Gestión de contenido']
-  },
-  {
-    id: 'ai',
-    title: 'Web con Agente de IA 24/7',
-    badge: 'Más Popular',
-    description: 'Convierte visitas en clientes con chatbots inteligentes y flujos automáticos.',
-    basePrice: 599,
-    entrepreneurMonthlyPrice: 75,
-    features: ['Chatbot de IA conversacional', 'Captura automática de leads', 'Conexión a WhatsApp / CRM']
   },
   {
     id: 'saas',
     title: 'Plataforma SaaS & Sistema Web',
     badge: 'Solución Enterprise',
     description: 'Software a medida con bases de datos, roles de usuario y pasarelas de pago.',
-    basePrice: 999,
-    entrepreneurMonthlyPrice: 125,
-    features: ['Arquitectura en la nube', 'Pasarelas SinpePay / Stripe', 'Paneles de usuario avanzados']
+    basePrice: 450000,
+    entrepreneurMonthlyPrice: 80000,
+    features: ['Arquitectura en la nube', 'Pasarelas SinpePay / Tarjetas', 'Paneles de usuario avanzados']
   }
 ];
 
@@ -46,14 +37,14 @@ export const DEFAULT_ADDONS: AddonService[] = [
     id: 'domain',
     title: 'Dominio Propio (.com / .lat)',
     description: 'Registro oficial de tu marca en internet por 1 año.',
-    price: 25,
+    price: 15000,
     period: 'anual'
   },
   {
     id: 'hosting',
     title: 'Hosting Cloud Premium',
     description: 'Servidores de alta velocidad con SSL y CDN global.',
-    price: 75,
+    price: 45000,
     period: 'anual',
     recommended: true
   },
@@ -61,7 +52,7 @@ export const DEFAULT_ADDONS: AddonService[] = [
     id: 'maintenance',
     title: 'Mantenimiento & Soporte Continuo',
     description: 'Actualizaciones de seguridad, monitoreo y soporte prioritario.',
-    price: 45,
+    price: 25000,
     period: 'mensual'
   }
 ];
@@ -168,8 +159,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Load pricing from localStorage
   const [pricing, setPricing] = useState<PricingConfig>(() => {
     try {
-      const saved = localStorage.getItem('geosoft_pricing');
-      if (saved) return JSON.parse(saved);
+      const saved = localStorage.getItem('geosoft_pricing_crc_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.platforms)) {
+          parsed.platforms = parsed.platforms.filter((p: any) => p.id !== 'ai');
+          return parsed;
+        }
+      }
     } catch (e) {
       console.error(e);
     }
@@ -291,7 +288,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Sync to localStorage as offline cache
   useEffect(() => {
     try {
-      localStorage.setItem('geosoft_pricing', JSON.stringify(pricing));
+      localStorage.setItem('geosoft_pricing_crc_v1', JSON.stringify(pricing));
     } catch (e) {
       console.error(e);
     }

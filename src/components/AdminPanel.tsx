@@ -632,8 +632,8 @@ export const AdminPanel: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {pricing.platforms.map(p => (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {pricing.platforms.filter(p => p.id !== 'ai').map(p => (
                     <div key={p.id} className="p-4 rounded-2xl bg-[#0d0f14] border border-white/10 space-y-3 shadow-md hover:border-white/20 transition-all">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-white text-sm">{p.title}</span>
@@ -642,13 +642,10 @@ export const AdminPanel: React.FC = () => {
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-3 pt-1 border-t border-white/5">
-                        <label className="text-xs text-gray-400">Precio ($):</label>
-                        <input
-                          type="number"
-                          value={p.basePrice}
-                          onChange={e => updatePlatformPrice(p.id, Number(e.target.value))}
-                          className="w-32 px-3 py-1.5 rounded-lg bg-black border border-white/15 text-white font-mono font-bold text-sm text-right outline-none focus:border-[#A9F8B5]"
-                        />
+                        <label className="text-xs text-gray-400">Cuota Emprendedor (₡):</label>
+                        <span className="text-sm font-mono font-bold text-[#DFF494]">
+                          ₡{(p.entrepreneurMonthlyPrice || 0).toLocaleString('es-CR')}
+                        </span>
                       </div>
                     </div>
                   ))}
