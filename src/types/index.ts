@@ -7,6 +7,7 @@ export interface PlatformOption {
   description: string;
   basePrice: number;
   features: string[];
+  entrepreneurMonthlyPrice?: number;
 }
 
 export interface AddonService {

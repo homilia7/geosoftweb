@@ -9,6 +9,7 @@ export const DEFAULT_PLATFORMS: PlatformOption[] = [
     badge: 'Presencia Rápida',
     description: 'Ideal para marca corporativa, portafolio y máxima velocidad de carga.',
     basePrice: 199,
+    entrepreneurMonthlyPrice: 35,
     features: ['Diseño 100% responsivo', 'Optimización SEO básica', 'Despliegue en Cloudflare']
   },
   {
@@ -17,6 +18,7 @@ export const DEFAULT_PLATFORMS: PlatformOption[] = [
     badge: 'Autoadministrable',
     description: 'Ideal para blogs, catálogos, inmobiliarias o actualización frecuente.',
     basePrice: 399,
+    entrepreneurMonthlyPrice: 55,
     features: ['Panel de administración fácil', 'Formularios avanzados', 'Gestión de contenido']
   },
   {
@@ -25,6 +27,7 @@ export const DEFAULT_PLATFORMS: PlatformOption[] = [
     badge: 'Más Popular',
     description: 'Convierte visitas en clientes con chatbots inteligentes y flujos automáticos.',
     basePrice: 599,
+    entrepreneurMonthlyPrice: 75,
     features: ['Chatbot de IA conversacional', 'Captura automática de leads', 'Conexión a WhatsApp / CRM']
   },
   {
@@ -33,6 +36,7 @@ export const DEFAULT_PLATFORMS: PlatformOption[] = [
     badge: 'Solución Enterprise',
     description: 'Software a medida con bases de datos, roles de usuario y pasarelas de pago.',
     basePrice: 999,
+    entrepreneurMonthlyPrice: 125,
     features: ['Arquitectura en la nube', 'Pasarelas SinpePay / Stripe', 'Paneles de usuario avanzados']
   }
 ];

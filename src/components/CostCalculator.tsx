@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calculator, Check, Sparkles, Send, CheckCircle2, ShieldCheck, Tag } from 'lucide-react';
+import { Calculator, Check, Sparkles, Send, CheckCircle2, ShieldCheck, Tag, Rocket, Repeat } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useGeoSoftStore } from '../context/StoreContext';
 import { PlatformOption } from '../types';
@@ -10,12 +10,17 @@ export const CostCalculator: React.FC = () => {
   const platforms = pricing.platforms;
   const addons = pricing.addons;
 
-  const [selectedPlatformId, setSelectedPlatformId] = useState<string>('ai');
+  const [planMode, setPlanMode] = useState<'emprendedor' | 'tradicional'>('emprendedor');
+  const [selectedPlatformId, setSelectedPlatformId] = useState<string>('static');
   const [selectedAddons, setSelectedAddons] = useState<string[]>(['domain', 'hosting']);
   const [isGenerated, setIsGenerated] = useState(false);
 
   // Find selected platform from dynamic store
   const selectedPlatform = platforms.find(p => p.id === selectedPlatformId) || platforms[0];
+  const isEntrepreneur = planMode === 'emprendedor';
+
+  const entrepreneurFee = selectedPlatform.entrepreneurMonthlyPrice ||
+    (selectedPlatform.id === 'static' ? 35 : selectedPlatform.id === 'dynamic' ? 55 : selectedPlatform.id === 'ai' ? 75 : 125);
 
   const toggleAddon = (id: string) => {
     setSelectedAddons(prev =>
@@ -55,6 +60,19 @@ export const CostCalculator: React.FC = () => {
   };
 
   const generateWhatsAppMessage = () => {
+    if (isEntrepreneur) {
+      const text = encodeURIComponent(
+        `¡Hola GeoSoft! Me interesa el *Plan Emprendedor (Cuota Mensual Única)* para mi proyecto:\n\n` +
+        `🚀 *Plan:* Plan Emprendedor Personalizado\n` +
+        `💻 *Plataforma:* ${selectedPlatform.title}\n` +
+        `💵 *Adelanto de Proyecto:* $0 (¡Sin pagos por adelantos!)\n` +
+        `🌐 *Anualidades:* $0 (¡Sin anualidades! Dominio y Hosting cloud incluidos)\n` +
+        `📅 *Cuota Mensual Única:* $${entrepreneurFee}/mes adaptada a mi negocio\n\n` +
+        `¿Podemos coordinar para iniciar con el desarrollo?`
+      );
+      return `https://wa.me/50689999999?text=${text}`;
+    }
+
     const text = encodeURIComponent(
       `¡Hola GeoSoft! Acabo de cotizar mi proyecto en geosoftweb.pages.dev:\n\n*Tipo de Web:* ${selectedPlatform.title} ($${totals.oneTime}${pricing.discountActive ? ' con ' + pricing.discountPercent + '% OFF' : ''})\n*Servicios adicionales:* ${selectedAddons.map(id => addons.find(a => a.id === id)?.title).join(', ') || 'Ninguno'}\n*Total Inicial:* $${totals.oneTime + totals.annual}\n\n¿Podemos coordinar para formalizar la propuesta exacta?`
     );
@@ -84,6 +102,39 @@ export const CostCalculator: React.FC = () => {
               <span>{pricing.discountBanner} ({pricing.discountPercent}% de descuento aplicado)</span>
             </div>
           )}
+
+          {/* Selector de Modalidad: Plan Emprendedor vs Inversión Tradicional */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 max-w-xl mx-auto p-1.5 rounded-2xl bg-black/60 border border-white/10 mt-4">
+            <button
+              type="button"
+              onClick={() => setPlanMode('emprendedor')}
+              className={`w-full sm:w-auto flex-1 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                isEntrepreneur
+                  ? 'bg-gradient-to-r from-[#A9F8B5] to-[#DFF494] text-black shadow-lg shadow-[#A9F8B5]/20 font-extrabold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Rocket className="w-4 h-4 stroke-[2.5]" />
+              <span>Plan Emprendedor (Cuota Mensual Única)</span>
+              <span className={`text-[9.5px] font-mono uppercase px-1.5 py-0.5 rounded-md ${
+                isEntrepreneur ? 'bg-black/20 text-black font-bold' : 'bg-white/10 text-gray-400'
+              }`}>
+                $0 Adelanto
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPlanMode('tradicional')}
+              className={`w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                !isEntrepreneur
+                  ? 'bg-white/15 text-white font-bold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <span>Proyecto Tradicional</span>
+            </button>
+          </div>
         </Reveal>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -120,7 +171,15 @@ export const CostCalculator: React.FC = () => {
                         </span>
                         
                         <div className="text-right">
-                          {pricing.discountActive ? (
+                          {isEntrepreneur ? (
+                            <div>
+                              <span className="text-[10px] text-[#A9F8B5] font-mono block font-semibold">$0 adelanto</span>
+                              <span className="text-lg font-extrabold font-display text-[#DFF494]">
+                                ${p.entrepreneurMonthlyPrice || 35}
+                                <span className="text-xs font-normal text-gray-400">/mes</span>
+                              </span>
+                            </div>
+                          ) : pricing.discountActive ? (
                             <div className="flex items-baseline gap-1.5">
                               <span className="text-xs text-gray-500 line-through font-mono">${p.basePrice}</span>
                               <span className="text-lg font-extrabold font-display text-[#DFF494]">${discountedPrice}</span>
@@ -154,8 +213,35 @@ export const CostCalculator: React.FC = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-bold font-display text-white flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-[#DFF494]/20 text-[#DFF494] text-xs flex items-center justify-center font-mono">2</span>
-                Servicios Complementarios
+                <span>{isEntrepreneur ? 'Beneficios Incluidos y Complementarios' : 'Servicios Complementarios'}</span>
               </h3>
+
+              {isEntrepreneur && (
+                <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 space-y-2">
+                  <div className="flex items-center gap-2 text-[#A9F8B5] text-xs font-bold font-mono uppercase tracking-wider">
+                    <CheckCircle2 className="w-4 h-4 text-[#A9F8B5]" />
+                    <span>Beneficios Integrados del Plan Emprendedor ($0 Adicional):</span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-2 text-xs text-gray-300">
+                    <div className="flex items-center gap-2 bg-black/40 p-2.5 rounded-xl border border-white/5">
+                      <span className="text-[#A9F8B5] font-bold">✓</span>
+                      <span>Dominio propio (.com / .lat) sin anualidades</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-black/40 p-2.5 rounded-xl border border-white/5">
+                      <span className="text-[#A9F8B5] font-bold">✓</span>
+                      <span>Hosting Cloud Premium con SSL sin anualidades</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-black/40 p-2.5 rounded-xl border border-white/5">
+                      <span className="text-[#A9F8B5] font-bold">✓</span>
+                      <span>Mantenimiento y monitoreo técnico 24/7</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-black/40 p-2.5 rounded-xl border border-white/5">
+                      <span className="text-[#A9F8B5] font-bold">✓</span>
+                      <span>Desarrollo completo a medida con $0 adelanto</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {addons.map(addon => {
@@ -217,7 +303,9 @@ export const CostCalculator: React.FC = () => {
                 <div className="flex justify-between items-center text-gray-300">
                   <span className="truncate pr-2">{selectedPlatform.title}</span>
                   <div className="text-right">
-                    {pricing.discountActive ? (
+                    {isEntrepreneur ? (
+                      <span className="font-mono font-bold text-[#DFF494]">${entrepreneurFee}/mes</span>
+                    ) : pricing.discountActive ? (
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs text-gray-500 line-through font-mono">${totals.rawOneTime}</span>
                         <span className="font-mono font-bold text-[#DFF494]">${totals.oneTime}</span>
@@ -228,7 +316,7 @@ export const CostCalculator: React.FC = () => {
                   </div>
                 </div>
 
-                {selectedAddons.map(id => {
+                {!isEntrepreneur && selectedAddons.map(id => {
                   const item = addons.find(a => a.id === id);
                   if (!item) return null;
                   return (
@@ -241,30 +329,68 @@ export const CostCalculator: React.FC = () => {
               </div>
 
               {/* Pricing Totals Box */}
-              <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-xs text-gray-400 uppercase tracking-wider">Inversión Desarrollo:</span>
-                  <span className="text-2xl font-extrabold font-display text-gradient-accent">
-                    ${totals.oneTime}
-                  </span>
-                </div>
-                {pricing.discountActive && (
-                  <div className="flex justify-between items-center text-xs text-[#DFF494]">
-                    <span>Ahorro Promocional:</span>
-                    <span className="font-mono font-bold">-${totals.savings} USD</span>
-                  </div>
-                )}
-                {totals.annual > 0 && (
-                  <div className="flex justify-between items-center text-xs text-gray-400">
-                    <span>Servicios Anuales:</span>
-                    <span className="font-mono text-gray-200">${totals.annual}/año</span>
-                  </div>
-                )}
-                {totals.monthly > 0 && (
-                  <div className="flex justify-between items-center text-xs text-gray-400">
-                    <span>Mantenimiento Mensual:</span>
-                    <span className="font-mono text-gray-200">${totals.monthly}/mes</span>
-                  </div>
+              <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2.5">
+                {isEntrepreneur ? (
+                  <>
+                    <div className="flex justify-between items-baseline pb-2 border-b border-white/10">
+                      <span className="text-xs text-gray-400 uppercase tracking-wider">Adelanto de Proyecto:</span>
+                      <span className="text-base font-mono font-extrabold text-[#A9F8B5]">
+                        $0 <span className="text-[10px] text-gray-400 font-sans font-normal">(¡Sin adelantos!)</span>
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-baseline pb-2 border-b border-white/10">
+                      <span className="text-xs text-gray-400 uppercase tracking-wider">Cobros por Anualidades:</span>
+                      <span className="text-sm font-mono font-bold text-[#DFF494]">
+                        $0 / año <span className="text-[10px] text-gray-400 font-sans font-normal">(¡Sin anualidades!)</span>
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-baseline pt-1">
+                      <div>
+                        <span className="text-xs font-bold text-white block">Cuota Mensual Única:</span>
+                        <span className="text-[10px] text-[#A9F8B5] font-mono">Plan Emprendedor</span>
+                      </div>
+                      <span className="text-2xl font-extrabold font-display text-gradient-accent">
+                        ${entrepreneurFee}
+                        <span className="text-xs font-normal text-gray-400 font-sans">/mes</span>
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-[10.5px] text-gray-300 space-y-0.5">
+                      <div className="text-[#A9F8B5] font-bold">✓ Beneficios Plan Emprendedor:</div>
+                      <div>• Dominio + Hosting cloud sin cobros anuales.</div>
+                      <div>• Mantenimiento y soporte técnico continuo.</div>
+                      <div>• Cuota mensual adaptada a tus necesidades.</div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-xs text-gray-400 uppercase tracking-wider">Inversión Desarrollo:</span>
+                      <span className="text-2xl font-extrabold font-display text-gradient-accent">
+                        ${totals.oneTime}
+                      </span>
+                    </div>
+                    {pricing.discountActive && (
+                      <div className="flex justify-between items-center text-xs text-[#DFF494]">
+                        <span>Ahorro Promocional:</span>
+                        <span className="font-mono font-bold">-${totals.savings} USD</span>
+                      </div>
+                    )}
+                    {totals.annual > 0 && (
+                      <div className="flex justify-between items-center text-xs text-gray-400">
+                        <span>Servicios Anuales:</span>
+                        <span className="font-mono text-gray-200">${totals.annual}/año</span>
+                      </div>
+                    )}
+                    {totals.monthly > 0 && (
+                      <div className="flex justify-between items-center text-xs text-gray-400">
+                        <span>Mantenimiento Mensual:</span>
+                        <span className="font-mono text-gray-200">${totals.monthly}/mes</span>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -275,7 +401,7 @@ export const CostCalculator: React.FC = () => {
                     onClick={handleGenerateProposal}
                     className="w-full btn-primary-gradient py-3.5 text-sm uppercase tracking-wider font-bold cursor-pointer"
                   >
-                    Generar Mi Propuesta
+                    {isEntrepreneur ? 'Solicitar Plan Emprendedor' : 'Generar Mi Propuesta'}
                   </button>
                 ) : (
                   <div className="space-y-3">

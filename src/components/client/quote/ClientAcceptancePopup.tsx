@@ -37,7 +37,7 @@ export const ClientAcceptancePopup: React.FC<ClientAcceptancePopupProps> = ({
   const monthlyAmount = convertedMonthly !== undefined
     ? convertedMonthly
     : (isMode1 ? quote.modeInitialPlusMonthly.monthlyPayment : quote.modeOnlyMonthly.monthlyPayment);
-  const modeTitle = isMode1 ? 'Pago Inicial + Mensualidad' : 'Solo Pago Mensual ($0 Inicial)';
+  const modeTitle = isMode1 ? 'Pago Inicial + Mensualidad' : 'Plan Emprendedor (Cuota Mensual Única)';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

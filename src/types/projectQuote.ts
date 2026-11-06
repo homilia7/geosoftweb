@@ -20,6 +20,9 @@ export interface PaymentModeOnlyMonthly {
   minimumMonths: number;
   badgeText: string;
   description: string;
+  planTitle?: string;
+  zeroAdvance?: boolean;
+  zeroAnnualFees?: boolean;
 }
 
 export interface ProjectQuoteData {

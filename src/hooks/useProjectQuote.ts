@@ -74,8 +74,11 @@ export const DEFAULT_QUOTE: ProjectQuoteData = {
   modeOnlyMonthly: {
     monthlyPayment: 165,
     minimumMonths: 12,
-    badgeText: 'Opción Cero Desembolso',
-    description: 'Sin pago inicial. El costo de desarrollo se amortiza 100% en la cuota mensual.'
+    badgeText: 'Plan Emprendedor (Sin Adelanto ni Anualidades)',
+    description: 'Cuota mensual única adaptada al cliente. $0 de adelanto de proyecto y $0 en anualidades (dominio, hosting y soporte 100% incluidos).',
+    planTitle: 'Plan Emprendedor',
+    zeroAdvance: true,
+    zeroAnnualFees: true
   },
   preferredMode: 'both'
 };
@@ -242,7 +245,7 @@ export const useProjectQuote = () => {
     msg += `💰 *Moneda:* ${quote.currency === 'CRC' ? 'Colones costarricenses (₡)' : 'Dólares estadounidenses ($)'}\n\n`;
     msg += `*MODALIDADES DE PAGO DISPONIBLES:*\n`;
     msg += `🔹 *Opción 1 (Inicial + Mensual):* ${sym}${quote.modeInitialPlusMonthly.initialPayment.toLocaleString()} inicial + ${sym}${quote.modeInitialPlusMonthly.monthlyPayment.toLocaleString()}/mes\n`;
-    msg += `🔹 *Opción 2 (Suscripción Todo Incluido):* ${sym}0 inicial + ${sym}${quote.modeOnlyMonthly.monthlyPayment.toLocaleString()}/mes\n\n`;
+    msg += `🔹 *Opción 2 (🚀 Plan Emprendedor):* ${sym}0 inicial + ${sym}${quote.modeOnlyMonthly.monthlyPayment.toLocaleString()}/mes (Cuota única sin anualidades ni adelantos)\n\n`;
     msg += `🌐 *Ver y Aprobar Propuesta Interactiva en Línea:*\n${clientLink}\n\n`;
     msg += `_Emitido por GeoSoft Consultancy & Software Engineering_`;
     return encodeURIComponent(msg);

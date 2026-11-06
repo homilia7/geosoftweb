@@ -16,6 +16,18 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-11-06 — Plan Emprendedor Personalizado: Cuota Mensual Única ($0 Adelantos & $0 Anualidades)
+- **Modalidad Plan Emprendedor en Cotizador Público en Vivo (`CostCalculator.tsx`):**
+  - Selector prominente de modalidad: `Plan Emprendedor (Cuota Mensual Única)` vs `Proyecto Tradicional`.
+  - **Cero Adelanto de Proyecto ($0 USD / ₡0):** Desarrollo web a medida sin cobros gigantes iniciales.
+  - **Cero Cobros por Anualidades ($0 USD / año):** Dominio propio (.com/.lat) y Hosting Cloud Ultra-Rápido con SSL 100% integrados en la cuota.
+  - **Cuota Mensual Adaptada a Pequeños Emprendimientos:** Tarifa económica y predecible (desde $35/mes en Web Estática) con soporte técnico, mantenimiento y actualizaciones continuas.
+  - Generador de mensaje de WhatsApp adaptado a la solicitud del Plan Emprendedor.
+- **Integración en Cotizador de Proyectos Admin & Vista de Cliente (`useProjectQuote.ts`, `QuotePricingModes.tsx`, `ClientQuoteModal.tsx`):**
+  - Modalidad 2 configurada y destacada como `Plan Emprendedor (Cuota Mensual Única)` con badges `{sym}0 ADELANTO` y `{sym}0 ANUALIDADES`.
+  - Desglose de beneficios para el emprendedor en propuesta y pop-up de formalización del cliente.
+  - Tipos extendidos con `entrepreneurMonthlyPrice` en `PlatformOption` (`src/types/index.ts`).
+
 ### 2026-10-29 — Link Corto Único por Propuesta, Logo Cubo 3D y Letras Animadas en Vista Cliente
 - **Enlace Único y Corto por Cotización (`useProjectQuote.ts` & `App.tsx`):**
   - Formato de link ultra-limpio y corto: `https://www.geosoft.lat/#cotizacion=COT-2026-XXX`.

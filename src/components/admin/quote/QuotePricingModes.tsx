@@ -69,7 +69,7 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
               preferredMode === 'only_monthly' ? 'bg-[#DFF494] text-black font-bold' : 'text-gray-400'
             }`}
           >
-            Destacar Opción 2
+            Plan Emprendedor
           </button>
         </div>
       </div>
@@ -154,7 +154,7 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
         </div>
 
         {/* ======================================================== */}
-        {/* MODALIDAD 2: SOLO PAGO MENSUAL ($0 INICIAL)              */}
+        {/* MODALIDAD 2: PLAN EMPRENDEDOR (CUOTA MENSUAL ÚNICA)      */}
         {/* ======================================================== */}
         <div className={`card-accent p-6 border-white/10 space-y-5 transition-all ${
           preferredMode === 'only_monthly' ? 'ring-2 ring-[#DFF494]/50 bg-amber-950/20' : ''
@@ -166,25 +166,30 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
               </div>
               <div>
                 <span className="text-[10px] font-mono uppercase text-[#DFF494] font-bold">Modalidad 2</span>
-                <h4 className="font-display font-bold text-white text-base">Solo Pago Mensual (Suscripción)</h4>
+                <h4 className="font-display font-bold text-white text-base">Plan Emprendedor (Cuota Mensual Única)</h4>
               </div>
             </div>
-            <span className="text-[10px] font-mono font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              {currencySymbol}0 INICIAL
-            </span>
+            <div className="flex flex-col items-end gap-1 shrink-0">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                {currencySymbol}0 ADELANTO
+              </span>
+              <span className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-md bg-[#DFF494]/20 text-[#DFF494] border border-[#DFF494]/30">
+                {currencySymbol}0 ANUALIDADES
+              </span>
+            </div>
           </div>
 
           {/* Pricing Inputs */}
           <div className="grid grid-cols-2 gap-3 bg-black/40 p-4 rounded-xl border border-white/10">
             <div>
-              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Pago Inicial</label>
+              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Pago Inicial / Adelanto</label>
               <div className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm font-bold text-gray-400 font-mono">
                 {currencySymbol}0
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Cuota Todo Incluido ({currencySymbol})</label>
+              <label className="text-[10px] font-mono uppercase text-gray-400 block mb-1">Cuota Mensual Adaptada ({currencySymbol})</label>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-xs text-gray-500 font-mono">{currencySymbol}</span>
                 <input
@@ -205,7 +210,7 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
               type="text"
               value={modeMonthly.badgeText}
               onChange={e => onUpdateMonthly({ badgeText: e.target.value })}
-              placeholder="Etiqueta distintiva (ej. Sin desembolso inicial)"
+              placeholder="Etiqueta distintiva (ej. Plan Emprendedor — Sin adelantos)"
               className="w-full bg-white/5 border border-white/10 focus:border-[#DFF494] rounded-lg px-3 py-1.5 text-xs text-[#DFF494] outline-none font-medium"
             />
             <input
@@ -215,6 +220,14 @@ export const QuotePricingModes: React.FC<QuotePricingModesProps> = ({
               placeholder="Descripción comercial para el cliente"
               className="w-full bg-white/5 border border-white/10 focus:border-[#DFF494] rounded-lg px-3 py-1.5 text-xs text-gray-300 outline-none"
             />
+          </div>
+
+          {/* Beneficios Clave del Plan Emprendedor */}
+          <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 space-y-1 text-[11px] text-gray-400 font-sans">
+            <div className="text-[#DFF494] font-semibold text-[10px] font-mono uppercase">Beneficios Plan Emprendedor:</div>
+            <div>• <strong className="text-white">Sin adelantos de proyectos:</strong> inicio con {currencySymbol}0 desembolso inicial.</div>
+            <div>• <strong className="text-white">Sin anualidades:</strong> dominio y hosting cloud 100% cubiertos sin cobros anuales.</div>
+            <div>• <strong className="text-white">Cuota económica:</strong> cuota mensual única y predecible adaptada al emprendedor.</div>
           </div>
         </div>
       </div>

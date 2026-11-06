@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, CreditCard, Repeat, Layers, Sparkles, Calendar } from 'lucide-react';
+import { X, CheckCircle2, CreditCard, Repeat, Layers, Sparkles, Calendar, Rocket } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ProjectQuoteData, QuoteAcceptancePayload } from '../../../types/projectQuote';
 import { ClientAcceptancePopup } from './ClientAcceptancePopup';
@@ -218,7 +218,7 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
               <p className="text-[11px] text-gray-400">{quote.modeInitialPlusMonthly.description}</p>
             </div>
 
-            {/* Mode 2 Card */}
+            {/* Mode 2 Card: Plan Emprendedor */}
             <div
               onClick={() => setSelectedMode('only_monthly')}
               className={`card-accent p-5 border-white/10 cursor-pointer transition-all space-y-3 ${
@@ -229,17 +229,27 @@ export const ClientQuoteModal: React.FC<ClientQuoteModalProps> = ({
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <Repeat className="w-4 h-4 text-[#DFF494]" />
-                  <span className="text-xs font-bold text-white">Modalidad 2: Solo Mensual ($0 Inicial)</span>
+                  <Rocket className="w-4 h-4 text-[#DFF494]" />
+                  <span className="text-xs font-bold text-white">Modalidad 2: Plan Emprendedor (Cuota Mensual Única)</span>
                 </div>
                 {selectedMode === 'only_monthly' && (
                   <CheckCircle2 className="w-4 h-4 text-[#DFF494]" />
                 )}
               </div>
               <div className="text-lg font-mono font-extrabold text-white">
-                {sym}0 inicial + {sym}{monthlyMode2.toLocaleString()}/mes
+                {sym}0 adelanto + {sym}{monthlyMode2.toLocaleString()}/mes
               </div>
-              <p className="text-[11px] text-gray-400">{quote.modeOnlyMonthly.description}</p>
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-[#A9F8B5] border border-emerald-500/30">
+                  ✓ $0 Adelanto de Proyecto
+                </span>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-[#DFF494]/20 text-[#DFF494] border border-[#DFF494]/30">
+                  ✓ $0 Anualidades (Todo Incluido)
+                </span>
+              </div>
+              <p className="text-[11px] text-gray-400">
+                {quote.modeOnlyMonthly.description || 'Plan económico adaptado para impulsar pequeños emprendimientos con cuota mensual única y predecible.'}
+              </p>
             </div>
           </div>
         </div>
