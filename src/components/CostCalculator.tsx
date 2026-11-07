@@ -147,7 +147,7 @@ export const CostCalculator: React.FC = () => {
                 Elige el tipo de Web / Plataforma
               </h3>
 
-              <div className="grid sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {platforms.map(p => {
                   const isSelected = selectedPlatform.id === p.id;
                   const discountMultiplier = pricing.discountActive ? (100 - pricing.discountPercent) / 100 : 1;
@@ -158,43 +158,57 @@ export const CostCalculator: React.FC = () => {
                     <div
                       key={p.id}
                       onClick={() => setSelectedPlatformId(p.id)}
-                      className={`tactile-card p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer relative ${
+                      className={`tactile-card p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer relative flex flex-col justify-between ${
                         isSelected
                           ? 'is-selected border-white/20'
                           : 'border-white/10 hover:border-white/20'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold ${
-                          isSelected ? 'bg-[#A9F8B5]/20 text-[#A9F8B5]' : 'bg-white/10 text-gray-400'
-                        }`}>
-                          {p.badge}
-                        </span>
-                        
-                        <div className="text-right">
-                          {isEntrepreneur ? (
-                            <div>
-                              <span className="text-[10px] text-[#A9F8B5] font-mono block font-semibold">₡0 adelanto</span>
-                              <span className="text-lg font-extrabold font-display text-[#DFF494]">
-                                ₡{monthlyFee.toLocaleString('es-CR')}
-                                <span className="text-xs font-normal text-gray-400">/mes</span>
-                              </span>
-                            </div>
-                          ) : pricing.discountActive ? (
-                            <div className="flex items-baseline gap-1.5">
-                              <span className="text-xs text-gray-500 line-through font-mono">₡{p.basePrice.toLocaleString('es-CR')}</span>
-                              <span className="text-lg font-extrabold font-display text-[#DFF494]">₡{discountedPrice.toLocaleString('es-CR')}</span>
-                            </div>
-                          ) : (
-                            <div className="text-lg font-extrabold font-display text-white">
-                              ₡{p.basePrice.toLocaleString('es-CR')}
-                            </div>
+                      <div>
+                        {/* Badges Bar */}
+                        <div className="flex items-center justify-between gap-2 mb-3">
+                          <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full uppercase tracking-wider font-bold shrink-0 ${
+                            isSelected ? 'bg-[#A9F8B5]/20 text-[#A9F8B5] border border-[#A9F8B5]/30' : 'bg-white/10 text-gray-400'
+                          }`}>
+                            {p.badge}
+                          </span>
+                          {isEntrepreneur && (
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-[#A9F8B5] border border-emerald-500/30 whitespace-nowrap shrink-0">
+                              ₡0 adelanto
+                            </span>
                           )}
                         </div>
-                      </div>
 
-                      <h4 className="font-bold text-white text-base mb-1">{p.title}</h4>
-                      <p className="text-xs text-gray-400 font-light leading-relaxed mb-3">{p.description}</p>
+                        {/* Title & Description */}
+                        <h4 className="font-bold text-white text-base mb-1">{p.title}</h4>
+                        <p className="text-xs text-gray-400 font-light leading-relaxed mb-3">{p.description}</p>
+
+                        {/* Dedicated Price Block (100% width, never clipped) */}
+                        <div className="p-3 rounded-xl bg-black/50 border border-white/10 mb-3 flex items-baseline justify-between gap-2">
+                          <span className="text-[11px] text-gray-400 font-medium">
+                            {isEntrepreneur ? 'Cuota mensual:' : 'Inversión:'}
+                          </span>
+                          <div className="text-right">
+                            {isEntrepreneur ? (
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-xl font-extrabold font-mono text-[#DFF494] tracking-tight">
+                                  ₡{monthlyFee.toLocaleString('es-CR')}
+                                </span>
+                                <span className="text-xs text-gray-400 font-sans">/mes</span>
+                              </div>
+                            ) : pricing.discountActive ? (
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-xs text-gray-500 line-through font-mono">₡{p.basePrice.toLocaleString('es-CR')}</span>
+                                <span className="text-lg font-extrabold font-display text-[#DFF494]">₡{discountedPrice.toLocaleString('es-CR')}</span>
+                              </div>
+                            ) : (
+                              <div className="text-lg font-extrabold font-display text-white">
+                                ₡{p.basePrice.toLocaleString('es-CR')}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
                       <div className="space-y-1 border-t border-white/5 pt-2">
                         {p.features.map((feat, i) => (

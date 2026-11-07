@@ -16,6 +16,13 @@ Cualquier funcionalidad registrada aquí está blindada: ninguna IA puede elimin
 
 ## 📅 Entradas de Cambios Aprobados
 
+### 2026-11-06 — Corrección de Desbordamiento y Maquetación de Precios en Tarjetas de Plataformas
+- **Bloque Dedicado de Cuota Mensual a Ancho Completo (`CostCalculator.tsx`):**
+  - Desacoplamiento de la insignia de categoría y la cuota mensual para erradicar el recorte de texto (`₡55 00...`, `₡80 00...`, `₡0 adelanto`).
+  - Cabecera con distribución limpia: insignia a la izquierda y badge `₡0 adelanto` a la derecha.
+  - Bloque visual independiente de cuota mensual en pastilla oscura con tipografía mono de alto impacto (`₡35,000/mes`, `₡55,000/mes`, `₡80,000/mes`) 100% visible sin desbordamiento en ninguna resolución.
+  - Ajuste responsivo de la cuadrícula a `grid-cols-1 md:grid-cols-3` con altura equilibrada.
+
 ### 2026-11-06 — Tarifas en Colones (₡) en Cotizador y Remoción de "Web con Agente de IA 24/7"
 - **Estructura Oficial de Precios en Colones (`₡ CRC`):**
   - **Plataforma SaaS & Sistema Web (Solución Enterprise):** `₡80,000 / mes` en Plan Emprendedor.
